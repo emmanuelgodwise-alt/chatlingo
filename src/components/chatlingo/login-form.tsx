@@ -13,7 +13,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
-import { Globe, LogIn, ArrowRight } from 'lucide-react'
+import { Globe, LogIn } from 'lucide-react'
 
 export function LoginForm() {
   const { setView, setUser } = useChatLingoStore()
@@ -56,39 +56,39 @@ export function LoginForm() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-emerald-50 via-white to-teal-50 p-4">
+    <div className="min-h-screen flex items-center justify-center wa-auth-gradient p-4">
       <div className="w-full max-w-md">
         {/* Brand */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 mb-4 shadow-lg">
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-white/20 backdrop-blur-sm mb-4 shadow-lg">
             <Globe className="w-8 h-8 text-white" />
           </div>
-          <h1 className="text-3xl font-bold text-gray-900 tracking-tight">ChatLingo</h1>
-          <p className="text-gray-500 mt-2 text-sm">
+          <h1 className="text-3xl font-bold text-white tracking-tight">ChatLingo</h1>
+          <p className="text-white/70 mt-2 text-sm">
             Break the language barrier. Connect with the world.
           </p>
         </div>
 
-        <Card className="shadow-xl border-0 ring-1 ring-gray-200/60">
-          <CardHeader className="text-center pb-2">
-            <CardTitle className="text-xl flex items-center justify-center gap-2">
-              <LogIn className="w-5 h-5 text-emerald-600" />
+        <Card className="shadow-xl border-0 rounded-lg overflow-hidden">
+          <CardHeader className="text-center pb-2 pt-6 px-6">
+            <CardTitle className="text-xl text-[#111B21] flex items-center justify-center gap-2">
+              <LogIn className="w-5 h-5 text-[#075E54]" />
               Welcome Back
             </CardTitle>
-            <CardDescription>
+            <CardDescription className="text-[#667781]">
               Sign in to continue chatting across languages
             </CardDescription>
           </CardHeader>
           <form onSubmit={handleSubmit}>
-            <CardContent className="space-y-4 pt-4">
+            <CardContent className="space-y-4 pt-4 px-6">
               {error && (
                 <div className="bg-red-50 text-red-700 text-sm p-3 rounded-lg border border-red-200">
                   {error}
                 </div>
               )}
 
-              <div className="space-y-2">
-                <Label htmlFor="email">Email Address</Label>
+              <div className="space-y-1.5">
+                <Label htmlFor="email" className="text-[#111B21] text-sm font-medium">Email Address</Label>
                 <Input
                   id="email"
                   type="email"
@@ -96,12 +96,12 @@ export function LoginForm() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  className="h-11"
+                  className="h-11 rounded-md border-[#E9EDEF] focus:border-[#25D366] focus:ring-[#25D366]/20"
                 />
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="password">Password</Label>
+              <div className="space-y-1.5">
+                <Label htmlFor="password" className="text-[#111B21] text-sm font-medium">Password</Label>
                 <Input
                   id="password"
                   type="password"
@@ -109,14 +109,14 @@ export function LoginForm() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  className="h-11"
+                  className="h-11 rounded-md border-[#E9EDEF] focus:border-[#25D366] focus:ring-[#25D366]/20"
                 />
               </div>
             </CardContent>
-            <CardFooter className="flex flex-col gap-4 pt-2">
+            <CardFooter className="flex flex-col gap-4 pt-2 pb-6 px-6">
               <Button
                 type="submit"
-                className="w-full h-11 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-semibold"
+                className="w-full h-11 bg-[#25D366] hover:bg-[#22C55E] text-white font-semibold rounded-md shadow-sm"
                 disabled={loading}
               >
                 {loading ? (
@@ -125,18 +125,15 @@ export function LoginForm() {
                     Signing in...
                   </span>
                 ) : (
-                  <span className="flex items-center gap-2">
-                    Sign In
-                    <ArrowRight className="w-4 h-4" />
-                  </span>
+                  'Login'
                 )}
               </Button>
-              <p className="text-sm text-gray-500">
+              <p className="text-sm text-[#667781]">
                 Don&apos;t have an account?{' '}
                 <button
                   type="button"
                   onClick={() => setView('signup')}
-                  className="text-emerald-600 hover:text-emerald-700 font-semibold"
+                  className="text-[#075E54] hover:text-[#128C7E] font-semibold"
                 >
                   Create one
                 </button>
@@ -145,7 +142,7 @@ export function LoginForm() {
           </form>
         </Card>
 
-        <p className="text-center text-xs text-gray-400 mt-6">
+        <p className="text-center text-xs text-white/50 mt-6">
           Your conversations are end-to-end encrypted and auto-translated.
         </p>
       </div>

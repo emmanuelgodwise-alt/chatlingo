@@ -19,7 +19,7 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { LANGUAGES, getLanguageFlag } from '@/lib/languages'
-import { Globe, ArrowRightLeft, Settings } from 'lucide-react'
+import { Globe, ArrowRightLeft, Languages } from 'lucide-react'
 import { useState, useEffect } from 'react'
 
 export function LanguageSettingsDialog() {
@@ -40,8 +40,6 @@ export function LanguageSettingsDialog() {
     setSaving(true)
 
     try {
-      // Update via WebSocket for real-time sync
-      // Also update via REST API as fallback
       await fetch(
         `/api/conversations/${activeConversation.id}/languages`,
         {
@@ -66,27 +64,30 @@ export function LanguageSettingsDialog() {
 
   return (
     <Dialog open onOpenChange={() => setShowLanguageSettings(false)}>
-      <DialogContent className="sm:max-w-md">
-        <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            <Settings className="w-5 h-5 text-emerald-600" />
-            Language Settings
-          </DialogTitle>
-          <DialogDescription>
-            Configure translation languages for your conversation with{' '}
-            <strong>{activeConversation.otherUser.name}</strong>
-          </DialogDescription>
-        </DialogHeader>
+      <DialogContent className="sm:max-w-md border-0 p-0 overflow-hidden">
+        {/* WhatsApp Green Header */}
+        <div className="bg-[#075E54] px-6 py-5">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 text-white text-xl">
+              <Languages className="w-5 h-5" />
+              Language Settings
+            </DialogTitle>
+            <DialogDescription className="text-white/70">
+              Configure translation for your conversation with{' '}
+              <strong className="text-white">{activeConversation.otherUser.name}</strong>
+            </DialogDescription>
+          </DialogHeader>
+        </div>
 
-        <div className="space-y-6 py-4">
-          {/* My Language */}
+        <div className="px-6 py-5 space-y-6">
+          {/* Your Language */}
           <div className="space-y-2">
-            <Label className="text-sm font-medium text-gray-700 flex items-center gap-1.5">
-              <Globe className="w-4 h-4 text-emerald-600" />
-              Your messages will be in
+            <Label className="text-sm font-medium text-[#111B21] flex items-center gap-1.5">
+              <Globe className="w-4 h-4 text-[#075E54]" />
+              Your messages appear in
             </Label>
             <Select value={myLanguage} onValueChange={setMyLanguage}>
-              <SelectTrigger className="h-11">
+              <SelectTrigger className="h-11 rounded-lg border-[#E9EDEF] bg-[#F0F2F5] focus:border-[#25D366] focus:ring-[#25D366]/20">
                 <SelectValue placeholder="Select your language" />
               </SelectTrigger>
               <SelectContent>
@@ -100,29 +101,35 @@ export function LanguageSettingsDialog() {
                 ))}
               </SelectContent>
             </Select>
-            <p className="text-xs text-gray-400">
-              Messages you send will be translated from{' '}
-              <strong>{getLanguageFlag(myLanguage)} {myLanguage}</strong>
+            <p className="text-xs text-[#8696A0]">
+              <span className="text-base mr-0.5">{getLanguageFlag(myLanguage)}</span>
+              <strong>{myLanguage}</strong> — Messages you send will be translated from this language
             </p>
           </div>
 
-          {/* Translation Direction Indicator */}
+          {/* Language Pair Direction */}
           <div className="flex items-center justify-center">
-            <div className="flex items-center gap-3 bg-emerald-50 rounded-xl px-4 py-3">
-              <span className="text-lg">{getLanguageFlag(myLanguage)}</span>
-              <ArrowRightLeft className="w-5 h-5 text-emerald-600" />
-              <span className="text-lg">{getLanguageFlag(theirLanguage)}</span>
+            <div className="flex items-center gap-4 bg-[#F0F2F5] rounded-xl px-6 py-4">
+              <div className="text-center">
+                <span className="text-2xl block mb-1">{getLanguageFlag(myLanguage)}</span>
+                <span className="text-xs text-[#667781]">You</span>
+              </div>
+              <ArrowRightLeft className="w-6 h-6 text-[#075E54]" />
+              <div className="text-center">
+                <span className="text-2xl block mb-1">{getLanguageFlag(theirLanguage)}</span>
+                <span className="text-xs text-[#667781]">Them</span>
+              </div>
             </div>
           </div>
 
           {/* Their Language */}
           <div className="space-y-2">
-            <Label className="text-sm font-medium text-gray-700 flex items-center gap-1.5">
-              <Globe className="w-4 h-4 text-emerald-600" />
-              Their messages will be in
+            <Label className="text-sm font-medium text-[#111B21] flex items-center gap-1.5">
+              <Globe className="w-4 h-4 text-[#075E54]" />
+              Their messages appear in
             </Label>
             <Select value={theirLanguage} onValueChange={setTheirLanguage}>
-              <SelectTrigger className="h-11">
+              <SelectTrigger className="h-11 rounded-lg border-[#E9EDEF] bg-[#F0F2F5] focus:border-[#25D366] focus:ring-[#25D366]/20">
                 <SelectValue placeholder="Select their language" />
               </SelectTrigger>
               <SelectContent>
@@ -136,35 +143,38 @@ export function LanguageSettingsDialog() {
                 ))}
               </SelectContent>
             </Select>
-            <p className="text-xs text-gray-400">
-              Messages they send will be translated into{' '}
-              <strong>{getLanguageFlag(theirLanguage)} {theirLanguage}</strong>
+            <p className="text-xs text-[#8696A0]">
+              <span className="text-base mr-0.5">{getLanguageFlag(theirLanguage)}</span>
+              <strong>{theirLanguage}</strong> — Their messages will be translated into this language for you
             </p>
           </div>
 
-          {/* Explanation */}
-          <div className="bg-blue-50 rounded-lg p-3 border border-blue-100">
-            <p className="text-xs text-blue-700">
-              <strong>How it works:</strong> When you type in {myLanguage}, your messages are
-              automatically translated to {theirLanguage} for {activeConversation.otherUser.name}.
+          {/* How it works */}
+          <div className="bg-[#F0F2F5] rounded-lg p-4 border border-[#E9EDEF]">
+            <p className="text-xs text-[#667781] leading-relaxed">
+              <strong className="text-[#111B21]">How it works:</strong> When you type in{' '}
+              <strong>{myLanguage}</strong>, your messages are automatically translated to{' '}
+              <strong>{theirLanguage}</strong> for {activeConversation.otherUser.name}.
               Their messages in {theirLanguage} are translated to {myLanguage} for you.
+              Translation is invisible — you only see your own language.
             </p>
           </div>
         </div>
 
-        <DialogFooter>
+        <DialogFooter className="px-6 pb-5 pt-2 border-t border-[#E9EDEF] flex gap-2">
           <Button
             variant="outline"
             onClick={() => setShowLanguageSettings(false)}
+            className="flex-1 text-[#667781] border-[#E9EDEF] hover:bg-[#F0F2F5]"
           >
             Cancel
           </Button>
           <Button
             onClick={handleSave}
-            disabled={saving || myLanguage === theirLanguage}
-            className="bg-emerald-600 hover:bg-emerald-700"
+            disabled={saving}
+            className="flex-1 bg-[#25D366] hover:bg-[#22C55E] text-white border-none"
           >
-            {saving ? 'Saving...' : 'Save Settings'}
+            {saving ? 'Saving...' : 'Save'}
           </Button>
         </DialogFooter>
       </DialogContent>

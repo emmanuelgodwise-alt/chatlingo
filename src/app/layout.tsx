@@ -14,8 +14,8 @@ const geistMono = Geist_Mono({
 })
 
 export const metadata: Metadata = {
-  title: 'ChatLingo — Break the Language Barrier',
-  description: 'Chat with anyone in any language. ChatLingo automatically translates your messages in real-time, so you can connect with people across the world.',
+  title: 'ChatLingo',
+  description: 'Chat with anyone in any language. ChatLingo automatically translates your messages in real-time.',
   icons: {
     icon: 'https://z-cdn.chatglm.cn/z-ai/static/logo.svg',
   },
@@ -30,6 +30,7 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background text-foreground`}
+        style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif' }}
       >
         {children}
         <Toaster />

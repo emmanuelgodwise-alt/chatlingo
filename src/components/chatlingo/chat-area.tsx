@@ -2,41 +2,30 @@
 
 import { useEffect, useState, useRef, useCallback } from 'react'
 import { useChatLingoStore } from '@/lib/store'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
-import { ScrollArea } from '@/components/ui/scroll-area'
-import { Badge } from '@/components/ui/badge'
-import {
-  Settings,
-  Send,
-  Globe,
-  ArrowLeft,
-  Languages,
-} from 'lucide-react'
 import { getLanguageFlag, getLanguageLabel } from '@/lib/languages'
-import { formatDistanceToNow } from 'date-fns'
+import { format, isToday, isYesterday } from 'date-fns'
+import {
+  ArrowLeft,
+  MoreVertical,
+  Search,
+  Mic,
+  SendHorizonal,
+  Smile,
+  Paperclip,
+  Video,
+  Phone,
+  Globe,
+  ChevronDown,
+  CheckCheck,
+  Check,
+  Lock,
+} from 'lucide-react'
 
 interface SocketType {
   on: (event: string, callback: (...args: unknown[]) => void) => unknown
   emit: (event: string, data: unknown) => void
   off: (event: string, callback?: (...args: unknown[]) => void) => unknown
-}
-
-interface MessageType {
-  id: string
-  conversationId: string
-  senderId: string
-  content: string
-  translatedContent?: string | null
-  senderLanguage: string
-  receiverLanguage: string
-  createdAt: string
-  sender?: {
-    id: string
-    name: string
-    avatar?: string | null
-  }
 }
 
 export function ChatArea({ socket }: { socket: SocketType | null }) {
@@ -54,6 +43,8 @@ export function ChatArea({ socket }: { socket: SocketType | null }) {
   const [inputValue, setInputValue] = useState('')
   const [sending, setSending] = useState(false)
   const [isTyping, setIsTyping] = useState(false)
+  const [showOriginal, setShowOriginal] = useState<Record<string, boolean>>({})
+  const [showHeaderMenu, setShowHeaderMenu] = useState(false)
   const scrollRef = useRef<HTMLDivElement>(null)
   const typingTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const inputRef = useRef<HTMLInputElement>(null)
@@ -89,7 +80,7 @@ export function ChatArea({ socket }: { socket: SocketType | null }) {
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight
     }
-  }, [messages])
+  }, [messages, isTyping])
 
   // Listen for typing indicators
   useEffect(() => {
@@ -112,7 +103,6 @@ export function ChatArea({ socket }: { socket: SocketType | null }) {
     }
 
     const handleLanguagesUpdated = () => {
-      // Refresh conversation data
       if (token) {
         fetch('/api/conversations', {
           headers: { Authorization: `Bearer ${token}` },
@@ -233,6 +223,17 @@ export function ChatArea({ socket }: { socket: SocketType | null }) {
     }
   }
 
+  const formatMessageTime = (dateStr: string) => {
+    const date = new Date(dateStr)
+    if (isToday(date)) return format(date, 'HH:mm')
+    if (isYesterday(date)) return 'Yesterday'
+    return format(date, 'dd/MM/yyyy')
+  }
+
+  const toggleOriginal = (messageId: string) => {
+    setShowOriginal((prev) => ({ ...prev, [messageId]: !prev[messageId] }))
+  }
+
   if (!activeConversation) return null
 
   const { otherUser, myLanguage, theirLanguage } = activeConversation
@@ -244,149 +245,201 @@ export function ChatArea({ socket }: { socket: SocketType | null }) {
     .toUpperCase()
     .slice(0, 2)
 
+  // Determine if this is the first message from this sender in a group (for tail)
+  const isFirstFromSender = (index: number) => {
+    if (index === 0) return true
+    return messages[index - 1]?.senderId !== messages[index]?.senderId
+  }
+
   return (
     <div className="flex-1 flex flex-col h-full">
-      {/* Chat Header */}
-      <div className="bg-white border-b border-gray-200 px-4 py-3 flex items-center gap-3">
-        <Button
-          variant="ghost"
-          size="icon"
-          className="md:hidden text-gray-500"
+      {/* ===== WhatsApp Chat Header ===== */}
+      <div className="bg-[#075E54] px-2 sm:px-4 py-2 flex items-center gap-2 wa-shadow-header shrink-0">
+        <button
+          className="md:hidden p-1.5 text-white/80 hover:text-white rounded-full hover:bg-white/10 transition-colors"
           onClick={() => setActiveConversation(null)}
         >
           <ArrowLeft className="w-5 h-5" />
-        </Button>
+        </button>
 
-        <div className="relative">
+        <div className="relative cursor-pointer">
           <Avatar className="w-10 h-10">
-            <AvatarFallback className="bg-emerald-100 text-emerald-700 text-sm font-semibold">
+            <AvatarFallback className="bg-[#128C7E] text-white text-sm font-semibold">
               {otherUserInitials}
             </AvatarFallback>
           </Avatar>
           {otherUser.online && (
-            <span className="absolute bottom-0 right-0 w-3 h-3 bg-emerald-500 border-2 border-white rounded-full" />
+            <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-[#25D366] border-2 border-[#075E54] rounded-full" />
           )}
         </div>
 
         <div className="flex-1 min-w-0">
-          <h3 className="text-sm font-semibold text-gray-900">{otherUser.name}</h3>
+          <h3 className="text-white text-base font-medium truncate">{otherUser.name}</h3>
           <div className="flex items-center gap-1.5">
-            <span className="text-xs">{otherUser.online ? '🟢 Online' : '⚫ Offline'}</span>
-            <span className="text-gray-300">•</span>
-            <span className="text-xs text-gray-400">
-              {getLanguageFlag(theirLanguage)} {getLanguageLabel(theirLanguage)}
+            {isTyping ? (
+              <span className="text-xs text-white/80">typing...</span>
+            ) : otherUser.online ? (
+              <span className="text-xs text-white/80">online</span>
+            ) : (
+              <span className="text-xs text-white/60">last seen recently</span>
+            )}
+            {/* Subtle language indicator */}
+            <span className="text-white/40 text-xs ml-1">
+              {getLanguageFlag(myLanguage)} ↔ {getLanguageFlag(theirLanguage)}
             </span>
           </div>
         </div>
 
-        {/* Language Indicator */}
-        <div className="hidden sm:flex items-center gap-1.5 bg-emerald-50 px-3 py-1.5 rounded-full">
-          <Languages className="w-3.5 h-3.5 text-emerald-600" />
-          <span className="text-xs text-emerald-700">
-            {getLanguageFlag(myLanguage)} → {getLanguageFlag(theirLanguage)}
-          </span>
+        {/* Header Actions */}
+        <div className="flex items-center gap-0.5">
+          <button className="p-2 text-white/80 hover:text-white rounded-full hover:bg-white/10 transition-colors hidden sm:block" title="Video call">
+            <Video className="w-5 h-5" />
+          </button>
+          <button className="p-2 text-white/80 hover:text-white rounded-full hover:bg-white/10 transition-colors hidden sm:block" title="Voice call">
+            <Phone className="w-5 h-5" />
+          </button>
+          <div className="relative">
+            <button
+              className="p-2 text-white/80 hover:text-white rounded-full hover:bg-white/10 transition-colors"
+              title="More"
+              onClick={() => setShowHeaderMenu(!showHeaderMenu)}
+            >
+              <MoreVertical className="w-5 h-5" />
+            </button>
+            {showHeaderMenu && (
+              <>
+                <div className="fixed inset-0 z-40" onClick={() => setShowHeaderMenu(false)} />
+                <div className="absolute right-0 top-full mt-1 w-48 bg-white rounded-md shadow-lg py-1 z-50 border border-[#E9EDEF]">
+                  <button
+                    onClick={() => { setShowLanguageSettings(true); setShowHeaderMenu(false) }}
+                    className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-[#111B21] hover:bg-[#F0F2F5] transition-colors"
+                  >
+                    <Globe className="w-4 h-4 text-[#667781]" />
+                    Language settings
+                  </button>
+                  <button
+                    onClick={() => setShowHeaderMenu(false)}
+                    className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-[#111B21] hover:bg-[#F0F2F5] transition-colors"
+                  >
+                    <Search className="w-4 h-4 text-[#667781]" />
+                    Search
+                  </button>
+                  <button
+                    onClick={() => setShowHeaderMenu(false)}
+                    className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-[#111B21] hover:bg-[#F0F2F5] transition-colors"
+                  >
+                    <Search className="w-4 h-4 text-[#667781]" />
+                    Contact info
+                  </button>
+                </div>
+              </>
+            )}
+          </div>
         </div>
-
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={() => setShowLanguageSettings(true)}
-          className="text-gray-400 hover:text-emerald-600"
-          title="Language settings"
-        >
-          <Settings className="w-5 h-5" />
-        </Button>
       </div>
 
-      {/* Messages Area */}
-      <ScrollArea className="flex-1 p-4" ref={scrollRef}>
-        <div className="space-y-3 max-w-3xl mx-auto">
-          {/* Translation Notice */}
-          <div className="flex justify-center">
-            <div className="bg-blue-50 border border-blue-100 rounded-lg px-3 py-2 max-w-sm text-center">
-              <p className="text-xs text-blue-600">
-                🌐 Messages are auto-translated:{' '}
-                <strong>{getLanguageFlag(myLanguage)} {myLanguage}</strong> ↔{' '}
-                <strong>{getLanguageFlag(theirLanguage)} {theirLanguage}</strong>
+      {/* ===== Chat Messages Area with WhatsApp Wallpaper ===== */}
+      <div
+        ref={scrollRef}
+        className="flex-1 overflow-y-auto scrollbar-thin wa-chat-bg px-4 sm:px-8 py-3"
+        style={{ paddingBottom: isTyping ? '80px' : '8px' }}
+      >
+        <div className="max-w-3xl mx-auto">
+          {/* Encryption Notice */}
+          <div className="flex justify-center mb-4 mt-2">
+            <div className="bg-[#FFEEBA]/80 backdrop-blur-sm rounded-lg px-4 py-2 max-w-sm text-center">
+              <div className="flex items-center justify-center gap-1 mb-1">
+                <Lock className="w-3 h-3 text-[#667781]" />
+                <span className="text-[11px] text-[#667781] font-medium">
+                  Messages are auto-translated
+                </span>
+              </div>
+              <p className="text-[11px] text-[#8696A0]">
+                {getLanguageFlag(myLanguage)} {getLanguageLabel(myLanguage)} ↔ {getLanguageFlag(theirLanguage)} {getLanguageLabel(theirLanguage)}
               </p>
-              <button
-                onClick={() => setShowLanguageSettings(true)}
-                className="text-xs text-blue-500 hover:text-blue-700 mt-0.5"
-              >
-                Change settings
-              </button>
             </div>
           </div>
 
-          {messages.map((message) => {
+          {/* Messages */}
+          {messages.map((message, index) => {
             const isMine = message.senderId === user?.id
+            const isFirst = isFirstFromSender(index)
+            const hasOriginal = showOriginal[message.id]
+
+            // Determine what to display:
+            // - For sent messages: show original text (what user typed)
+            // - For received messages: show translatedContent if exists, else original
+            const displayText = isMine
+              ? message.content
+              : (message.translatedContent || message.content)
+            const originalText = isMine
+              ? message.translatedContent
+              : message.content
+            const hasTranslation = isMine
+              ? !!message.translatedContent
+              : (!!message.translatedContent && message.translatedContent !== message.content)
 
             return (
               <div
                 key={message.id}
-                className={`flex ${isMine ? 'justify-end' : 'justify-start'}`}
+                className={`flex mb-0.5 ${isMine ? 'justify-end' : 'justify-start'}`}
               >
                 <div
-                  className={`flex flex-col max-w-[75%] sm:max-w-[65%] ${
+                  className={`flex flex-col max-w-[85%] sm:max-w-[65%] ${
                     isMine ? 'items-end' : 'items-start'
                   }`}
                 >
-                  {/* Sender Name (for other person) */}
-                  {!isMine && (
-                    <p className="text-xs text-gray-400 mb-1 ml-1">
+                  {/* Sender name for group chats */}
+                  {!isMine && isFirst && (
+                    <p className="text-[12px] text-[#53BDEB] font-medium mb-0.5 ml-3">
                       {message.sender?.name || 'Unknown'}
                     </p>
                   )}
 
                   {/* Message Bubble */}
                   <div
-                    className={`rounded-2xl px-4 py-2.5 ${
+                    className={`relative px-2.5 pt-1.5 pb-1 shadow-sm ${
                       isMine
-                        ? 'bg-emerald-600 text-white rounded-br-md'
-                        : 'bg-gray-100 text-gray-900 rounded-bl-md'
+                        ? `bg-[#D9FDD3] ${isFirst ? 'wa-bubble-tail-right rounded-tr-none' : 'rounded-tr-md'} rounded-tl-lg rounded-bl-lg rounded-br-lg`
+                        : `bg-white ${isFirst ? 'wa-bubble-tail-left rounded-tl-none' : 'rounded-tl-md'} rounded-tr-lg rounded-bl-lg rounded-br-lg`
                     }`}
+                    style={{ minWidth: '80px' }}
                   >
-                    {/* Original message */}
-                    <p className="text-sm whitespace-pre-wrap break-words">
-                      {message.content}
+                    {/* Message content */}
+                    <p className="text-[14.2px] text-[#111B21] whitespace-pre-wrap break-words leading-[19px] pr-12">
+                      {displayText}
                     </p>
 
-                    {/* Translation indicator */}
-                    {message.translatedContent && (
-                      <div
-                        className={`mt-2 pt-2 border-t ${
-                          isMine
-                            ? 'border-emerald-500/30'
-                            : 'border-gray-200'
-                        }`}
-                      >
-                        <div
-                          className={`flex items-center gap-1 mb-1 ${
-                            isMine ? 'text-emerald-200' : 'text-gray-400'
-                          }`}
-                        >
-                          <Globe className="w-3 h-3" />
-                          <span className="text-[10px] uppercase tracking-wide font-medium">
-                            {isMine
-                              ? `Translated to ${getLanguageFlag(message.receiverLanguage)} ${message.receiverLanguage}`
-                              : `Translated from ${getLanguageFlag(message.senderLanguage)} ${message.senderLanguage}`}
-                          </span>
-                        </div>
-                        <p
-                          className={`text-xs ${
-                            isMine ? 'text-emerald-100' : 'text-gray-500'
-                          } whitespace-pre-wrap break-words`}
-                        >
-                          {message.translatedContent}
+                    {/* Original text (tap to reveal) - only for received messages with translation */}
+                    {!isMine && hasTranslation && hasOriginal && (
+                      <div className="mt-1.5 pt-1.5 border-t border-[#E9EDEF]">
+                        <p className="text-[12px] text-[#8696A0] italic whitespace-pre-wrap break-words leading-[16px]">
+                          {originalText}
                         </p>
                       </div>
                     )}
-                  </div>
 
-                  {/* Timestamp */}
-                  <p className="text-[10px] text-gray-400 mt-1 mx-1">
-                    {formatDistanceToNow(new Date(message.createdAt), { addSuffix: true })}
-                  </p>
+                    {/* Tap to reveal button - only for received messages with translation */}
+                    {!isMine && hasTranslation && !hasOriginal && (
+                      <button
+                        onClick={() => toggleOriginal(message.id)}
+                        className="flex items-center gap-1 mt-1 text-[#53BDEB] hover:text-[#128C7E] transition-colors"
+                      >
+                        <Globe className="w-3 h-3" />
+                        <span className="text-[11px]">View original</span>
+                      </button>
+                    )}
+
+                    {/* Time + ticks - bottom right of bubble */}
+                    <div className={`flex items-center gap-0.5 justify-end -mt-1 ${!isMine && hasTranslation && hasOriginal ? 'mt-0' : ''}`}>
+                      <span className={`text-[11px] ${isMine ? 'text-black/45' : 'text-[#667781]'}`}>
+                        {formatMessageTime(message.createdAt)}
+                      </span>
+                      {isMine && (
+                        <CheckCheck className="w-4 h-4 text-[#53BDEB]" />
+                      )}
+                    </div>
+                  </div>
                 </div>
               </div>
             )
@@ -394,47 +447,65 @@ export function ChatArea({ socket }: { socket: SocketType | null }) {
 
           {/* Typing Indicator */}
           {isTyping && (
-            <div className="flex justify-start">
-              <div className="bg-gray-100 rounded-2xl rounded-bl-md px-4 py-3">
-                <div className="flex gap-1">
-                  <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce [animation-delay:0ms]" />
-                  <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce [animation-delay:150ms]" />
-                  <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce [animation-delay:300ms]" />
+            <div className="flex justify-start mb-2">
+              <div className="bg-white wa-bubble-tail-left rounded-tl-none rounded-tr-lg rounded-bl-lg rounded-br-lg px-3 py-2.5 shadow-sm">
+                <div className="typing-dots">
+                  <span />
+                  <span />
+                  <span />
                 </div>
               </div>
             </div>
           )}
         </div>
-      </ScrollArea>
+      </div>
 
-      {/* Message Input */}
-      <div className="bg-white border-t border-gray-200 p-3 sm:p-4">
-        <div className="flex items-center gap-2 max-w-3xl mx-auto">
-          <div className="flex-1 relative">
-            <Input
-              ref={inputRef}
-              value={inputValue}
-              onChange={(e) => {
-                setInputValue(e.target.value)
-                handleTypingInput()
-              }}
-              onKeyDown={handleKeyDown}
-              placeholder={`Type in ${myLanguage}...`}
-              className="h-11 pr-12 bg-gray-50 border-gray-200 rounded-xl"
-              disabled={sending}
-            />
-            <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1">
-              <span className="text-xs">{getLanguageFlag(myLanguage)}</span>
-            </div>
-          </div>
-          <Button
-            onClick={handleSend}
-            disabled={!inputValue.trim() || sending}
-            className="h-11 w-11 rounded-xl bg-emerald-600 hover:bg-emerald-700 shrink-0"
-          >
-            <Send className="w-4 h-4" />
-          </Button>
+      {/* ===== WhatsApp Input Bar ===== */}
+      <div className="bg-[#F0F2F5] px-2 sm:px-4 py-2 flex items-center gap-1 sm:gap-2 shrink-0">
+        {/* Emoji */}
+        <button className="p-2 text-[#667781] hover:text-[#111B21] rounded-full hover:bg-[#E9EDEF] transition-colors shrink-0">
+          <Smile className="w-6 h-6" />
+        </button>
+
+        {/* Attach */}
+        <button className="p-2 text-[#667781] hover:text-[#111B21] rounded-full hover:bg-[#E9EDEF] transition-colors shrink-0">
+          <Paperclip className="w-5 h-5 rotate-45" />
+        </button>
+
+        {/* Text Input */}
+        <div className="flex-1 relative">
+          <input
+            ref={inputRef}
+            value={inputValue}
+            onChange={(e) => {
+              setInputValue(e.target.value)
+              handleTypingInput()
+            }}
+            onKeyDown={handleKeyDown}
+            placeholder="Type a message"
+            className="w-full h-11 px-4 bg-white rounded-full border-none text-[15px] text-[#111B21] placeholder:text-[#667781] focus:outline-none focus:ring-0 shadow-sm"
+            disabled={sending}
+          />
+          {/* Subtle language flag watermark */}
+          <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[#8696A0] text-xs pointer-events-none">
+            {getLanguageFlag(myLanguage)}
+          </span>
         </div>
+
+        {/* Send / Mic */}
+        {inputValue.trim() ? (
+          <button
+            onClick={handleSend}
+            disabled={sending}
+            className="p-2.5 bg-[#075E54] hover:bg-[#064E46] text-white rounded-full transition-colors shrink-0 shadow-sm"
+          >
+            <SendHorizonal className="w-5 h-5" />
+          </button>
+        ) : (
+          <button className="p-2.5 text-[#667781] hover:text-[#111B21] rounded-full hover:bg-[#E9EDEF] transition-colors shrink-0">
+            <Mic className="w-6 h-6" />
+          </button>
+        )}
       </div>
     </div>
   )

@@ -3,20 +3,17 @@
 import { useChatLingoStore } from '@/lib/store'
 import { ContactItem } from '@/components/chatlingo/contact-item'
 import { ConversationItem } from '@/components/chatlingo/conversation-item'
-import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { ScrollArea } from '@/components/ui/scroll-area'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
-import { Separator } from '@/components/ui/separator'
+import { getLanguageFlag } from '@/lib/languages'
 import {
-  Plus,
   Search,
   LogOut,
-  Globe,
-  Users,
   MessageCircle,
+  Users,
+  MoreVertical,
 } from 'lucide-react'
-import { useState } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 
 interface SocketType {
   on: (event: string, callback: (...args: unknown[]) => void) => unknown
@@ -139,82 +136,98 @@ export function Sidebar({ socket }: { socket: SocketType | null }) {
         .slice(0, 2)
     : '??'
 
-  return (
-    <div className="w-full md:w-80 lg:w-96 bg-white border-r border-gray-200 flex flex-col h-full">
-      {/* Header */}
-      <div className="p-4 border-b border-gray-100">
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center">
-              <Globe className="w-5 h-5 text-white" />
-            </div>
-            <div>
-              <h2 className="font-bold text-gray-900 text-lg leading-tight">ChatLingo</h2>
-              <p className="text-xs text-gray-400">Translate as you chat</p>
-            </div>
-          </div>
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={logout}
-            className="text-gray-400 hover:text-red-500"
-            title="Sign out"
-          >
-            <LogOut className="w-5 h-5" />
-          </Button>
-        </div>
+  const unreadTotal = conversations.reduce((sum, c) => sum + c.unreadCount, 0)
 
-        {/* Tabs */}
-        <div className="flex gap-1 bg-gray-100 rounded-lg p-1">
+  return (
+    <div className="w-full md:w-80 lg:w-[420px] bg-white border-r border-[#E9EDEF] flex flex-col h-full relative">
+      {/* WhatsApp Header */}
+      <div className="bg-[#075E54] px-4 py-2.5 flex items-center justify-between wa-shadow-header shrink-0">
+        <div className="flex items-center gap-3">
+          <Avatar className="w-10 h-10">
+            <AvatarFallback className="bg-[#128C7E] text-white text-sm font-semibold">
+              {userInitials}
+            </AvatarFallback>
+          </Avatar>
+          <h2 className="text-white font-semibold text-base">ChatLingo</h2>
+        </div>
+        <div className="flex items-center gap-1">
           <button
-            onClick={() => setActiveTab('chats')}
-            className={`flex-1 flex items-center justify-center gap-1.5 py-1.5 px-3 rounded-md text-sm font-medium transition-all ${
-              activeTab === 'chats'
-                ? 'bg-white text-emerald-700 shadow-sm'
-                : 'text-gray-500 hover:text-gray-700'
-            }`}
+            className="p-2 text-white/80 hover:text-white rounded-full hover:bg-white/10 transition-colors"
+            title="New chat"
+            onClick={() => setShowAddContact(true)}
           >
-            <MessageCircle className="w-4 h-4" />
-            Chats
+            <Search className="w-5 h-5" />
           </button>
           <button
-            onClick={() => setActiveTab('contacts')}
-            className={`flex-1 flex items-center justify-center gap-1.5 py-1.5 px-3 rounded-md text-sm font-medium transition-all ${
-              activeTab === 'contacts'
-                ? 'bg-white text-emerald-700 shadow-sm'
-                : 'text-gray-500 hover:text-gray-700'
-            }`}
+            className="p-2 text-white/80 hover:text-white rounded-full hover:bg-white/10 transition-colors"
+            title="More options"
           >
-            <Users className="w-4 h-4" />
-            Contacts
+            <MoreVertical className="w-5 h-5" />
           </button>
         </div>
       </div>
 
-      {/* Search */}
-      <div className="p-3">
+      {/* Tabs */}
+      <div className="flex bg-white border-b border-[#E9EDEF] shrink-0">
+        <button
+          onClick={() => setActiveTab('chats')}
+          className={`flex-1 flex items-center justify-center gap-1.5 py-3 text-sm font-medium transition-colors relative ${
+            activeTab === 'chats'
+              ? 'text-[#075E54]'
+              : 'text-[#667781] hover:text-[#075E54]'
+          }`}
+        >
+          <MessageCircle className="w-4 h-4" />
+          Chats
+          {unreadTotal > 0 && (
+            <span className="ml-1 wa-unread-badge text-[10px] min-w-[18px] h-[18px] px-1">
+              {unreadTotal}
+            </span>
+          )}
+          {activeTab === 'chats' && (
+            <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[80px] h-[3px] bg-[#075E54] rounded-t-full" />
+          )}
+        </button>
+        <button
+          onClick={() => setActiveTab('contacts')}
+          className={`flex-1 flex items-center justify-center gap-1.5 py-3 text-sm font-medium transition-colors relative ${
+            activeTab === 'contacts'
+              ? 'text-[#075E54]'
+              : 'text-[#667781] hover:text-[#075E54]'
+          }`}
+        >
+          <Users className="w-4 h-4" />
+          Contacts
+          {activeTab === 'contacts' && (
+            <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[80px] h-[3px] bg-[#075E54] rounded-t-full" />
+          )}
+        </button>
+      </div>
+
+      {/* Search Bar */}
+      <div className="px-3 py-2 bg-white shrink-0">
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#667781]" />
           <Input
             placeholder={
-              activeTab === 'chats' ? 'Search conversations...' : 'Search contacts...'
+              activeTab === 'chats' ? 'Search or start new chat' : 'Search contacts...'
             }
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-9 h-9 bg-gray-50 border-gray-200"
+            className="pl-10 h-9 bg-[#F0F2F5] border-none rounded-lg text-sm placeholder:text-[#667781] focus-visible:ring-0 focus-visible:bg-white focus-visible:border-[#E9EDEF]"
           />
         </div>
       </div>
 
       {/* List */}
-      <ScrollArea className="flex-1">
+      <div className="flex-1 overflow-y-auto scrollbar-thin">
         {activeTab === 'chats' ? (
           <div>
             {conversations.length === 0 ? (
-              <div className="p-6 text-center">
-                <MessageCircle className="w-10 h-10 text-gray-300 mx-auto mb-2" />
-                <p className="text-sm text-gray-500">No conversations yet</p>
-                <p className="text-xs text-gray-400 mt-1">
+              <div className="p-8 text-center">
+                <MessageCircle className="w-12 h-12 text-[#E9EDEF] mx-auto mb-3" />
+                <p className="text-sm text-[#667781]">No conversations yet</p>
+                <p className="text-xs text-[#8696A0] mt-1">
                   Add a contact to start chatting
                 </p>
               </div>
@@ -234,14 +247,14 @@ export function Sidebar({ socket }: { socket: SocketType | null }) {
         ) : (
           <div>
             {loadingContacts ? (
-              <div className="p-6 text-center">
-                <span className="w-5 h-5 border-2 border-emerald-300 border-t-emerald-600 rounded-full animate-spin inline-block" />
+              <div className="p-8 text-center">
+                <span className="w-5 h-5 border-2 border-[#25D366]/30 border-t-[#25D366] rounded-full animate-spin inline-block" />
               </div>
             ) : contacts.length === 0 ? (
-              <div className="p-6 text-center">
-                <Users className="w-10 h-10 text-gray-300 mx-auto mb-2" />
-                <p className="text-sm text-gray-500">No contacts yet</p>
-                <p className="text-xs text-gray-400 mt-1">
+              <div className="p-8 text-center">
+                <Users className="w-12 h-12 text-[#E9EDEF] mx-auto mb-3" />
+                <p className="text-sm text-[#667781]">No contacts yet</p>
+                <p className="text-xs text-[#8696A0] mt-1">
                   Add contacts to start chatting
                 </p>
               </div>
@@ -258,30 +271,38 @@ export function Sidebar({ socket }: { socket: SocketType | null }) {
             )}
           </div>
         )}
-      </ScrollArea>
+      </div>
 
-      <Separator />
+      {/* FAB - New Chat */}
+      <button
+        className="wa-fab md:hidden"
+        onClick={() => setShowAddContact(true)}
+        title="New Chat"
+      >
+        <MessageCircle className="w-6 h-6" />
+      </button>
 
-      {/* Current User Info */}
-      <div className="p-3 flex items-center gap-3">
+      {/* Current User Bar (bottom) */}
+      <div className="px-3 py-2 flex items-center gap-3 bg-white border-t border-[#E9EDEF] shrink-0">
         <Avatar className="w-9 h-9">
-          <AvatarFallback className="bg-emerald-100 text-emerald-700 text-sm font-semibold">
+          <AvatarFallback className="bg-[#DFE5E7] text-[#111B21] text-xs font-semibold">
             {userInitials}
           </AvatarFallback>
         </Avatar>
         <div className="flex-1 min-w-0">
-          <p className="text-sm font-medium text-gray-900 truncate">{user?.name}</p>
-          <p className="text-xs text-gray-400 truncate">{user?.preferredLanguage}</p>
+          <p className="text-sm font-medium text-[#111B21] truncate">{user?.name}</p>
+          <div className="flex items-center gap-1">
+            <span className="text-xs text-[#667781]">{getLanguageFlag(user?.preferredLanguage || 'English')}</span>
+            <span className="text-xs text-[#8696A0] truncate">{user?.preferredLanguage}</span>
+          </div>
         </div>
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={() => setShowAddContact(true)}
-          className="text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50"
-          title="Add contact"
+        <button
+          onClick={logout}
+          className="p-2 text-[#667781] hover:text-red-500 rounded-full hover:bg-[#F0F2F5] transition-colors"
+          title="Sign out"
         >
-          <Plus className="w-5 h-5" />
-        </Button>
+          <LogOut className="w-5 h-5" />
+        </button>
       </div>
     </div>
   )

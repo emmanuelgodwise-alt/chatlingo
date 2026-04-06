@@ -21,7 +21,7 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { LANGUAGES } from '@/lib/languages'
-import { Globe, UserPlus, ArrowRight } from 'lucide-react'
+import { Globe, UserPlus } from 'lucide-react'
 
 export function SignUpForm() {
   const { setView, setUser } = useChatLingoStore()
@@ -84,51 +84,51 @@ export function SignUpForm() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-emerald-50 via-white to-teal-50 p-4">
+    <div className="min-h-screen flex items-center justify-center wa-auth-gradient p-4">
       <div className="w-full max-w-md">
         {/* Brand */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 mb-4 shadow-lg">
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-white/20 backdrop-blur-sm mb-4 shadow-lg">
             <Globe className="w-8 h-8 text-white" />
           </div>
-          <h1 className="text-3xl font-bold text-gray-900 tracking-tight">ChatLingo</h1>
-          <p className="text-gray-500 mt-2 text-sm">
+          <h1 className="text-3xl font-bold text-white tracking-tight">ChatLingo</h1>
+          <p className="text-white/70 mt-2 text-sm">
             Break the language barrier. Connect with the world.
           </p>
         </div>
 
-        <Card className="shadow-xl border-0 ring-1 ring-gray-200/60">
-          <CardHeader className="text-center pb-2">
-            <CardTitle className="text-xl flex items-center justify-center gap-2">
-              <UserPlus className="w-5 h-5 text-emerald-600" />
+        <Card className="shadow-xl border-0 rounded-lg overflow-hidden">
+          <CardHeader className="text-center pb-2 pt-6 px-6">
+            <CardTitle className="text-xl text-[#111B21] flex items-center justify-center gap-2">
+              <UserPlus className="w-5 h-5 text-[#075E54]" />
               Create Your Account
             </CardTitle>
-            <CardDescription>
+            <CardDescription className="text-[#667781]">
               Join millions breaking language barriers
             </CardDescription>
           </CardHeader>
           <form onSubmit={handleSubmit}>
-            <CardContent className="space-y-4 pt-4">
+            <CardContent className="space-y-4 pt-4 px-6">
               {error && (
                 <div className="bg-red-50 text-red-700 text-sm p-3 rounded-lg border border-red-200">
                   {error}
                 </div>
               )}
 
-              <div className="space-y-2">
-                <Label htmlFor="name">Full Name *</Label>
+              <div className="space-y-1.5">
+                <Label htmlFor="name" className="text-[#111B21] text-sm font-medium">Full Name *</Label>
                 <Input
                   id="name"
                   placeholder="Enter your full name"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   required
-                  className="h-11"
+                  className="h-11 rounded-md border-[#E9EDEF] focus:border-[#25D366] focus:ring-[#25D366]/20"
                 />
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="email">Email Address *</Label>
+              <div className="space-y-1.5">
+                <Label htmlFor="email" className="text-[#111B21] text-sm font-medium">Email Address *</Label>
                 <Input
                   id="email"
                   type="email"
@@ -136,24 +136,24 @@ export function SignUpForm() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  className="h-11"
+                  className="h-11 rounded-md border-[#E9EDEF] focus:border-[#25D366] focus:ring-[#25D366]/20"
                 />
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="phone">Phone Number</Label>
+              <div className="space-y-1.5">
+                <Label htmlFor="phone" className="text-[#111B21] text-sm font-medium">Phone Number</Label>
                 <Input
                   id="phone"
                   type="tel"
                   placeholder="+1 (555) 000-0000"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
-                  className="h-11"
+                  className="h-11 rounded-md border-[#E9EDEF] focus:border-[#25D366] focus:ring-[#25D366]/20"
                 />
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="password">Password *</Label>
+              <div className="space-y-1.5">
+                <Label htmlFor="password" className="text-[#111B21] text-sm font-medium">Password *</Label>
                 <Input
                   id="password"
                   type="password"
@@ -161,12 +161,12 @@ export function SignUpForm() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  className="h-11"
+                  className="h-11 rounded-md border-[#E9EDEF] focus:border-[#25D366] focus:ring-[#25D366]/20"
                 />
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="confirmPassword">Confirm Password *</Label>
+              <div className="space-y-1.5">
+                <Label htmlFor="confirmPassword" className="text-[#111B21] text-sm font-medium">Confirm Password *</Label>
                 <Input
                   id="confirmPassword"
                   type="password"
@@ -174,19 +174,19 @@ export function SignUpForm() {
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   required
-                  className="h-11"
+                  className="h-11 rounded-md border-[#E9EDEF] focus:border-[#25D366] focus:ring-[#25D366]/20"
                 />
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="language">
+              <div className="space-y-1.5">
+                <Label htmlFor="language" className="text-[#111B21] text-sm font-medium">
                   <span className="flex items-center gap-1.5">
-                    <Globe className="w-4 h-4" />
+                    <Globe className="w-4 h-4 text-[#075E54]" />
                     Your Preferred Language *
                   </span>
                 </Label>
                 <Select value={preferredLanguage} onValueChange={setPreferredLanguage}>
-                  <SelectTrigger className="h-11">
+                  <SelectTrigger className="h-11 rounded-md border-[#E9EDEF] focus:border-[#25D366] focus:ring-[#25D366]/20">
                     <SelectValue placeholder="Select your language" />
                   </SelectTrigger>
                   <SelectContent>
@@ -202,10 +202,10 @@ export function SignUpForm() {
                 </Select>
               </div>
             </CardContent>
-            <CardFooter className="flex flex-col gap-4 pt-2">
+            <CardFooter className="flex flex-col gap-4 pt-2 pb-6 px-6">
               <Button
                 type="submit"
-                className="w-full h-11 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-semibold"
+                className="w-full h-11 bg-[#25D366] hover:bg-[#22C55E] text-white font-semibold rounded-md shadow-sm"
                 disabled={loading}
               >
                 {loading ? (
@@ -214,18 +214,15 @@ export function SignUpForm() {
                     Creating account...
                   </span>
                 ) : (
-                  <span className="flex items-center gap-2">
-                    Create Account
-                    <ArrowRight className="w-4 h-4" />
-                  </span>
+                  'Next'
                 )}
               </Button>
-              <p className="text-sm text-gray-500">
+              <p className="text-sm text-[#667781]">
                 Already have an account?{' '}
                 <button
                   type="button"
                   onClick={() => setView('login')}
-                  className="text-emerald-600 hover:text-emerald-700 font-semibold"
+                  className="text-[#075E54] hover:text-[#128C7E] font-semibold"
                 >
                   Sign in
                 </button>
@@ -234,7 +231,7 @@ export function SignUpForm() {
           </form>
         </Card>
 
-        <p className="text-center text-xs text-gray-400 mt-6">
+        <p className="text-center text-xs text-white/50 mt-6">
           By creating an account, you agree to ChatLingo&apos;s Terms of Service and Privacy Policy.
         </p>
       </div>

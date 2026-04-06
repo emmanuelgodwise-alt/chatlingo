@@ -30,25 +30,27 @@ export function ContactItem({
   return (
     <button
       onClick={onClick}
-      className="w-full flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors border-b border-gray-50 text-left"
+      className="w-full flex items-center gap-3 px-3 py-3 hover:bg-[#F0F2F5] transition-colors text-left"
     >
-      <div className="relative">
-        <Avatar className="w-11 h-11">
-          <AvatarFallback className="bg-gray-100 text-gray-600 text-sm font-semibold">
+      {/* Avatar with online indicator */}
+      <div className="relative shrink-0">
+        <Avatar className="w-[49px] h-[49px]">
+          <AvatarFallback className="bg-[#DFE5E7] text-[#111B21] text-sm font-semibold">
             {initials}
           </AvatarFallback>
         </Avatar>
         {contact.online && (
-          <span className="absolute bottom-0 right-0 w-3 h-3 bg-emerald-500 border-2 border-white rounded-full" />
+          <span className="absolute bottom-0 right-0 w-3 h-3 bg-[#25D366] border-2 border-white rounded-full" />
         )}
       </div>
 
-      <div className="flex-1 min-w-0">
-        <h3 className="text-sm font-semibold text-gray-900 truncate">{contact.name}</h3>
-        <div className="flex items-center gap-1.5 mt-0.5">
-          <span className="text-xs">{getLanguageFlag(contact.preferredLanguage)}</span>
-          <p className="text-xs text-gray-400 truncate">{contact.preferredLanguage}</p>
+      {/* Content */}
+      <div className="flex-1 min-w-0 border-b border-[#E9EDEF] pb-3">
+        <div className="flex items-center gap-1">
+          <h3 className="text-base text-[#111B21] truncate">{contact.name}</h3>
+          <span className="text-[11px] opacity-60">{getLanguageFlag(contact.preferredLanguage)}</span>
         </div>
+        <p className="text-sm text-[#667781] truncate mt-0.5">{contact.preferredLanguage}</p>
       </div>
     </button>
   )
