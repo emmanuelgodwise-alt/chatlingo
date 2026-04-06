@@ -38,6 +38,8 @@ export function ChatArea({ socket }: { socket: SocketType | null }) {
     addMessage,
     setShowLanguageSettings,
     setActiveConversation,
+    startCall,
+    isInCall,
   } = useChatLingoStore()
 
   const [inputValue, setInputValue] = useState('')
@@ -292,10 +294,46 @@ export function ChatArea({ socket }: { socket: SocketType | null }) {
 
         {/* Header Actions */}
         <div className="flex items-center gap-0.5">
-          <button className="p-2 text-white/80 hover:text-white rounded-full hover:bg-white/10 transition-colors hidden sm:block" title="Video call">
+          <button
+            onClick={() => {
+              if (!activeConversation || !user) return
+              startCall({
+                type: 'video',
+                partner: {
+                  id: activeConversation.otherUser.id,
+                  name: activeConversation.otherUser.name,
+                  avatar: activeConversation.otherUser.avatar,
+                },
+                conversationId: activeConversation.id,
+                myLanguage: activeConversation.myLanguage,
+                theirLanguage: activeConversation.theirLanguage,
+              })
+            }}
+            disabled={isInCall}
+            className="p-2 text-white/80 hover:text-white rounded-full hover:bg-white/10 transition-colors hidden sm:block disabled:opacity-50"
+            title="Video call"
+          >
             <Video className="w-5 h-5" />
           </button>
-          <button className="p-2 text-white/80 hover:text-white rounded-full hover:bg-white/10 transition-colors hidden sm:block" title="Voice call">
+          <button
+            onClick={() => {
+              if (!activeConversation || !user) return
+              startCall({
+                type: 'voice',
+                partner: {
+                  id: activeConversation.otherUser.id,
+                  name: activeConversation.otherUser.name,
+                  avatar: activeConversation.otherUser.avatar,
+                },
+                conversationId: activeConversation.id,
+                myLanguage: activeConversation.myLanguage,
+                theirLanguage: activeConversation.theirLanguage,
+              })
+            }}
+            disabled={isInCall}
+            className="p-2 text-white/80 hover:text-white rounded-full hover:bg-white/10 transition-colors hidden sm:block disabled:opacity-50"
+            title="Voice call"
+          >
             <Phone className="w-5 h-5" />
           </button>
           <div className="relative">

@@ -1,12 +1,13 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useCallback } from 'react'
 import { useChatLingoStore } from '@/lib/store'
 import { Sidebar } from '@/components/chatlingo/sidebar'
 import { ChatArea } from '@/components/chatlingo/chat-area'
 import { AddContactDialog } from '@/components/chatlingo/add-contact-dialog'
 import { LanguageSettingsDialog } from '@/components/chatlingo/language-settings-dialog'
 import { EmptyChatState } from '@/components/chatlingo/empty-chat-state'
+import { CallScreen } from '@/components/chatlingo/call-screen'
 import type { Socket } from 'socket.io-client'
 
 export function ChatInterface() {
@@ -19,10 +20,27 @@ export function ChatInterface() {
     conversations,
     setConversations,
     addMessage,
+    isInCall,
+    callStatus,
+    callType,
+    callPartner,
+    callConversationId,
+    callMyLanguage,
+    callTheirLanguage,
+    receiveCall,
+    answerCall,
+    endCall,
+    setCallStatus,
+    addCallSubtitle,
+    setCallDuration,
+    setCallTranslationPending,
   } = useChatLingoStore()
 
   const socketRef = useRef<Socket | null>(null)
   const socketRefForChildren = socketRef
+  const callTimerRef = useRef<ReturnType<typeof setInterval> | null>(null)
+  const webRTCInitializedRef = useRef(false)
+  const recognitionActiveRef = useRef(false)
 
   // Load conversations on mount
   useEffect(() => {
@@ -103,7 +121,105 @@ export function ChatInterface() {
       socketInstance.on('user-online', refreshConversations)
       socketInstance.on('user-offline', refreshConversations)
 
+      // ============================================
+      // Call event listeners
+      // ============================================
+
+      // Incoming call
+      socketInstance.on('incoming-call', (data: unknown) => {
+        const callData = data as {
+          callerId: string
+          calleeId: string
+          conversationId: string
+          callType: 'voice' | 'video'
+          callerName: string
+          callerLanguage: string
+          calleeLanguage: string
+          offer: RTCSessionDescriptionInit
+        }
+        // Store caller ID globally for answering
+        ;(window as unknown as Record<string, unknown>).__chatlingo_callerId = callData.callerId
+        receiveCall({
+          type: callData.callType,
+          partner: {
+            id: callData.callerId,
+            name: callData.callerName,
+          },
+          conversationId: callData.conversationId,
+          callerId: callData.callerId,
+          myLanguage: callData.calleeLanguage,
+          theirLanguage: callData.callerLanguage,
+        })
+      })
+
+      // Call answered
+      socketInstance.on('call-answered', async (data: unknown) => {
+        const answerData = data as {
+          callerId: string
+          calleeId: string
+          conversationId: string
+          answer: RTCSessionDescriptionInit
+        }
+        // Set remote description with the answer
+        try {
+          const { setRemoteDescription } = await import('@/lib/webrtc')
+          await setRemoteDescription(answerData.answer)
+          setCallStatus('connected')
+        } catch (error) {
+          console.error('Failed to set remote description:', error)
+          endCall()
+        }
+      })
+
+      // Call rejected
+      socketInstance.on('call-rejected', (data: unknown) => {
+        const rejectData = data as { calleeId: string; reason?: string }
+        console.log(`Call rejected: ${rejectData.reason || 'by user'}`)
+        endCall()
+      })
+
+      // Call ended by other party
+      socketInstance.on('call-ended', () => {
+        endCall()
+      })
+
+      // ICE candidate from remote peer
+      socketInstance.on('ice-candidate', async (data: unknown) => {
+        const iceData = data as { candidate: RTCIceCandidateInit; from: string }
+        try {
+          const { addIceCandidate } = await import('@/lib/webrtc')
+          await addIceCandidate(iceData.candidate)
+        } catch (error) {
+          console.error('Failed to add ICE candidate:', error)
+        }
+      })
+
+      // Translated text from remote peer
+      socketInstance.on('call-translated', async (data: unknown) => {
+        const translatedData = data as {
+          original: string
+          translated: string
+          fromLanguage: string
+          toLanguage: string
+          senderId: string
+        }
+        addCallSubtitle(translatedData.original, translatedData)
+
+        // Speak the translated text
+        try {
+          const { speak, isSpeechSynthesisSupported } = await import('@/lib/speech')
+          if (isSpeechSynthesisSupported()) {
+            speak(translatedData.translated, translatedData.toLanguage)
+          }
+        } catch (error) {
+          console.error('TTS error:', error)
+        }
+      })
+
       socketRef.current = socketInstance
+
+      // Store socket globally for use in CallScreen
+      ;(window as unknown as Record<string, unknown>).__chatlingo_socket = socketInstance
 
       // Trigger a re-render by updating conversations (socket is now ready)
       refreshConversations()
@@ -118,8 +234,9 @@ export function ChatInterface() {
         socketRef.current.disconnect()
         socketRef.current = null
       }
+      ;(window as unknown as Record<string, unknown>).__chatlingo_socket = null
     }
-  }, [token, user, addMessage, setConversations])
+  }, [token, user, addMessage, setConversations, receiveCall, setCallStatus, endCall, addCallSubtitle])
 
   // Join conversation room when active conversation changes
   useEffect(() => {
@@ -135,6 +252,184 @@ export function ChatInterface() {
       }
     }
   }, [activeConversation])
+
+  // ============================================
+  // WebRTC + Speech Recognition lifecycle for calls
+  // ============================================
+  const cleanupCall = useCallback(async () => {
+    // Stop call timer
+    if (callTimerRef.current) {
+      clearInterval(callTimerRef.current)
+      callTimerRef.current = null
+    }
+
+    // Stop speech recognition
+    recognitionActiveRef.current = false
+    try {
+      const { stopRecognition } = await import('@/lib/speech')
+      stopRecognition()
+    } catch { /* ignore */ }
+
+    // Stop speech synthesis
+    try {
+      const { stopSpeaking } = await import('@/lib/speech')
+      stopSpeaking()
+    } catch { /* ignore */ }
+
+    // Close WebRTC
+    try {
+      const { closePeerConnection } = await import('@/lib/webrtc')
+      closePeerConnection()
+    } catch { /* ignore */ }
+
+    webRTCInitializedRef.current = false
+  }, [])
+
+  // Initialize call when status changes to 'ringing' (outgoing call)
+  useEffect(() => {
+    if (callStatus === 'ringing' && !webRTCInitializedRef.current && user && callPartner) {
+      webRTCInitializedRef.current = true
+      const isVideo = callType === 'video'
+
+      const initOutgoingCall = async () => {
+        try {
+          const {
+            getLocalStream,
+            createPeerConnection,
+            createOffer,
+          } = await import('@/lib/webrtc')
+
+          // Get local media
+          await getLocalStream(isVideo)
+
+          // Create peer connection
+          const pc = createPeerConnection({
+            onIceCandidate: (candidate) => {
+              socketRef.current?.emit('ice-candidate', {
+                candidate,
+                targetUserId: callPartner!.id,
+                userId: user!.id,
+              })
+            },
+            onRemoteStream: () => {
+              // Remote stream received
+            },
+            onIceConnectionStateChange: (state) => {
+              console.log('ICE connection state:', state)
+              if (state === 'disconnected' || state === 'failed') {
+                endCall()
+              }
+            },
+            onTrack: () => {
+              // Track received
+            },
+          })
+
+          // Create and send offer
+          const offer = await createOffer()
+
+          socketRef.current?.emit('call-offer', {
+            callerId: user!.id,
+            calleeId: callPartner!.id,
+            conversationId: callConversationId,
+            callType: isVideo ? 'video' : 'voice',
+            callerName: user!.name,
+            callerLanguage: callMyLanguage,
+            calleeLanguage: callTheirLanguage,
+            offer,
+          })
+        } catch (error) {
+          console.error('Failed to initialize outgoing call:', error)
+          endCall()
+        }
+      }
+
+      initOutgoingCall()
+    }
+  }, [callStatus, user, callPartner, callType, callConversationId, callMyLanguage, callTheirLanguage, endCall])
+
+  // Initialize call when status changes to 'connected' (answerer)
+  useEffect(() => {
+    if (callStatus === 'connected' && !webRTCInitializedRef.current && user && callPartner) {
+      // This is the callee side — WebRTC was already set up when answering
+      // If not, we need to handle it
+      webRTCInitializedRef.current = true
+    }
+  }, [callStatus, user, callPartner])
+
+  // Handle accept call (callee WebRTC setup) - triggered by answerCall
+  useEffect(() => {
+    if (callStatus !== 'connected' || webRTCInitializedRef.current) return
+    // Already handled above
+  }, [callStatus])
+
+  // Start call duration timer and speech recognition when connected
+  useEffect(() => {
+    if (callStatus === 'connected') {
+      // Start duration timer
+      let duration = 0
+      callTimerRef.current = setInterval(() => {
+        duration++
+        setCallDuration(duration)
+      }, 1000)
+
+      // Start speech recognition for own voice
+      const startRecognition = async () => {
+        try {
+          const { startRecognition: startRec, isSpeechRecognitionSupported } = await import('@/lib/speech')
+          if (!isSpeechRecognitionSupported()) {
+            console.warn('Speech recognition not supported')
+            return
+          }
+
+          recognitionActiveRef.current = true
+
+          // Use socket to send translations
+          startRecognition(callMyLanguage, (text, isFinal) => {
+            if (!isFinal || !recognitionActiveRef.current) return
+            if (!socketRef.current || !user || !callPartner) return
+
+            setCallTranslationPending(true)
+
+            // Send to server for translation
+            socketRef.current.emit('call-translation', {
+              text,
+              sourceLanguage: callMyLanguage,
+              targetLanguage: callTheirLanguage,
+              conversationId: callConversationId,
+              senderId: user.id,
+              targetUserId: callPartner.id,
+            })
+          })
+        } catch (error) {
+          console.error('Failed to start speech recognition:', error)
+        }
+      }
+
+      // Small delay to ensure everything is set up
+      setTimeout(startRecognition, 1500)
+
+      return () => {
+        if (callTimerRef.current) {
+          clearInterval(callTimerRef.current)
+          callTimerRef.current = null
+        }
+      }
+    } else {
+      // Clean up when call ends
+      if (callTimerRef.current) {
+        clearInterval(callTimerRef.current)
+        callTimerRef.current = null
+      }
+    }
+  }, [callStatus, callMyLanguage, callTheirLanguage, callConversationId, user, callPartner, setCallDuration, setCallTranslationPending])
+
+  // Clean up when call ends
+  useEffect(() => {
+    if (!isInCall) {
+      cleanupCall()
+    }
+  }, [isInCall, cleanupCall])
 
   return (
     <div className="h-screen flex bg-white">
@@ -164,6 +459,9 @@ export function ChatInterface() {
       {/* Dialogs */}
       {showAddContact && <AddContactDialog />}
       {showLanguageSettings && <LanguageSettingsDialog />}
+
+      {/* Call Screen Overlay */}
+      {isInCall && <CallScreen />}
 
       {/* Mobile Bottom Navigation */}
       <div className="wa-bottom-nav md:hidden">

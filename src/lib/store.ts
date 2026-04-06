@@ -43,7 +43,23 @@ interface Message {
   }
 }
 
-interface ChatLingoState {
+// ============================================
+// Call State Types
+// ============================================
+
+export interface CallSubtitle {
+  original: string
+  translated: string
+  timestamp: Date
+}
+
+export interface CallPartner {
+  id: string
+  name: string
+  avatar?: string | null
+}
+
+interface CallLingoState {
   // Auth
   view: AppView
   user: User | null
@@ -74,9 +90,50 @@ interface ChatLingoState {
   setShowLanguageSettings: (show: boolean) => void
   sidebarOpen: boolean
   setSidebarOpen: (open: boolean) => void
+
+  // Call State
+  isInCall: boolean
+  callType: 'voice' | 'video' | null
+  callStatus: 'ringing' | 'incoming' | 'connected' | 'ended' | null
+  callPartner: CallPartner | null
+  callConversationId: string | null
+  callMyLanguage: string
+  callTheirLanguage: string
+  callSubtitles: CallSubtitle[]
+  callMuted: boolean
+  callSpeakerOn: boolean
+  callVideoEnabled: boolean
+  callDuration: number
+  callTranslationPending: boolean
+
+  startCall: (params: {
+    type: 'voice' | 'video'
+    partner: CallPartner
+    conversationId: string
+    myLanguage: string
+    theirLanguage: string
+  }) => void
+  receiveCall: (params: {
+    type: 'voice' | 'video'
+    partner: CallPartner
+    conversationId: string
+    callerId: string
+    myLanguage: string
+    theirLanguage: string
+  }) => void
+  answerCall: () => void
+  rejectCall: () => void
+  endCall: () => void
+  setCallStatus: (status: 'ringing' | 'incoming' | 'connected' | 'ended' | null) => void
+  addCallSubtitle: (original: string, translated: string) => void
+  setCallMuted: (muted: boolean) => void
+  setCallSpeakerOn: (on: boolean) => void
+  setCallVideoEnabled: (enabled: boolean) => void
+  setCallDuration: (duration: number) => void
+  setCallTranslationPending: (pending: boolean) => void
 }
 
-export const useChatLingoStore = create<ChatLingoState>((set) => ({
+export const useChatLingoStore = create<CallLingoState>((set) => ({
   // Auth
   view: 'login',
   user: null,
@@ -126,4 +183,98 @@ export const useChatLingoStore = create<ChatLingoState>((set) => ({
   setShowLanguageSettings: (show) => set({ showLanguageSettings: show }),
   sidebarOpen: true,
   setSidebarOpen: (open) => set({ sidebarOpen: open }),
+
+  // Call State - Initial values
+  isInCall: false,
+  callType: null,
+  callStatus: null,
+  callPartner: null,
+  callConversationId: null,
+  callMyLanguage: '',
+  callTheirLanguage: '',
+  callSubtitles: [],
+  callMuted: false,
+  callSpeakerOn: true,
+  callVideoEnabled: true,
+  callDuration: 0,
+  callTranslationPending: false,
+
+  // Call Actions
+  startCall: (params) =>
+    set({
+      isInCall: true,
+      callType: params.type,
+      callStatus: 'ringing',
+      callPartner: params.partner,
+      callConversationId: params.conversationId,
+      callMyLanguage: params.myLanguage,
+      callTheirLanguage: params.theirLanguage,
+      callSubtitles: [],
+      callMuted: false,
+      callSpeakerOn: true,
+      callVideoEnabled: params.type === 'video',
+      callDuration: 0,
+      callTranslationPending: false,
+    }),
+
+  receiveCall: (params) =>
+    set({
+      isInCall: true,
+      callType: params.type,
+      callStatus: 'incoming',
+      callPartner: params.partner,
+      callConversationId: params.conversationId,
+      callMyLanguage: params.myLanguage,
+      callTheirLanguage: params.theirLanguage,
+      callSubtitles: [],
+      callMuted: false,
+      callSpeakerOn: true,
+      callVideoEnabled: params.type === 'video',
+      callDuration: 0,
+      callTranslationPending: false,
+    }),
+
+  answerCall: () => set({ callStatus: 'connected' }),
+
+  rejectCall: () =>
+    set({
+      isInCall: false,
+      callType: null,
+      callStatus: null,
+      callPartner: null,
+      callConversationId: null,
+      callSubtitles: [],
+    }),
+
+  endCall: () =>
+    set({
+      isInCall: false,
+      callType: null,
+      callStatus: null,
+      callPartner: null,
+      callConversationId: null,
+      callSubtitles: [],
+      callMuted: false,
+      callSpeakerOn: true,
+      callVideoEnabled: true,
+      callDuration: 0,
+      callTranslationPending: false,
+    }),
+
+  setCallStatus: (status) => set({ callStatus: status }),
+
+  addCallSubtitle: (original, translated) =>
+    set((state) => ({
+      callSubtitles: [
+        ...state.callSubtitles.slice(-4), // Keep last 5 subtitles max
+        { original, translated, timestamp: new Date() },
+      ],
+      callTranslationPending: false,
+    })),
+
+  setCallMuted: (muted) => set({ callMuted: muted }),
+  setCallSpeakerOn: (on) => set({ callSpeakerOn: on }),
+  setCallVideoEnabled: (enabled) => set({ callVideoEnabled: enabled }),
+  setCallDuration: (duration) => set({ callDuration: duration }),
+  setCallTranslationPending: (pending) => set({ callTranslationPending: pending }),
 }))

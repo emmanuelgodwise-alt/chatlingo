@@ -250,6 +250,135 @@ io.on('connection', (socket) => {
     }
   })
 
+  // ============================================
+  // Call Signaling Events
+  // ============================================
+
+  socket.on(
+    'call-offer',
+    (data: {
+      callerId: string
+      calleeId: string
+      conversationId: string
+      callType: 'voice' | 'video'
+      callerName: string
+      callerLanguage: string
+      calleeLanguage: string
+      offer: RTCSessionDescriptionInit
+    }) => {
+      console.log(`Call offer from ${data.callerId} to ${data.calleeId} (${data.callType})`)
+      const calleeSocket = onlineUsers.get(data.calleeId)
+      if (calleeSocket) {
+        io.to(calleeSocket.socketId).emit('incoming-call', {
+          callerId: data.callerId,
+          calleeId: data.calleeId,
+          conversationId: data.conversationId,
+          callType: data.callType,
+          callerName: data.callerName,
+          callerLanguage: data.callerLanguage,
+          calleeLanguage: data.calleeLanguage,
+          offer: data.offer,
+        })
+      } else {
+        // Callee is offline, notify caller
+        const callerSocket = onlineUsers.get(data.callerId)
+        if (callerSocket) {
+          io.to(callerSocket.socketId).emit('call-rejected', { calleeId: data.calleeId, reason: 'offline' })
+        }
+      }
+    }
+  )
+
+  socket.on(
+    'call-answer',
+    (data: {
+      callerId: string
+      calleeId: string
+      conversationId: string
+      answer: RTCSessionDescriptionInit
+    }) => {
+      console.log(`Call answered by ${data.calleeId} for caller ${data.callerId}`)
+      const callerSocket = onlineUsers.get(data.callerId)
+      if (callerSocket) {
+        io.to(callerSocket.socketId).emit('call-answered', {
+          callerId: data.callerId,
+          calleeId: data.calleeId,
+          conversationId: data.conversationId,
+          answer: data.answer,
+        })
+      }
+    }
+  )
+
+  socket.on(
+    'call-reject',
+    (data: { callerId: string; calleeId: string }) => {
+      console.log(`Call rejected by ${data.calleeId}`)
+      const callerSocket = onlineUsers.get(data.callerId)
+      if (callerSocket) {
+        io.to(callerSocket.socketId).emit('call-rejected', {
+          calleeId: data.calleeId,
+          reason: 'rejected',
+        })
+      }
+    }
+  )
+
+  socket.on(
+    'call-end',
+    (data: { userId: string; targetUserId: string; conversationId: string }) => {
+      console.log(`Call ended by ${data.userId}, notifying ${data.targetUserId}`)
+      const otherSocket = onlineUsers.get(data.targetUserId)
+      if (otherSocket) {
+        io.to(otherSocket.socketId).emit('call-ended', {
+          endedBy: data.userId,
+          conversationId: data.conversationId,
+        })
+      }
+    }
+  )
+
+  socket.on(
+    'ice-candidate',
+    (data: { candidate: RTCIceCandidateInit; targetUserId: string; userId: string }) => {
+      const targetSocket = onlineUsers.get(data.targetUserId)
+      if (targetSocket) {
+        io.to(targetSocket.socketId).emit('ice-candidate', {
+          candidate: data.candidate,
+          from: data.userId,
+        })
+      }
+    }
+  )
+
+  socket.on(
+    'call-translation',
+    async (data: {
+      text: string
+      sourceLanguage: string
+      targetLanguage: string
+      conversationId: string
+      senderId: string
+      targetUserId: string
+    }) => {
+      try {
+        const translated = await translateText(data.text, data.sourceLanguage, data.targetLanguage)
+        const targetSocket = onlineUsers.get(data.targetUserId)
+        if (targetSocket) {
+          io.to(targetSocket.socketId).emit('call-translated', {
+            original: data.text,
+            translated,
+            fromLanguage: data.sourceLanguage,
+            toLanguage: data.targetLanguage,
+            senderId: data.senderId,
+          })
+        }
+      } catch (error) {
+        console.error('Call translation error:', error)
+      }
+    }
+  )
+
   socket.on('disconnect', async () => {
     let disconnectedUserId: string | null = null
 

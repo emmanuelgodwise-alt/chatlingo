@@ -136,3 +136,88 @@ All 10 component files, the global CSS, layout, and chat interface were rebuilt 
 **Verification:**
 - `npm run lint` passes with zero errors
 - Dev log shows successful compilation (✓ Compiled) and 200 responses on GET /
+
+---
+## Task ID: c1-c8
+### Work Task
+Add voice call and video call features with real-time translation to ChatLingo. Implement WebRTC peer-to-peer audio/video, Web Speech API for speech recognition and synthesis, Socket.io signaling, and backend translation via z-ai-web-dev-sdk.
+
+### Work Summary
+
+**Files Created:**
+
+1. **`src/lib/webrtc.ts`** — WebRTC Peer Connection Manager
+   - `getLocalStream(includeVideo)` — Gets microphone (and camera for video) with echo cancellation, noise suppression
+   - `createPeerConnection(callbacks)` — Creates RTCPeerConnection with Google STUN servers (stun.l.google.com:19302, stun1, stun2)
+   - `createOffer()` / `createAnswer()` — SDP offer/answer creation with local description set
+   - `setRemoteDescription()` / `addIceCandidate()` — Remote peer handling
+   - `toggleLocalAudio()` / `toggleLocalVideo()` — Mute/unmute controls
+   - `closePeerConnection()` — Full cleanup of connection, local stream, and remote stream
+   - `isWebRTCSupported()` — Browser capability check
+
+2. **`src/lib/speech.ts`** — Speech Recognition & Synthesis Utilities
+   - `LANGUAGE_BCP47_MAP` — Maps all 24 ChatLingo languages to BCP-47 codes (e.g., English→en-US, French→fr-FR, Yoruba→yo-NG)
+   - `getBCP47Code(language)` — Language code converter
+   - `startRecognition(language, onResult)` — Continuous speech recognition with interim results, auto-restart on silence/end
+   - `stopRecognition()` — Cleanup
+   - `speak(text, language)` — TTS with best available voice matching (prefix + exact match fallback)
+   - `queueSpeak()` — Speech queue management
+   - `stopSpeaking()` — Cancel all pending speech
+   - `loadVoices()` — Async voice loading for browsers that load voices lazily
+
+3. **`src/app/api/translate/route.ts`** — Real-time Translation API Endpoint
+   - POST `/api/translate` — Accepts `{ text, sourceLanguage, targetLanguage }`
+   - Uses z-ai-web-dev-sdk for translation, optimized for real-time call use (temperature 0.3, max_tokens 200)
+   - Same-language shortcut returns text directly
+   - Proper error handling with 400/500 responses
+
+4. **`src/components/chatlingo/call-screen.tsx`** — Full WhatsApp-style Call Screen
+   - **Ringing (Outgoing) screen**: Dark green gradient (#075E54→#064E46), large avatar with pulse/ping animations, "Calling..." with spinning loader, language pair indicator (flags + labels), end call button (#D32F2F)
+   - **Incoming Call screen**: Same gradient, pulsing ring animations on avatar, "Incoming Voice/Video Call" text, "ChatLingo will translate your conversation" subtitle, Decline (red) + Accept (green #25D366) buttons
+   - **Connected Call screen**: Voice calls show large avatar + duration timer; Video calls show remote video full-screen + local video PIP; live subtitles bar (semi-transparent black/40 backdrop blur with original text in white/40 and translated text in white with Globe icon); call controls: Mute, Speaker (voice), Video toggle (video), End call; translation badge showing "English → French" with spinning "Translating..." state
+
+5. **CSS Animations** added to `src/app/globals.css`:
+   - `.animate-fadeIn` — Scale + opacity entrance animation (0.3s)
+   - `.animate-slideUp` — Slide up + opacity animation for subtitles (0.3s)
+
+**Files Modified:**
+
+6. **`src/lib/store.ts`** — Added call state to Zustand store
+   - New types: `CallSubtitle`, `CallPartner`
+   - State: `isInCall`, `callType`, `callStatus`, `callPartner`, `callConversationId`, `callMyLanguage`, `callTheirLanguage`, `callSubtitles[]`, `callMuted`, `callSpeakerOn`, `callVideoEnabled`, `callDuration`, `callTranslationPending`
+   - Actions: `startCall()`, `receiveCall()`, `answerCall()`, `rejectCall()`, `endCall()`, `setCallStatus()`, `addCallSubtitle()`, `setCallMuted()`, `setCallSpeakerOn()`, `setCallVideoEnabled()`, `setCallDuration()`, `setCallTranslationPending()`
+   - Subtitle auto-pruning: keeps last 5 entries max
+
+7. **`mini-services/chat-service/index.ts`** — Added 6 call signaling Socket.io events
+   - `call-offer` — Forwards SDP offer to callee, handles offline callee gracefully
+   - `call-answer` — Forwards SDP answer to caller
+   - `call-reject` — Notifies caller of rejection
+   - `call-end` — Notifies other party when call ends
+   - `ice-candidate` — Relays ICE candidates between peers
+   - `call-translation` — Server-side translation of speech text, forwards translated result to target user
+
+8. **`src/components/chatlingo/chat-area.tsx`** — Wired call buttons
+   - Video button now calls `startCall({ type: 'video', ... })`
+   - Phone button now calls `startCall({ type: 'voice', ... })`
+   - Both disabled when already in a call (`isInCall`)
+
+9. **`src/components/chatlingo/chat-interface.tsx`** — Complete call lifecycle management
+   - Imports and renders `CallScreen` as full-screen overlay when `isInCall`
+   - Socket event listeners: `incoming-call`, `call-answered`, `call-rejected`, `call-ended`, `ice-candidate`, `call-translated`
+   - WebRTC initialization for outgoing calls: gets local stream → creates peer connection → creates offer → emits `call-offer`
+   - ICE candidate relay between peers
+   - Speech recognition auto-starts 1.5s after call connects, sends recognized text via `call-translation` socket event
+   - Received translations displayed as subtitles and spoken via TTS
+   - Call duration timer (updates every second)
+   - Full cleanup on call end: stops recognition, stops TTS, closes WebRTC peer connection
+   - Socket stored globally on `window.__chatlingo_socket` for use in CallScreen component
+
+**Architecture:**
+- Outgoing call flow: User clicks call button → store.startCall() → WebRTC init + getLocalStream → createOffer → socket 'call-offer' → peer receives 'incoming-call' → peer accepts → createAnswer → 'call-answer' → setRemoteDescription → connected → speech recognition starts → speech sent for translation → translated text received → subtitles + TTS
+- Translation path: Browser SpeechRecognition → socket 'call-translation' → Server z-ai-web-dev-sdk translate → socket 'call-translated' → receiver sees subtitles + hears TTS
+
+**Verification:**
+- `npm run lint` — zero errors, zero warnings
+- Dev log shows successful compilation with 200 responses
+- Chat service running on port 3003 (confirmed with `lsof -i :3003`)
+- All existing chat functionality preserved
