@@ -53,8 +53,8 @@ export function CallScreen() {
   // Attach video streams when available
   useEffect(() => {
     const attachStreams = async () => {
-      const { getLocalStream, getRemoteStream } = await import('@/lib/webrtc')
-      const localStream = getLocalStream()
+      const { getCurrentLocalStream, getRemoteStream } = await import('@/lib/webrtc')
+      const localStream = getCurrentLocalStream()
       const remoteStream = getRemoteStream()
 
       if (localVideoRef.current && localStream) {
@@ -77,8 +77,8 @@ export function CallScreen() {
     if (callStatus !== 'connected') return
 
     const attachStreams = async () => {
-      const { getLocalStream, getRemoteStream } = await import('@/lib/webrtc')
-      const localStream = getLocalStream()
+      const { getCurrentLocalStream, getRemoteStream } = await import('@/lib/webrtc')
+      const localStream = getCurrentLocalStream()
       const remoteStream = getRemoteStream()
 
       if (localVideoRef.current && localStream && !localVideoRef.current.srcObject) {

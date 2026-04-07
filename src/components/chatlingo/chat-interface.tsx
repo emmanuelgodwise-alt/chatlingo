@@ -294,13 +294,13 @@ export function ChatInterface() {
       const initOutgoingCall = async () => {
         try {
           const {
-            getLocalStream,
+            requestLocalStream,
             createPeerConnection,
             createOffer,
           } = await import('@/lib/webrtc')
 
           // Get local media
-          await getLocalStream(isVideo)
+          await requestLocalStream(isVideo)
 
           // Create peer connection
           const pc = createPeerConnection({

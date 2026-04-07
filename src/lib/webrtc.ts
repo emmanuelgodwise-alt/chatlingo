@@ -25,7 +25,7 @@ export interface WebRTCCallbacks {
 /**
  * Get user media (microphone + optional camera)
  */
-export async function getLocalStream(includeVideo: boolean): Promise<MediaStream> {
+export async function requestLocalStream(includeVideo: boolean): Promise<MediaStream> {
   try {
     const constraints: MediaStreamConstraints = {
       audio: {
@@ -152,7 +152,7 @@ export async function addIceCandidate(candidate: RTCIceCandidateInit): Promise<v
 /**
  * Get the current local stream
  */
-export function getLocalStream(): MediaStream | null {
+export function getCurrentLocalStream(): MediaStream | null {
   return localStream
 }
 
