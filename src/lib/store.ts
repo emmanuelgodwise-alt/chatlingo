@@ -44,6 +44,77 @@ interface Message {
 }
 
 // ============================================
+// Learning Types
+// ============================================
+export interface LearningProfileData {
+  id: string
+  userId: string
+  targetLanguage: string
+  nativeLanguage: string
+  level: number
+  totalXp: number
+  currentStreak: number
+  longestStreak: number
+  lessonsCompleted: number
+  lastPracticeAt?: string | null
+}
+
+export interface LearningPairData {
+  id: string
+  partner: {
+    id: string
+    name: string
+    avatar?: string | null
+    preferredLanguage: string
+    online: boolean
+  }
+  iLearn: string
+  iTeach: string
+}
+
+export interface LessonData {
+  id: string
+  title: string
+  description?: string | null
+  category: string
+  targetLanguage: string
+  nativeLanguage: string
+  level: number
+  orderIndex: number
+  xpReward: number
+  exercisesCount: number
+  progress?: {
+    completed: boolean
+    score: number
+    bestScore: number
+    attempts: number
+  } | null
+}
+
+export interface ExerciseData {
+  id: string
+  type: 'translation' | 'fill_blank' | 'listening' | 'matching' | 'speaking'
+  question: string
+  correctAnswer: string
+  options: string[]
+  hint?: string | null
+  xpReward: number
+  orderIndex: number
+}
+
+export interface LeaderboardEntry {
+  userId: string
+  name: string
+  avatar?: string | null
+  totalXp: number
+  level: number
+  currentStreak: number
+  lessonsCompleted: number
+  isCurrentUser?: boolean
+  rank: number
+}
+
+// ============================================
 // Call State Types
 // ============================================
 
@@ -132,8 +203,8 @@ interface CallLingoState {
   setSidebarOpen: (open: boolean) => void
 
   // Navigation Tabs
-  activeTab: 'chats' | 'status' | 'channels' | 'calls' | 'explore'
-  setActiveTab: (tab: 'chats' | 'status' | 'channels' | 'calls' | 'explore') => void
+  activeTab: 'chats' | 'status' | 'channels' | 'calls' | 'explore' | 'learn'
+  setActiveTab: (tab: 'chats' | 'status' | 'channels' | 'calls' | 'explore' | 'learn') => void
 
   // Status/Stories
   statuses: StatusItem[]
@@ -168,6 +239,37 @@ interface CallLingoState {
   setIsHandRaised: (raised: boolean) => void
   roomSubtitles: Array<{ original: string; translated: string; speakerName: string }>
   addRoomSubtitle: (original: string, translated: string, speakerName: string) => void
+
+  // Learning State
+  learningProfile: LearningProfileData | null
+  setLearningProfile: (profile: LearningProfileData | null) => void
+  learningPairs: LearningPairData[]
+  setLearningPairs: (pairs: LearningPairData[]) => void
+  availableLessons: LessonData[]
+  setAvailableLessons: (lessons: LessonData[]) => void
+  activeLesson: LessonData | null
+  setActiveLesson: (lesson: LessonData | null) => void
+  activeExercises: ExerciseData[]
+  setActiveExercises: (exercises: ExerciseData[]) => void
+  currentExerciseIndex: number
+  setCurrentExerciseIndex: (index: number) => void
+  lessonInProgress: boolean
+  setLessonInProgress: (inProgress: boolean) => void
+  exerciseResults: Array<{ exerciseId: string; userAnswer: string; isCorrect: boolean }>
+  addExerciseResult: (exerciseId: string, userAnswer: string, isCorrect: boolean) => void
+  resetExerciseResults: () => void
+  lessonScore: number
+  setLessonScore: (score: number) => void
+  showLearnSetup: boolean
+  setShowLearnSetup: (show: boolean) => void
+  showLearnPairDialog: boolean
+  setShowLearnPairDialog: (show: boolean) => void
+  showLeaderboard: boolean
+  setShowLeaderboard: (show: boolean) => void
+  showLessonResult: boolean
+  setShowLessonResult: (show: boolean) => void
+  lastLessonResult: { score: number; totalExercises: number; xpEarned: number; lessonCompleted: boolean } | null
+  setLastLessonResult: (result: { score: number; totalExercises: number; xpEarned: number; lessonCompleted: boolean } | null) => void
 
   // Call State
   isInCall: boolean
@@ -305,6 +407,41 @@ export const useChatLingoStore = create<CallLingoState>((set) => ({
         { original, translated, speakerName },
       ],
     })),
+
+  // Learning State - Initial values
+  learningProfile: null,
+  setLearningProfile: (profile) => set({ learningProfile: profile }),
+  learningPairs: [],
+  setLearningPairs: (pairs) => set({ learningPairs: pairs }),
+  availableLessons: [],
+  setAvailableLessons: (lessons) => set({ availableLessons: lessons }),
+  activeLesson: null,
+  setActiveLesson: (lesson) => set({ activeLesson: lesson, currentExerciseIndex: 0, exerciseResults: [], lessonScore: 0 }),
+  activeExercises: [],
+  setActiveExercises: (exercises) => set({ activeExercises: exercises }),
+  currentExerciseIndex: 0,
+  setCurrentExerciseIndex: (index) => set({ currentExerciseIndex: index }),
+  lessonInProgress: false,
+  setLessonInProgress: (inProgress) => set({ lessonInProgress: inProgress }),
+  exerciseResults: [],
+  addExerciseResult: (exerciseId, userAnswer, isCorrect) =>
+    set((state) => ({
+      exerciseResults: [...state.exerciseResults, { exerciseId, userAnswer, isCorrect }],
+      lessonScore: isCorrect ? state.lessonScore + 1 : state.lessonScore,
+    })),
+  resetExerciseResults: () => set({ exerciseResults: [], lessonScore: 0, currentExerciseIndex: 0 }),
+  lessonScore: 0,
+  setLessonScore: (score) => set({ lessonScore: score }),
+  showLearnSetup: false,
+  setShowLearnSetup: (show) => set({ showLearnSetup: show }),
+  showLearnPairDialog: false,
+  setShowLearnPairDialog: (show) => set({ showLearnPairDialog: show }),
+  showLeaderboard: false,
+  setShowLeaderboard: (show) => set({ showLeaderboard: show }),
+  showLessonResult: false,
+  setShowLessonResult: (show) => set({ showLessonResult: show }),
+  lastLessonResult: null,
+  setLastLessonResult: (result) => set({ lastLessonResult: result }),
 
   // Call State - Initial values
   isInCall: false,

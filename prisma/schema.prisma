@@ -36,6 +36,11 @@ model User {
   broadcastLists    BroadcastList[]     @relation("BroadcastOwner")
   roomParticipants  RoomParticipant[] @relation("RoomUser")
   ownedRooms        Room[]              @relation("RoomOwner")
+  learningProfiles  LearningProfile[]
+  learningPairs1    LearningPair[]      @relation("PairLearner")
+  learningPairs2    LearningPair[]      @relation("PairTutor")
+  lessonProgress    LessonProgress[]
+  exerciseAttempts  ExerciseAttempt[]
 }
 
 model Contact {
@@ -255,4 +260,110 @@ model CulturalSpotlight {
   authorId    String?
   mediaUrl    String?
   createdAt   DateTime @default(now())
+}
+
+// ==========================================
+// Language Exchange Learning System
+// ==========================================
+
+model LearningProfile {
+  id              String   @id @default(cuid())
+  userId          String   @unique
+  targetLanguage  String
+  nativeLanguage  String
+  level           Int      @default(1)
+  totalXp         Int      @default(0)
+  currentStreak   Int      @default(0)
+  longestStreak   Int      @default(0)
+  lastPracticeAt  DateTime?
+  lessonsCompleted Int     @default(0)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  user            User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model LearningPair {
+  id              String   @id @default(cuid())
+  learnerId       String
+  tutorId         String
+  learnerLanguage String
+  tutorLanguage   String
+  status          String   @default("active")
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  learner         User     @relation("PairLearner", fields: [learnerId], references: [id], onDelete: Cascade)
+  tutor           User     @relation("PairTutor", fields: [tutorId], references: [id], onDelete: Cascade)
+
+  @@unique([learnerId, tutorId])
+}
+
+model Lesson {
+  id              String   @id @default(cuid())
+  title           String
+  description     String?
+  category        String   @default("vocabulary")
+  targetLanguage  String
+  nativeLanguage  String
+  level           Int      @default(1)
+  orderIndex      Int      @default(0)
+  xpReward        Int      @default(10)
+  isPublished     Boolean  @default(true)
+  createdAt       DateTime @default(now())
+
+  exercises       Exercise[]
+  progress        LessonProgress[]
+}
+
+model Exercise {
+  id              String   @id @default(cuid())
+  lessonId        String
+  type            String   @default("translation")
+  question        String
+  correctAnswer   String
+  options         String   @default("[]")
+  hint            String?
+  audioUrl        String?
+  orderIndex      Int      @default(0)
+  xpReward        Int      @default(5)
+  createdAt       DateTime @default(now())
+
+  lesson          Lesson   @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  attempts        ExerciseAttempt[]
+}
+
+model LessonProgress {
+  id              String   @id @default(cuid())
+  userId          String
+  lessonId        String
+  completed       Boolean  @default(false)
+  score           Int      @default(0)
+  totalExercises  Int      @default(0)
+  bestScore       Int      @default(0)
+  attempts        Int      @default(0)
+  completedAt     DateTime?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lesson          Lesson   @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  exerciseAttempts ExerciseAttempt[]
+
+  @@unique([userId, lessonId])
+}
+
+model ExerciseAttempt {
+  id              String   @id @default(cuid())
+  userId          String
+  exerciseId      String
+  lessonProgressId String
+  userAnswer      String
+  isCorrect       Boolean  @default(false)
+  xpEarned        Int      @default(0)
+  createdAt       DateTime @default(now())
+
+  user            User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  exercise        Exercise       @relation(fields: [exerciseId], references: [id], onDelete: Cascade)
+  lessonProgress  LessonProgress @relation(fields: [lessonProgressId], references: [id], onDelete: Cascade)
 }

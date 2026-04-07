@@ -17,6 +17,11 @@ import { ChannelsTab } from '@/components/chatlingo/channels-tab'
 import { ExploreTab } from '@/components/chatlingo/explore-tab'
 import { RoomsTab } from '@/components/chatlingo/rooms-tab'
 import { RoomScreen } from '@/components/chatlingo/room-screen'
+import { LearnTab } from '@/components/chatlingo/learn-tab'
+import { LessonScreen } from '@/components/chatlingo/lesson-screen'
+import { LearnSetupDialog } from '@/components/chatlingo/learn-setup-dialog'
+import { LearnPairDialog } from '@/components/chatlingo/learn-pair-dialog'
+import { LeaderboardDialog } from '@/components/chatlingo/leaderboard-dialog'
 import type { Socket } from 'socket.io-client'
 
 export function ChatInterface() {
@@ -52,6 +57,10 @@ export function ChatInterface() {
     showCreateRoom,
     showBroadcast,
     isInRoom,
+    showLearnSetup,
+    showLearnPairDialog,
+    showLeaderboard,
+    lessonInProgress,
   } = useChatLingoStore()
 
   const socketRef = useRef<Socket | null>(null)
@@ -426,6 +435,9 @@ export function ChatInterface() {
     if (activeTab === 'explore') {
       return <ExploreTab />
     }
+    if (activeTab === 'learn') {
+      return <LearnTab />
+    }
     // Default: chats
     return null
   }
@@ -470,6 +482,9 @@ export function ChatInterface() {
       {showCreateGroup && <CreateGroupDialog />}
       {showCreateChannel && <CreateChannelDialog />}
       {showCreateRoom && <CreateRoomDialog />}
+      {showLearnSetup && <LearnSetupDialog />}
+      {showLearnPairDialog && <LearnPairDialog />}
+      {showLeaderboard && <LeaderboardDialog />}
 
       {/* Status Viewer Overlay */}
       {showStatusViewer && <StatusViewer />}
@@ -480,16 +495,20 @@ export function ChatInterface() {
       {/* Room Screen Overlay */}
       {isInRoom && <RoomScreen />}
 
+      {/* Lesson Screen Overlay */}
+      {lessonInProgress && <LessonScreen />}
+
       {/* Mobile Bottom Navigation */}
       <div className="wa-bottom-nav md:hidden">
         <button
-          onClick={() => setActiveTab('chats')}
-          className={`wa-bottom-nav-item ${activeTab === 'chats' ? 'active' : 'inactive'}`}
+          onClick={() => setActiveTab('learn')}
+          className={`wa-bottom-nav-item ${activeTab === 'learn' ? 'active' : 'inactive'}`}
         >
-          <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
-            <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
+          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
+            <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
           </svg>
-          <span className="text-[11px]">Camera</span>
+          <span className="text-[11px]">Learn</span>
         </button>
         <button
           onClick={() => setActiveTab('chats')}

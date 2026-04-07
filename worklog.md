@@ -342,3 +342,330 @@ Build ALL frontend UI components for ChatLingo Phases 2-7: Status/Stories, Voice
 - Dev log shows `✓ Compiled in 128ms` and successful `GET / 200` responses
 - All existing chat, call, and WebSocket functionality preserved
 - 13 new components + 3 modified components + 1 store update + 1 CSS update = 18 files changed
+
+---
+## Task ID: 4
+### Work Task
+Add learning-related state and actions to the existing Zustand store (`src/lib/store.ts`) for the ChatLingo Learning feature. Must not modify or remove any existing state/actions.
+
+### Work Summary
+Added 5 new exported TypeScript interfaces and 16 new state properties with their corresponding actions to the Zustand store, all placed between the Room state section and Call State section.
+
+**New Types Added (before CallLingoState interface):**
+- `LearningProfileData` — User learning profile with target/native languages, level, XP, streaks, lessons completed, last practice timestamp
+- `LearningPairData` — Language exchange partner pairing with partner info, what user learns/teaches
+- `LessonData` — Lesson metadata with title, category, languages, level, XP reward, exercises count, and optional progress tracking
+- `ExerciseData` — Individual exercise with type (translation/fill_blank/listening/matching/speaking), question, answer, options, hint, XP reward
+- `LeaderboardEntry` — Leaderboard ranking entry with user info, XP, level, streak, lessons, rank
+
+**New State Properties Added to CallLingoState interface:**
+- `learningProfile` / `setLearningProfile` — Current user's learning profile
+- `learningPairs` / `setLearningPairs` — Language exchange partner pairs
+- `availableLessons` / `setAvailableLessons` — List of available lessons
+- `activeLesson` / `setActiveLesson` — Currently active lesson (also resets exercise state)
+- `activeExercises` / `setActiveExercises` — Exercises for current lesson
+- `currentExerciseIndex` / `setCurrentExerciseIndex` — Current exercise position
+- `lessonInProgress` / `setLessonInProgress` — Whether a lesson is actively being taken
+- `exerciseResults` / `addExerciseResult` / `resetExerciseResults` — Exercise answer tracking with auto score increment
+- `lessonScore` / `setLessonScore` — Current lesson score (correct answers count)
+- `showLearnSetup` / `setShowLearnSetup` — Learning setup dialog visibility
+- `showLearnPairDialog` / `setShowLearnPairDialog` — Language pair dialog visibility
+- `showLeaderboard` / `setShowLeaderboard` — Leaderboard dialog visibility
+- `showLessonResult` / `setShowLessonResult` — Lesson result dialog visibility
+- `lastLessonResult` / `setLastLessonResult` — Last completed lesson result (score, total, XP, completion status)
+
+**Key Implementation Details:**
+- `setActiveLesson` also resets `currentExerciseIndex`, `exerciseResults`, and `lessonScore` to 0
+- `addExerciseResult` appends to results array and auto-increments `lessonScore` when answer is correct
+- `resetExerciseResults` clears results, score, and exercise index together
+- `activeTab` type kept as `'chats' | 'status' | 'channels' | 'calls' | 'explore'` (unchanged)
+- All existing state and actions preserved exactly as-is
+
+**Verification:**
+- `npm run lint` — zero errors, zero warnings
+- TypeScript compilation: no new errors introduced (all pre-existing errors unrelated to store changes)
+- File: `src/lib/store.ts` only modified
+
+---
+## Task ID: 3
+### Work Task
+Create all 8 backend API route files for the Language Exchange Learning System: setup, profile, pair, lessons list, lesson detail, submit answers, leaderboard, and seed data.
+
+### Work Summary
+Created 8 API route files under `src/app/api/learn/` covering the complete Language Exchange Learning System backend. All routes follow the existing project patterns: JWT auth via `getTokenFromHeader`/`verifyToken`, Prisma ORM via `db`, NextRequest/NextResponse from `next/server`, proper try/catch error handling with HTTP status codes.
+
+**1. `src/app/api/learn/setup/route.ts` — POST**
+- Creates or updates LearningProfile for authenticated user
+- Body: `{ targetLanguage, nativeLanguage }`
+- Uses `prisma.learningProfile.upsert()` with userId unique constraint
+- Returns the profile with 201 status
+
+**2. `src/app/api/learn/profile/route.ts` — GET**
+- Returns user's LearningProfile
+- Also returns their LearningPairs (both as learner and tutor) with partner info (id, name, avatar, preferredLanguage)
+- Returns 404 if no profile exists
+
+**3. `src/app/api/learn/pair/route.ts` — POST**
+- Body: `{ partnerId }`
+- Validates partner exists and both users have LearningProfiles
+- Creates TWO mutual LearningPair records in a transaction: User learns partner's native language, partner learns user's native language
+- Prevents self-pairing and duplicate pairs (returns 409)
+- Returns both pairs with 201 status
+
+**4. `src/app/api/learn/lessons/route.ts` — GET**
+- Query params: `targetLanguage` (required), `level` (optional)
+- Returns published lessons with exercise count (`_count`)
+- Ordered by level asc, then orderIndex asc
+
+**5. `src/app/api/learn/lessons/[id]/route.ts` — GET**
+- Returns single lesson with all exercises ordered by orderIndex
+- Parses exercise options from JSON string to array
+- Returns user's LessonProgress for this lesson if exists
+- Uses async `params: Promise<{ id: string }>` pattern
+
+**6. `src/app/api/learn/submit/route.ts` — POST**
+- Body: `{ lessonId, answers: Array<{ exerciseId, userAnswer }> }`
+- Verifies lesson exists, builds exercise map for lookup
+- Calculates score (percentage), awards XP per correct exercise (5xp each)
+- Upserts LessonProgress (updates bestScore, attempts, completed status)
+- Creates ExerciseAttempt records in a transaction
+- Updates LearningProfile: totalXp, currentStreak (consecutive day detection), longestStreak, lessonsCompleted, level (auto-calculated from XP thresholds: 100=L2, 500=L3), lastPracticeAt
+- Returns: `{ score, totalExercises, xpEarned, newTotalXp, lessonCompleted, streak }`
+
+**7. `src/app/api/learn/leaderboard/route.ts` — GET**
+- Query params: `targetLanguage` (optional filter)
+- Returns top 50 users by totalXp
+- Includes contact/friend detection and current user rank
+- Returns global leaderboard and friends-only leaderboard separately
+- Each entry: rank, userId, name, avatar, totalXp, level, currentStreak, lessonsCompleted, isCurrentUser, isFriend
+
+**8. `src/app/api/learn/seed/route.ts` — POST**
+- Seeds comprehensive lesson content for 8 language pairs: Spanish, French, German, Chinese, Arabic, Yoruba, Hindi, Swahili
+- Each language pair gets 18 lessons across categories:
+  - Vocabulary (10 lessons): Greetings, Food & Drinks, Numbers, Colors, Family, Animals, Weather, Clothing, Body Parts, Emotions
+  - Phrases (4 lessons): Common Expressions, Asking Directions, At Restaurant, Shopping
+  - Grammar (4 lessons): Basic Sentence Structure, Articles/Gender (or Measure Words/Tones for non-European), Verb Conjugation Basics, Tenses
+- Each lesson has 5-6 exercises of varying types: translation, fill_blank, listening, matching
+- XP rewards: vocabulary 10xp, phrases 15xp, grammar 20xp; exercises 5xp each
+- Levels range from 1 (Beginner) to 3 (Advanced)
+- Distractors generated from other words/phrases in the same lesson
+- Correct answers are always included in the options array
+- Options stored as JSON strings in the database
+- Idempotent: returns existing count if lessons already seeded
+
+**Verification:**
+- TypeScript compilation: zero errors in all new `api/learn/` files (pre-existing errors in other files remain unchanged)
+- Dev server compiles successfully with 200 responses
+- 8 API route files created following consistent project patterns
+
+---
+## Task ID: 5b
+### Work Task
+Create the main lesson/exercise flow screen component (`lesson-screen.tsx`) for the ChatLingo Language Learning System. The component renders when a user is actively taking a lesson and supports 5 exercise types (translation, fill_blank, listening, matching, speaking), a progress bar, correct/wrong feedback animations, and a lesson completion screen.
+
+### Work Summary
+
+**File Created: `src/components/chatlingo/lesson-screen.tsx`** — A comprehensive `'use client'` component (~1100 lines) implementing the complete lesson/exercise flow.
+
+**1. Progress Bar (Top):**
+- Full-width green progress bar showing `currentExerciseIndex / totalExercises` with smooth CSS transition
+- Exercise counter text: "3 / 8 exercises"
+- Correct count indicator
+- X button with AlertDialog confirmation to quit lesson (calls `setLessonInProgress(false)`, `resetExerciseResults()`, `setActiveLesson(null)`)
+
+**2. Exercise Display Area — 5 Exercise Types:**
+
+- **TranslationExercise** (`type === 'translation'`):
+  - Shows word/phrase in target language in a white card
+  - "Translate this to [nativeLanguage]" instruction
+  - 4 option buttons with selection highlight
+  - Correct = green border + green bg + check icon + XP animation
+  - Wrong = red border + red bg + X icon + shake animation + green highlight on correct answer
+  - Hint button (Lightbulb icon) reveals hint text in amber box
+
+- **FillBlankExercise** (`type === 'fill_blank'`):
+  - Sentence with `___` replaced by styled inline blank that fills with selected option
+  - "Fill in the blank" instruction
+  - Same correct/wrong feedback pattern as translation
+  - Hint support
+
+- **ListeningExercise** (`type === 'listening'`):
+  - Large speaker button (Volume2 icon) with pulse animation when not yet played
+  - "Listen and choose the correct translation" instruction
+  - Uses `speak()` from `@/lib/speech` (Web Speech Synthesis) to speak question text in target language
+  - Replay button after first play
+  - Same option feedback pattern
+
+- **MatchingExercise** (`type === 'matching'`):
+  - Two-column layout: left words + shuffled right translations
+  - User taps left word (highlights green), then taps matching right translation
+  - Correct match = both items turn green with checkmark + opacity fade
+  - Wrong match = red flash + shake animation on wrong item
+  - Progress bar showing matches completed
+  - Parses `correctAnswer` format "word1:trans1,word2:trans2"
+  - Auto-advances when all pairs matched
+
+- **SpeakingExercise** (`type === 'speaking'`):
+  - Shows word/phrase to pronounce with "Listen to pronunciation" button
+  - "Say this in [targetLanguage]" instruction
+  - Large microphone button: green when idle, red pulsing when recording, green/red for feedback
+  - Uses `startRecognition()` from `@/lib/speech` (Web Speech Recognition)
+  - Shows recognized text in real-time
+  - Correct/wrong feedback with correct answer reveal on wrong
+  - Recording indicator with red pulsing dot
+
+**3. Bottom Bar:**
+- "Show Hint" link (for exercises with hints, not matching/speaking)
+- "Check" button (green, disabled until option selected, disabled during feedback)
+- Matching shows instruction text instead of Check button
+- Speaking shows "Start Speaking" / "Stop Recording" buttons
+
+**4. Lesson Complete Screen:**
+- Celebration header: 🏆 (perfect) / 🎉 (passed) / 💪 (keep practicing)
+- Score display with color-coded percentage
+- "You got X out of Y correct!" message
+- 3-column stats grid: XP Earned (Star), Day Streak (Flame), Total XP (Trophy)
+- Green "Lesson Completed!" badge when score ≥ 70%
+- "Continue" button → quits lesson (returns to learn tab)
+- "Try Again" button → resets results and restarts from exercise 1
+- Submitting state with spinner during API call
+- Calls `setShowLessonResult(true)` with result data for parent result dialog
+
+**5. State Management:**
+- Reads from store: `activeLesson`, `activeExercises`, `currentExerciseIndex`, `learningProfile`, `token`, `lessonScore`
+- Uses store actions: `addExerciseResult()`, `resetExerciseResults()`, `setCurrentExerciseIndex()`, `setLessonInProgress()`, `setActiveLesson()`, `setLearningProfile()`, `setLastLessonResult()`, `setShowLessonResult()`
+- On completion: POSTs to `/api/learn/submit` with `{ lessonId, answers }` array
+- Updates `learningProfile` with response data (XP, streak, level, lessons completed)
+- Local state resets on exercise change (selection, feedback, recording, matching)
+- Cleanup: stops recognition and speech on quit
+
+**6. Animations & Visual Polish:**
+- XP floating animation (+XP pill) on correct answer using `animate-slideUp`
+- Shake animation on wrong answers via Tailwind `animate-[shake_0.4s_ease-in-out]`
+- Pulse animation on mic button while recording
+- Fade-in on lesson complete screen
+- Smooth progress bar transition (500ms ease-out)
+- WhatsApp green theme throughout (#25D366, #075E54, #E7FCE3, #D9FDD3)
+- Large touch-friendly buttons (py-3.5, min 48px height)
+- Exercise type badges with emoji and color-coded backgrounds
+
+**7. Utility Functions:**
+- `parseMatchingPairs()` — Parses "word1:trans1,word2:trans2" format into Map
+- `shuffleArray()` — Fisher-Yates shuffle for matching right column
+- Sub-components extracted for each exercise type for maintainability
+
+**Verification:**
+- `npx tsc --noEmit` — zero errors related to lesson-screen.tsx
+- `npm run lint` — zero errors, zero warnings
+- All imports resolved: store, shadcn/ui (Button, AlertDialog), speech utilities, lucide-react icons
+
+---
+## Task ID: 5a
+### Work Task
+Create the main Learn Tab component (`src/components/chatlingo/learn-tab.tsx`) — the learning dashboard that shows when a user clicks the "Learn" tab in navigation.
+
+### Work Summary
+Created `src/components/chatlingo/learn-tab.tsx` — a comprehensive, WhatsApp-themed learning dashboard component with the following sections:
+
+**1. Header Bar** — Green `#075E54` background with `GraduationCap` icon, "Language Exchange" title, Trophy (leaderboard) and Settings (setup) buttons using `wa-shadow-header` and hover:bg-white/10 effects.
+
+**2. Welcome Screen (no profile)** — Shown when no learning profile exists:
+- Animated globe illustration area with floating emojis (🗣️📚✨) using `animate-bounce`
+- "Start Your Language Journey" heading with descriptive text
+- Green "Get Started" button → calls `setShowLearnSetup(true)`
+- "Already set up? Learn with a friend" link → calls `setShowLearnPairDialog(true)`
+
+**3. Profile Stats Card (profile exists)** — Grid of 4 stat cells (🔥 Streak, ⭐ Total XP, 📚 Completed, 🏆 Best Streak) with dividers. Below: Level badge (Beginner/Intermediate/Advanced), target language flag indicator, and XP progress bar with gradient fill to next level threshold.
+
+**4. Learning Partners Section** — Lists partner cards with avatar, name, "I learn/I teach" language flags, and "Chat" button. "Add Partner" button in header. Max height with scroll. Transforms raw API pair format to store's `LearningPairData` type.
+
+**5. "Need a Partner?" Prompt (no pairs)** — Green gradient card with Users icon, description, and "Find a Partner" button.
+
+**6. Lesson Categories Section** — Tab filters (All/Vocabulary/Phrases/Grammar) with category icons (📖💬📝). Grid of lesson cards, each showing:
+- Category icon with colored background (blue/purple/amber)
+- Lesson title with line-clamp-2
+- Level badge (green/yellow/red) + 3 difficulty dots + XP reward + exercise count
+- Progress: green checkmark for completed, score bar for in-progress, best score/attempts display
+- Hover effects with border color change and shadow
+- Click handler fetches full lesson detail from `/api/learn/lessons/[id]`, sets store state for active lesson/exercises/inProgress
+
+**Helper Functions:**
+- `getLevelLabel(level)` — Maps 1/2/3 → Beginner/Intermediate/Advanced
+- `getLevelColor(level)` — Returns bg/text/dot colors per level
+- `getNextLevelThreshold(xp)` — Calculates progress toward next level (0→100→500 XP thresholds)
+
+**API Integration:**
+- On mount: fetches `/api/learn/profile` (GET, JWT auth) for profile + pairs
+- If profile found: fetches `/api/learn/lessons?targetLanguage={lang}` for lesson list
+- `handleStartLesson` fetches `/api/learn/lessons/{id}` for exercises + progress
+- Uses store token for all `Authorization: Bearer` headers
+- Loading states: full-page spinner on initial load, inline spinner for lessons
+
+**Style Guidelines Followed:**
+- WhatsApp color palette (#075E54, #25D366, #D9FDD3, #ECE5DD, #E9EDEF, #F0F2F5, #111B21, #667781, #8696A0)
+- Tailwind CSS classes throughout, responsive layout (grid-cols-1 sm:grid-cols-2)
+- Custom scrollbar (scrollbar-thin), max-h with overflow-y-auto
+- Smooth transitions, hover/active states
+- Bottom spacing for mobile nav (h-16 md:hidden)
+
+**Verification:**
+- `npx tsc --noEmit` — zero errors in learn-tab.tsx
+- `npm run lint` — zero errors/warnings
+- Dev server compiles successfully with 200 responses
+
+---
+## Task ID: 5c
+### Work Task
+Create three learning dialog components for ChatLingo: learn-setup-dialog, learn-pair-dialog, and leaderboard-dialog. All using WhatsApp styling with fixed overlay pattern.
+
+### Work Summary
+Created 3 new dialog components under `src/components/chatlingo/` following the WhatsApp design system and overlay dialog pattern.
+
+**1. `src/components/chatlingo/learn-setup-dialog.tsx` — Learning Profile Setup Dialog**
+- Fixed overlay pattern: `fixed inset-0 z-50 bg-black/40 flex items-center justify-center`
+- WhatsApp green header (#075E54) with 🎓 icon and "Start Learning" title
+- Visual language pair display showing native → target language with flag circles and ArrowRight icon
+- Native language dropdown auto-filled from `user.preferredLanguage`, editable with custom dropdown (all 24 LANGUAGES)
+- Target language dropdown excludes native language from options
+- Info box explaining the learning features with GraduationCap icon
+- "Begin Learning" button: POST to `/api/learn/setup` with `{ targetLanguage, nativeLanguage }`
+- On success: updates `learningProfile` in store via `setLearningProfile`, closes dialog
+- Click-outside detection to close dropdowns
+- Loading state on submit button ("Setting up...")
+
+**2. `src/components/chatlingo/learn-pair-dialog.tsx` — Language Exchange Partner Dialog**
+- Same fixed overlay pattern and green header with 🤝 icon
+- Guard: if no `learningProfile`, shows "Set up your learning profile first" message with AlertCircle icon
+- Fetches contacts from `/api/contacts` with JWT auth on mount
+- Contact list with: avatar (initials fallback), name, preferred language with flag, online status (green dot)
+- Tap contact to select → highlighted with green border and checkmark
+- Exchange preview panel appears: shows language pair visual ("You learn [their language], they learn [your language]")
+- "Pair with [name]" button: POST to `/api/learn/pair` with `{ partnerId }`
+- On success: refreshes pairs via `/api/learn/profile`, closes dialog
+- Loading spinner during contact fetch and pairing submit
+- Empty state for no contacts
+
+**3. `src/components/chatlingo/leaderboard-dialog.tsx` — Leaderboard Dialog**
+- Same fixed overlay pattern and green header with 🏆 icon
+- Tab filter: "🌍 Global" and "👥 Friends" with green underline active indicator
+- Fetches from `/api/learn/leaderboard` with `?friends=true` for friends tab
+- Each entry displays: rank number, avatar (initials or image), name, level with Star icon, streak with Flame icon, XP count
+- Top 3 special styling: 🥇🥈🥉 medals, colored avatar borders (gold/silver/bronze), light gray background
+- Current user highlighted with green background (#25D366/10) and "(You)" label
+- Empty state: "No learners yet. Be the first!" with Trophy icon
+- Level labels: Beginner (L1), Elementary (L2), Intermediate (L3), Advanced (L4), Expert (L5+)
+
+**Consistent Patterns Across All 3 Files:**
+- `'use client'` directive
+- `useChatLingoStore` for state (token, learningProfile, dialog visibility, etc.)
+- JWT `Authorization: Bearer ${token}` header on all API calls
+- WhatsApp color scheme: header #075E54, buttons #075E54/#128C7E, borders #E9EDEF, bg #F0F2F5, text #111B21/#667781
+- Inner card: `bg-white rounded-xl shadow-xl max-w-md w-full mx-4 max-h-[80vh] overflow-y-auto`
+- X close button in header (top-right)
+- lucide-react icons throughout
+- Loading spinners for async operations
+
+**Verification:**
+- `npx tsc --noEmit` — zero TypeScript errors in all 3 new files
+- `npm run lint` — zero errors, zero warnings
+- Dev server compiles successfully with 200 responses

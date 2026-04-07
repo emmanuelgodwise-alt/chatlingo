@@ -19,6 +19,7 @@ import {
   Radio,
   Megaphone,
   X,
+  BookOpen,
 } from 'lucide-react'
 import { useState, useCallback, useEffect } from 'react'
 
@@ -39,6 +40,7 @@ export function Sidebar({ socket }: { socket: SocketType | null }) {
     setShowCreateGroup,
     setShowCreateChannel,
     setShowBroadcast,
+    setActiveTab: setGlobalTab,
   } = useChatLingoStore()
 
   const [activeTab, setActiveTab] = useState<'chats' | 'contacts'>('chats')
@@ -326,6 +328,15 @@ export function Sidebar({ socket }: { socket: SocketType | null }) {
               <Megaphone className="w-4 h-4 text-white" />
             </div>
             Broadcast List
+          </button>
+          <button
+            onClick={() => { setGlobalTab('learn'); setShowFABMenu(false) }}
+            className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-[#111B21] hover:bg-[#F0F2F5] transition-colors"
+          >
+            <div className="w-8 h-8 rounded-full bg-[#FF6B35] flex items-center justify-center">
+              <BookOpen className="w-4 h-4 text-white" />
+            </div>
+            Language Exchange
           </button>
         </div>
       )}
