@@ -360,3 +360,103 @@
     transform: translateY(0);
   }
 }
+
+/* ===== Voice Message Waveform ===== */
+.wa-voice-waveform {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  height: 32px;
+}
+
+.wa-voice-waveform .bar {
+  width: 3px;
+  border-radius: 2px;
+  background-color: #111B21;
+  animation: voiceBarBounce 1.2s ease-in-out infinite;
+}
+
+.wa-voice-waveform .bar:nth-child(1) { animation-delay: 0s; height: 8px; }
+.wa-voice-waveform .bar:nth-child(2) { animation-delay: 0.1s; height: 14px; }
+.wa-voice-waveform .bar:nth-child(3) { animation-delay: 0.2s; height: 20px; }
+.wa-voice-waveform .bar:nth-child(4) { animation-delay: 0.3s; height: 28px; }
+.wa-voice-waveform .bar:nth-child(5) { animation-delay: 0.4s; height: 24px; }
+.wa-voice-waveform .bar:nth-child(6) { animation-delay: 0.5s; height: 16px; }
+.wa-voice-waveform .bar:nth-child(7) { animation-delay: 0.6s; height: 10px; }
+.wa-voice-waveform .bar:nth-child(8) { animation-delay: 0.15s; height: 22px; }
+.wa-voice-waveform .bar:nth-child(9) { animation-delay: 0.35s; height: 18px; }
+.wa-voice-waveform .bar:nth-child(10) { animation-delay: 0.5s; height: 12px; }
+
+@keyframes voiceBarBounce {
+  0%, 100% { transform: scaleY(0.5); }
+  50% { transform: scaleY(1); }
+}
+
+/* ===== Recording Pulse ===== */
+.wa-recording-pulse {
+  animation: recordingPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes recordingPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+/* ===== Status Progress Bar ===== */
+.wa-status-progress {
+  height: 2px;
+  background-color: rgba(255, 255, 255, 0.3);
+  border-radius: 1px;
+  overflow: hidden;
+  flex: 1;
+}
+
+.wa-status-progress .fill {
+  height: 100%;
+  background-color: white;
+  border-radius: 1px;
+  transition: width 0.1s linear;
+}
+
+/* ===== Speaking Indicator ===== */
+.wa-speaking-ring {
+  animation: speakingRing 1.5s ease-in-out infinite;
+}
+
+@keyframes speakingRing {
+  0% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.6); }
+  70% { box-shadow: 0 0 0 8px rgba(37, 211, 102, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); }
+}
+
+/* ===== Live indicator ===== */
+.wa-live-dot {
+  animation: livePulse 2s ease-in-out infinite;
+}
+
+@keyframes livePulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+/* ===== Gradient rotate for spotlight ===== */
+.wa-gradient-rotate {
+  background-size: 200% 200%;
+  animation: gradientRotate 6s ease infinite;
+}
+
+@keyframes gradientRotate {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* ===== Slide-in panel ===== */
+.wa-slide-panel {
+  animation: slideInRight 0.3s ease-out;
+}
+
+@keyframes slideInRight {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}

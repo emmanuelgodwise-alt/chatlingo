@@ -221,3 +221,124 @@ Add voice call and video call features with real-time translation to ChatLingo. 
 - Dev log shows successful compilation with 200 responses
 - Chat service running on port 3003 (confirmed with `lsof -i :3003`)
 - All existing chat functionality preserved
+
+---
+## Task ID: 1-2,5,7-9,11-12
+### Work Task
+Build ALL backend API routes for ChatLingo Phases 2-7: Status/Stories, Groups, Channels/Communities, Broadcast Lists, Explore/Language Matchmaking, Live Rooms, and Cultural Spotlight.
+
+### Work Summary
+Created 20 API route files covering 7 feature areas. All routes use JWT authentication via `getTokenFromHeader`/`verifyToken`, Prisma ORM via `db`, and proper error handling with try/catch. Routes using AI translation leverage `translateText` from `@/lib/translate` or inline `z-ai-web-dev-sdk`.
+
+**1. STATUS/STORIES (3 files):**
+- `src/app/api/status/route.ts` — GET lists statuses from user's contacts + own statuses, filters expired (>24h), includes owner info, viewCount, viewed status. POST creates status with auto-set language and 24h expiry.
+- `src/app/api/status/[id]/route.ts` — GET single status with full details, viewer list, expiry check (returns 410 for expired).
+- `src/app/api/status/[id]/view/route.ts` — POST marks status as viewed using upsert (idempotent).
+
+**2. GROUPS (4 files):**
+- `src/app/api/groups/route.ts` — GET lists groups with member count, last message, unread count. POST creates group with members, GroupMember records, and Conversation (isGroup=true).
+- `src/app/api/groups/[id]/route.ts` — GET group details with members list, languages, roles. PATCH (owner only) updates name/description. DELETE (owner only) deletes group.
+- `src/app/api/groups/[id]/members/route.ts` — GET lists members with languages and roles. POST adds member. DELETE removes member (owner or self).
+- `src/app/api/groups/[id]/settings/route.ts` — PATCH updates current user's language in group.
+
+**3. CHANNELS/COMMUNITIES (4 files):**
+- `src/app/api/channels/route.ts` — GET lists joined channels + discoverable public channels (limit 20). POST creates channel with auto-join for owner.
+- `src/app/api/channels/[id]/route.ts` — GET channel details. POST joins channel. DELETE leaves channel (owner blocked from leaving).
+- `src/app/api/channels/[id]/posts/route.ts` — GET paginated posts (20/page) with auto-translation to viewer's language. POST creates post (members only).
+- `src/app/api/channels/discover/route.ts` — GET discovers public channels with search (`q`) and language (`lang`) filters. Excludes already-joined channels.
+
+**4. BROADCAST LISTS (2 files):**
+- `src/app/api/broadcast/route.ts` — GET lists user's broadcast lists with member details. POST creates list with members.
+- `src/app/api/broadcast/[id]/send/route.ts` — POST sends broadcast message to all members, auto-translates to each member's language. Creates individual messages via conversations. Returns sent count.
+
+**5. EXPLORE / LANGUAGE MATCHMAKING (3 files):**
+- `src/app/api/explore/route.ts` — GET discovers content by type (people/channels/groups/rooms) with search and language filters. For "people": excludes current user and contacts. For "channels": public only. For "groups": excludes joined. For "rooms": live only.
+- `src/app/api/explore/match/route.ts` — GET returns top 10 language exchange partner suggestions. Compatibility scoring based on: my learning languages ↔ their preferred language (+3 each), shared learning languages (+1 each).
+- `src/app/api/explore/word-of-day/route.ts` — GET returns daily rotating phrase from a library of 50 phrases, each with cultural notes. Changes based on day-of-year index.
+
+**6. LIVE ROOMS (3 files):**
+- `src/app/api/rooms/route.ts` — GET lists live rooms with participant/speaker counts. POST creates room with auto-join as speaker.
+- `src/app/api/rooms/[id]/route.ts` — GET room details with speakers/listeners/participants. POST joins room (speaker or listener). DELETE leaves room with ownership transfer.
+- `src/app/api/rooms/[id]/toggle-role/route.ts` — POST toggles between speaker and listener, adjusting speaker count.
+
+**7. CULTURAL SPOTLIGHT (1 file):**
+- `src/app/api/spotlight/route.ts` — GET returns today's cultural spotlight. Uses a library of 20 cultures with 3 traditions each (60 combinations). Generates content via z-ai-web-dev-sdk if none exists for today. Stores in DB and translates to requested language via `translateText`.
+
+**All routes follow consistent patterns:**
+- JWT auth middleware check on every handler
+- NextRequest/NextResponse imports from next/server
+- Async params handling with `params: Promise<{ id: string }>`
+- Proper HTTP status codes (200, 201, 400, 401, 403, 404, 409, 410, 500)
+- Prisma includes for relational data
+- Error type checking with `error instanceof Error`
+
+**Verification:**
+- `npm run lint` — zero errors, zero warnings
+- Dev log shows successful compilation with 200 responses
+- 20 API route files created across 7 feature domains
+
+---
+## Task ID: 3,4,6,10,12
+### Work Task
+Build ALL frontend UI components for ChatLingo Phases 2-7: Status/Stories, Voice Messages, Group Chat, Channels/Communities, Explore/Language Matchmaking, Live Rooms, Cultural Spotlight, and Word of the Day.
+
+### Work Summary
+
+**1. STORE UPDATE (`src/lib/store.ts`)**
+- Added 3 new type exports: `StatusItem`, `RoomParticipant`, `RoomItem`
+- Added navigation tab state: `activeTab` (chats|status|channels|calls|explore) + `setActiveTab`
+- Added Status/Stories state: `statuses[]`, `showStatusViewer`, `activeStatusIndex`, `showCreateStatus` with all setters
+- Added dialog toggles: `showCreateGroup`, `showCreateChannel`, `showExplore`, `showBroadcast`
+- Added Live Room state: `activeRoom`, `isInRoom`, `roomRole`, `isMicOn`, `isHandRaised`, `roomSubtitles[]` with actions `addRoomSubtitle` (keeps last 5 entries)
+- All existing state and actions preserved unchanged
+
+**2. CSS ANIMATIONS (`src/app/globals.css`)**
+- `.wa-voice-waveform` — 10-bar animated waveform for voice messages with staggered delays
+- `.wa-recording-pulse` — red pulsing dot for recording indicator
+- `.wa-status-progress` — status viewer progress bars with `.fill` child
+- `.wa-speaking-ring` — green pulsing ring for active speakers in rooms
+- `.wa-live-dot` — red pulsing dot for live indicators
+- `.wa-gradient-rotate` — rotating gradient background for cultural spotlight
+- `.wa-slide-panel` — slide-in animation for group info panel (right)
+
+**3. NEW COMPONENTS CREATED (13 files):**
+
+- **`status-bar.tsx`** — WhatsApp-style stories row below search bar in sidebar. Loads statuses from `/api/status`, groups by owner, sorts unseen first. Shows "My Status" with + icon, contact avatars with gradient/gray ring based on seen status, "Add" button at end. Horizontal scrollable with `scrollbar-thin`.
+
+- **`status-viewer.tsx`** — Full-screen status viewer overlay (z-[100]). Progress bars at top auto-advance every 5s with `requestAnimationFrame`. Gradient backgrounds (6 color options). Tap left/right third to navigate, center does nothing. Reply button creates/opens conversation with status owner. Mark as viewed via `/api/status/[id]/view`.
+
+- **`create-status-dialog.tsx`** — WhatsApp green header dialog. Live preview with gradient background. Textarea input (500 chars), 6 gradient color picker (emerald/blue/red/purple/orange/pink), "Disappears in 24h" notice. Posts to `/api/status`.
+
+- **`create-group-dialog.tsx`** — WhatsApp "New Group" dialog. Group name input, search contacts, multi-select with pills + X remove, green checkmark on selected. Creates via `POST /api/groups` with memberIds, then refreshes conversations.
+
+- **`group-info-panel.tsx`** — Right slide-in panel (wa-slide-panel). Group avatar, name, description, member count. Language pair display. Member list with Crown icon for owner, language flags. "Add participant" button. Loads from `/api/groups/[id]`.
+
+- **`channels-tab.tsx`** — Full channels view with "My Channels" / "Discover" tabs. Channel list with Hash icon, member count, language flag. Post feed view when selecting a channel (author, content, translation, likes). Follow button on discover. Search bar for discover. Posts loaded from `/api/channels/[id]/posts`.
+
+- **`create-channel-dialog.tsx`** — WhatsApp green header. Name input, description textarea, Public/Private toggle buttons. Posts to `/api/channels`.
+
+- **`explore-tab.tsx`** — Full explore page. Search bar, 5 category pills (People/Groups/Channels/Rooms/Partners). People: grid of user cards with Connect button → creates conversation. Groups: list with Join button. Channels: list with Follow button. Partners: compatibility score, reason, "Say Hello" button. Rooms: live indicator, speaker/listener count, Join buttons. Inline Word of the Day component. All data from `/api/explore` and `/api/explore/match`.
+
+- **`spotlight-card.tsx`** — Rotating gradient card (changes daily). Globe icon + "Today's Cultural Spotlight" header. Culture name, tradition, description. Share and Learn More buttons. Loads from `/api/spotlight`.
+
+- **`word-of-the-day.tsx`** — Card with green header. Phrase in original language, translations in 4-5 languages with flags. Cultural note in gray box. "Practice in Chat" button. Loads from `/api/explore/word-of-day`.
+
+- **`rooms-tab.tsx`** — Live rooms list. Red LIVE badge, room name, description, language. Speaker/listener counts. Listen (gray) and Speak (green) buttons. Join via `POST /api/rooms/[id]`. Search bar. Creates room state on join.
+
+- **`room-screen.tsx`** — Full-screen dark theme (#1F2C34) room experience. Connecting overlay. Speaker avatars with green wa-speaking-ring and waveform animation. Listener count with hand-raised indicator. Bottom controls: mic toggle (green/red), hand raise (yellow), leave (red). For listeners: "Request to Speak" button. Live translated subtitles at bottom (animate-slideUp). Language pair indicator at top.
+
+- **`create-room-dialog.tsx`** — WhatsApp green header with Radio icon. Name input, description textarea, language dropdown (all 24 languages). Creates via `POST /api/rooms` and auto-joins as speaker.
+
+**4. MODIFIED COMPONENTS (3 files):**
+
+- **`chat-area.tsx`** — Added voice message recording: MediaRecorder API on mic button press-and-hold, recording UI (red pulsing dot, timer, trash cancel button), stop on release sends via WebSocket with `messageType: 'voice'`. Voice message bubbles show Play/Pause button + 10-bar CSS waveform animation + duration label. Playback with HTMLAudioElement.
+
+- **`sidebar.tsx`** — Added StatusBar component below search bar (on chats tab). Added FAB menu with 4 options: New Contact, New Group, New Channel, Broadcast List (each with colored icon circles). FAB available on both mobile and desktop. Menu overlay dismisses on click outside.
+
+- **`chat-interface.tsx`** — Complete tab switching: activeTab from store switches between chats/status/channels/calls/explore views. Renders all new components: ChannelsTab, ExploreTab, RoomScreen. All dialogs rendered conditionally. Mobile bottom nav now has 5 tabs (Camera, Chats, Status, Calls, Explore) with globe icon for Explore. Sidebar visible on desktop always, on mobile when no active conversation or non-chats tab.
+
+**5. VERIFICATION:**
+- `npm run lint` — zero errors, zero warnings
+- Dev log shows `✓ Compiled in 128ms` and successful `GET / 200` responses
+- All existing chat, call, and WebSocket functionality preserved
+- 13 new components + 3 modified components + 1 store update + 1 CSS update = 18 files changed

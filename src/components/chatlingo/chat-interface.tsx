@@ -8,6 +8,15 @@ import { AddContactDialog } from '@/components/chatlingo/add-contact-dialog'
 import { LanguageSettingsDialog } from '@/components/chatlingo/language-settings-dialog'
 import { EmptyChatState } from '@/components/chatlingo/empty-chat-state'
 import { CallScreen } from '@/components/chatlingo/call-screen'
+import { StatusViewer } from '@/components/chatlingo/status-viewer'
+import { CreateStatusDialog } from '@/components/chatlingo/create-status-dialog'
+import { CreateGroupDialog } from '@/components/chatlingo/create-group-dialog'
+import { CreateChannelDialog } from '@/components/chatlingo/create-channel-dialog'
+import { CreateRoomDialog } from '@/components/chatlingo/create-room-dialog'
+import { ChannelsTab } from '@/components/chatlingo/channels-tab'
+import { ExploreTab } from '@/components/chatlingo/explore-tab'
+import { RoomsTab } from '@/components/chatlingo/rooms-tab'
+import { RoomScreen } from '@/components/chatlingo/room-screen'
 import type { Socket } from 'socket.io-client'
 
 export function ChatInterface() {
@@ -15,6 +24,8 @@ export function ChatInterface() {
     token,
     user,
     activeConversation,
+    activeTab,
+    setActiveTab,
     showAddContact,
     showLanguageSettings,
     conversations,
@@ -34,6 +45,13 @@ export function ChatInterface() {
     addCallSubtitle,
     setCallDuration,
     setCallTranslationPending,
+    showStatusViewer,
+    showCreateStatus,
+    showCreateGroup,
+    showCreateChannel,
+    showCreateRoom,
+    showBroadcast,
+    isInRoom,
   } = useChatLingoStore()
 
   const socketRef = useRef<Socket | null>(null)
@@ -121,11 +139,7 @@ export function ChatInterface() {
       socketInstance.on('user-online', refreshConversations)
       socketInstance.on('user-offline', refreshConversations)
 
-      // ============================================
       // Call event listeners
-      // ============================================
-
-      // Incoming call
       socketInstance.on('incoming-call', (data: unknown) => {
         const callData = data as {
           callerId: string
@@ -137,7 +151,6 @@ export function ChatInterface() {
           calleeLanguage: string
           offer: RTCSessionDescriptionInit
         }
-        // Store caller ID globally for answering
         ;(window as unknown as Record<string, unknown>).__chatlingo_callerId = callData.callerId
         receiveCall({
           type: callData.callType,
@@ -152,7 +165,6 @@ export function ChatInterface() {
         })
       })
 
-      // Call answered
       socketInstance.on('call-answered', async (data: unknown) => {
         const answerData = data as {
           callerId: string
@@ -160,7 +172,6 @@ export function ChatInterface() {
           conversationId: string
           answer: RTCSessionDescriptionInit
         }
-        // Set remote description with the answer
         try {
           const { setRemoteDescription } = await import('@/lib/webrtc')
           await setRemoteDescription(answerData.answer)
@@ -171,19 +182,16 @@ export function ChatInterface() {
         }
       })
 
-      // Call rejected
       socketInstance.on('call-rejected', (data: unknown) => {
         const rejectData = data as { calleeId: string; reason?: string }
         console.log(`Call rejected: ${rejectData.reason || 'by user'}`)
         endCall()
       })
 
-      // Call ended by other party
       socketInstance.on('call-ended', () => {
         endCall()
       })
 
-      // ICE candidate from remote peer
       socketInstance.on('ice-candidate', async (data: unknown) => {
         const iceData = data as { candidate: RTCIceCandidateInit; from: string }
         try {
@@ -194,7 +202,6 @@ export function ChatInterface() {
         }
       })
 
-      // Translated text from remote peer
       socketInstance.on('call-translated', async (data: unknown) => {
         const translatedData = data as {
           original: string
@@ -205,7 +212,6 @@ export function ChatInterface() {
         }
         addCallSubtitle(translatedData.original, translatedData)
 
-        // Speak the translated text
         try {
           const { speak, isSpeechSynthesisSupported } = await import('@/lib/speech')
           if (isSpeechSynthesisSupported()) {
@@ -218,10 +224,8 @@ export function ChatInterface() {
 
       socketRef.current = socketInstance
 
-      // Store socket globally for use in CallScreen
       ;(window as unknown as Record<string, unknown>).__chatlingo_socket = socketInstance
 
-      // Trigger a re-render by updating conversations (socket is now ready)
       refreshConversations()
     }
 
@@ -253,30 +257,24 @@ export function ChatInterface() {
     }
   }, [activeConversation])
 
-  // ============================================
   // WebRTC + Speech Recognition lifecycle for calls
-  // ============================================
   const cleanupCall = useCallback(async () => {
-    // Stop call timer
     if (callTimerRef.current) {
       clearInterval(callTimerRef.current)
       callTimerRef.current = null
     }
 
-    // Stop speech recognition
     recognitionActiveRef.current = false
     try {
       const { stopRecognition } = await import('@/lib/speech')
       stopRecognition()
     } catch { /* ignore */ }
 
-    // Stop speech synthesis
     try {
       const { stopSpeaking } = await import('@/lib/speech')
       stopSpeaking()
     } catch { /* ignore */ }
 
-    // Close WebRTC
     try {
       const { closePeerConnection } = await import('@/lib/webrtc')
       closePeerConnection()
@@ -285,7 +283,7 @@ export function ChatInterface() {
     webRTCInitializedRef.current = false
   }, [])
 
-  // Initialize call when status changes to 'ringing' (outgoing call)
+  // Initialize call when status changes to 'ringing'
   useEffect(() => {
     if (callStatus === 'ringing' && !webRTCInitializedRef.current && user && callPartner) {
       webRTCInitializedRef.current = true
@@ -299,10 +297,8 @@ export function ChatInterface() {
             createOffer,
           } = await import('@/lib/webrtc')
 
-          // Get local media
           await requestLocalStream(isVideo)
 
-          // Create peer connection
           const pc = createPeerConnection({
             onIceCandidate: (candidate) => {
               socketRef.current?.emit('ice-candidate', {
@@ -311,21 +307,16 @@ export function ChatInterface() {
                 userId: user!.id,
               })
             },
-            onRemoteStream: () => {
-              // Remote stream received
-            },
+            onRemoteStream: () => {},
             onIceConnectionStateChange: (state) => {
               console.log('ICE connection state:', state)
               if (state === 'disconnected' || state === 'failed') {
                 endCall()
               }
             },
-            onTrack: () => {
-              // Track received
-            },
+            onTrack: () => {},
           })
 
-          // Create and send offer
           const offer = await createOffer()
 
           socketRef.current?.emit('call-offer', {
@@ -348,50 +339,34 @@ export function ChatInterface() {
     }
   }, [callStatus, user, callPartner, callType, callConversationId, callMyLanguage, callTheirLanguage, endCall])
 
-  // Initialize call when status changes to 'connected' (answerer)
   useEffect(() => {
     if (callStatus === 'connected' && !webRTCInitializedRef.current && user && callPartner) {
-      // This is the callee side — WebRTC was already set up when answering
-      // If not, we need to handle it
       webRTCInitializedRef.current = true
     }
   }, [callStatus, user, callPartner])
 
-  // Handle accept call (callee WebRTC setup) - triggered by answerCall
-  useEffect(() => {
-    if (callStatus !== 'connected' || webRTCInitializedRef.current) return
-    // Already handled above
-  }, [callStatus])
-
   // Start call duration timer and speech recognition when connected
   useEffect(() => {
     if (callStatus === 'connected') {
-      // Start duration timer
       let duration = 0
       callTimerRef.current = setInterval(() => {
         duration++
         setCallDuration(duration)
       }, 1000)
 
-      // Start speech recognition for own voice
       const startRecognition = async () => {
         try {
           const { startRecognition: startRec, isSpeechRecognitionSupported } = await import('@/lib/speech')
-          if (!isSpeechRecognitionSupported()) {
-            console.warn('Speech recognition not supported')
-            return
-          }
+          if (!isSpeechRecognitionSupported()) return
 
           recognitionActiveRef.current = true
 
-          // Use socket to send translations
           startRecognition(callMyLanguage, (text, isFinal) => {
             if (!isFinal || !recognitionActiveRef.current) return
             if (!socketRef.current || !user || !callPartner) return
 
             setCallTranslationPending(true)
 
-            // Send to server for translation
             socketRef.current.emit('call-translation', {
               text,
               sourceLanguage: callMyLanguage,
@@ -406,7 +381,6 @@ export function ChatInterface() {
         }
       }
 
-      // Small delay to ensure everything is set up
       setTimeout(startRecognition, 1500)
 
       return () => {
@@ -416,7 +390,6 @@ export function ChatInterface() {
         }
       }
     } else {
-      // Clean up when call ends
       if (callTimerRef.current) {
         clearInterval(callTimerRef.current)
         callTimerRef.current = null
@@ -431,53 +404,106 @@ export function ChatInterface() {
     }
   }, [isInCall, cleanupCall])
 
+  // Determine what to show in the main content area
+  const renderMainContent = () => {
+    if (activeTab === 'status') {
+      return (
+        <div className="flex-1 flex flex-col h-full">
+          <EmptyChatState showWelcome={false} />
+        </div>
+      )
+    }
+    if (activeTab === 'channels') {
+      return <ChannelsTab />
+    }
+    if (activeTab === 'calls') {
+      return (
+        <div className="flex-1 flex flex-col h-full">
+          <EmptyChatState showWelcome={false} />
+        </div>
+      )
+    }
+    if (activeTab === 'explore') {
+      return <ExploreTab />
+    }
+    // Default: chats
+    return null
+  }
+
   return (
     <div className="h-screen flex bg-white">
-      {/* Sidebar */}
+      {/* Sidebar — visible on desktop always, on mobile only when no chat or on explore/channels/status tabs */}
       <div className={`hidden md:flex`}>
         <Sidebar socket={socketRefForChildren.current} />
       </div>
 
-      {/* Mobile sidebar (shown when no active conversation) */}
-      {!activeConversation && (
+      {/* Mobile sidebar */}
+      {(!activeConversation || activeTab !== 'chats') && (
         <div className="md:hidden w-full">
           <Sidebar socket={socketRefForChildren.current} />
         </div>
       )}
 
-      {/* Main Chat Area */}
-      <div className={`flex-1 flex flex-col min-w-0 ${!activeConversation ? 'hidden md:flex' : ''}`}>
-        {activeConversation ? (
-          <ChatArea socket={socketRefForChildren.current} />
-        ) : conversations.length === 0 ? (
-          <EmptyChatState showWelcome />
-        ) : (
-          <EmptyChatState showWelcome={false} />
-        )}
-      </div>
+      {/* Main Content Area */}
+      {activeTab === 'chats' && (
+        <div className={`flex-1 flex flex-col min-w-0 ${!activeConversation ? 'hidden md:flex' : ''}`}>
+          {activeConversation ? (
+            <ChatArea socket={socketRefForChildren.current} />
+          ) : conversations.length === 0 ? (
+            <EmptyChatState showWelcome />
+          ) : (
+            <EmptyChatState showWelcome={false} />
+          )}
+        </div>
+      )}
+
+      {activeTab !== 'chats' && (
+        <div className={`flex-1 flex flex-col min-w-0 ${!activeConversation ? '' : 'hidden md:flex'}`}>
+          {renderMainContent()}
+        </div>
+      )}
 
       {/* Dialogs */}
       {showAddContact && <AddContactDialog />}
       {showLanguageSettings && <LanguageSettingsDialog />}
+      {showCreateStatus && <CreateStatusDialog />}
+      {showCreateGroup && <CreateGroupDialog />}
+      {showCreateChannel && <CreateChannelDialog />}
+      {showCreateRoom && <CreateRoomDialog />}
+
+      {/* Status Viewer Overlay */}
+      {showStatusViewer && <StatusViewer />}
 
       {/* Call Screen Overlay */}
       {isInCall && <CallScreen />}
 
+      {/* Room Screen Overlay */}
+      {isInRoom && <RoomScreen />}
+
       {/* Mobile Bottom Navigation */}
       <div className="wa-bottom-nav md:hidden">
-        <button className="wa-bottom-nav-item inactive">
+        <button
+          onClick={() => setActiveTab('chats')}
+          className={`wa-bottom-nav-item ${activeTab === 'chats' ? 'active' : 'inactive'}`}
+        >
           <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
             <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
           </svg>
           <span className="text-[11px]">Camera</span>
         </button>
-        <button className="wa-bottom-nav-item active">
+        <button
+          onClick={() => setActiveTab('chats')}
+          className={`wa-bottom-nav-item ${activeTab === 'chats' ? 'active' : 'inactive'}`}
+        >
           <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
             <path d="M19.07 4.93C17.22 3 14.66 1.88 12 1.88S6.78 3 4.93 4.93C3 6.78 1.88 9.34 1.88 12S3 17.22 4.93 19.07C6.78 21 9.34 22.12 12 22.12S17.22 21 19.07 19.07C21 17.22 22.12 14.66 22.12 12S21 6.78 19.07 4.93zM12 20.12c-2.24 0-4.3-.86-5.83-2.27L12 12l5.83 5.85C16.3 19.26 14.24 20.12 12 20.12z"/>
           </svg>
           <span className="text-[11px]">Chats</span>
         </button>
-        <button className="wa-bottom-nav-item inactive">
+        <button
+          onClick={() => setActiveTab('status')}
+          className={`wa-bottom-nav-item ${activeTab === 'status' ? 'active' : 'inactive'}`}
+        >
           <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2">
             <circle cx="12" cy="12" r="9"/>
             <circle cx="12" cy="12" r="3" fill="currentColor"/>
@@ -488,11 +514,24 @@ export function ChatInterface() {
           </svg>
           <span className="text-[11px]">Status</span>
         </button>
-        <button className="wa-bottom-nav-item inactive">
+        <button
+          onClick={() => setActiveTab('calls')}
+          className={`wa-bottom-nav-item ${activeTab === 'calls' ? 'active' : 'inactive'}`}
+        >
           <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2">
             <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
           </svg>
           <span className="text-[11px]">Calls</span>
+        </button>
+        <button
+          onClick={() => setActiveTab('explore')}
+          className={`wa-bottom-nav-item ${activeTab === 'explore' ? 'active' : 'inactive'}`}
+        >
+          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2">
+            <circle cx="12" cy="12" r="10"/>
+            <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+          </svg>
+          <span className="text-[11px]">Explore</span>
         </button>
       </div>
     </div>

@@ -3,6 +3,7 @@
 import { useChatLingoStore } from '@/lib/store'
 import { ContactItem } from '@/components/chatlingo/contact-item'
 import { ConversationItem } from '@/components/chatlingo/conversation-item'
+import { StatusBar } from '@/components/chatlingo/status-bar'
 import { Input } from '@/components/ui/input'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { getLanguageFlag } from '@/lib/languages'
@@ -12,6 +13,12 @@ import {
   MessageCircle,
   Users,
   MoreVertical,
+  UserPlus,
+  UsersRound,
+  Hash,
+  Radio,
+  Megaphone,
+  X,
 } from 'lucide-react'
 import { useState, useCallback, useEffect } from 'react'
 
@@ -29,10 +36,14 @@ export function Sidebar({ socket }: { socket: SocketType | null }) {
     setShowAddContact,
     logout,
     setActiveConversation,
+    setShowCreateGroup,
+    setShowCreateChannel,
+    setShowBroadcast,
   } = useChatLingoStore()
 
   const [activeTab, setActiveTab] = useState<'chats' | 'contacts'>('chats')
   const [searchQuery, setSearchQuery] = useState('')
+  const [showFABMenu, setShowFABMenu] = useState(false)
   const [contacts, setContacts] = useState<
     Array<{
       id: string
@@ -104,7 +115,6 @@ export function Sidebar({ socket }: { socket: SocketType | null }) {
       })
 
       if (res.ok) {
-        // Switch to chats tab and refresh conversations
         setActiveTab('chats')
         const convRes = await fetch('/api/conversations', {
           headers: { Authorization: `Bearer ${token}` },
@@ -113,7 +123,6 @@ export function Sidebar({ socket }: { socket: SocketType | null }) {
           const data = await convRes.json()
           const { setConversations, setActiveConversation } = useChatLingoStore.getState()
           setConversations(data.conversations)
-          // Find the conversation with this contact
           const conv = data.conversations.find(
             (c: { otherUser: { id: string } }) => c.otherUser.id === contactId
           )
@@ -219,6 +228,9 @@ export function Sidebar({ socket }: { socket: SocketType | null }) {
         </div>
       </div>
 
+      {/* Status Bar (below search on chats tab) */}
+      {activeTab === 'chats' && <StatusBar />}
+
       {/* List */}
       <div className="flex-1 overflow-y-auto scrollbar-thin">
         {activeTab === 'chats' ? (
@@ -273,13 +285,68 @@ export function Sidebar({ socket }: { socket: SocketType | null }) {
         )}
       </div>
 
-      {/* FAB - New Chat */}
+      {/* FAB with menu */}
+      {showFABMenu && (
+        <div className="fixed inset-0 z-40" onClick={() => setShowFABMenu(false)} />
+      )}
+      {showFABMenu && (
+        <div className="absolute bottom-24 right-5 bg-white rounded-xl shadow-lg py-2 z-50 w-52 border border-[#E9EDEF] animate-fadeIn">
+          <button
+            onClick={() => { setShowAddContact(true); setShowFABMenu(false) }}
+            className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-[#111B21] hover:bg-[#F0F2F5] transition-colors"
+          >
+            <div className="w-8 h-8 rounded-full bg-[#075E54] flex items-center justify-center">
+              <UserPlus className="w-4 h-4 text-white" />
+            </div>
+            New Contact
+          </button>
+          <button
+            onClick={() => { setShowCreateGroup(true); setShowFABMenu(false) }}
+            className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-[#111B21] hover:bg-[#F0F2F5] transition-colors"
+          >
+            <div className="w-8 h-8 rounded-full bg-[#25D366] flex items-center justify-center">
+              <UsersRound className="w-4 h-4 text-white" />
+            </div>
+            New Group
+          </button>
+          <button
+            onClick={() => { setShowCreateChannel(true); setShowFABMenu(false) }}
+            className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-[#111B21] hover:bg-[#F0F2F5] transition-colors"
+          >
+            <div className="w-8 h-8 rounded-full bg-[#128C7E] flex items-center justify-center">
+              <Hash className="w-4 h-4 text-white" />
+            </div>
+            New Channel
+          </button>
+          <button
+            onClick={() => { setShowBroadcast(true); setShowFABMenu(false) }}
+            className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-[#111B21] hover:bg-[#F0F2F5] transition-colors"
+          >
+            <div className="w-8 h-8 rounded-full bg-[#53BDEB] flex items-center justify-center">
+              <Megaphone className="w-4 h-4 text-white" />
+            </div>
+            Broadcast List
+          </button>
+        </div>
+      )}
+
+      {/* FAB - New Chat / Actions */}
       <button
         className="wa-fab md:hidden"
-        onClick={() => setShowAddContact(true)}
-        title="New Chat"
+        onClick={() => setShowFABMenu(!showFABMenu)}
+        title="Actions"
       >
-        <MessageCircle className="w-6 h-6" />
+        {showFABMenu ? <X className="w-6 h-6" /> : <MessageCircle className="w-6 h-6" />}
+      </button>
+
+      {/* Desktop FAB */}
+      <button
+        className="hidden md:flex wa-fab"
+        onClick={() => setShowFABMenu(!showFABMenu)}
+        title="Actions"
+        style={{ position: 'absolute', bottom: '70px', right: '20px' }}
+      >
+        {showFABMenu ? <X className="w-6 h-6" /> : <MessageCircle className="w-6 h-6" />}
       </button>
 
       {/* Current User Bar (bottom) */}

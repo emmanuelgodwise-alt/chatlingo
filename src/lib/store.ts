@@ -59,6 +59,46 @@ export interface CallPartner {
   avatar?: string | null
 }
 
+// ============================================
+// Status Types
+// ============================================
+export interface StatusItem {
+  id: string
+  owner: { id: string; name: string; avatar?: string | null }
+  content: string
+  mediaUrl?: string | null
+  mediaType?: string
+  language: string
+  bgGradient: string
+  createdAt: string
+  expiresAt: string
+  viewCount: number
+  viewed: boolean
+}
+
+// ============================================
+// Room Types
+// ============================================
+export interface RoomParticipant {
+  id: string
+  name: string
+  avatar?: string | null
+  role: 'speaker' | 'listener'
+  preferredLanguage: string
+}
+
+export interface RoomItem {
+  id: string
+  name: string
+  description?: string
+  language: string
+  speakerCount: number
+  listenerCount: number
+  isLive: boolean
+  owner: { id: string; name: string; avatar?: string | null }
+  participants: RoomParticipant[]
+}
+
 interface CallLingoState {
   // Auth
   view: AppView
@@ -90,6 +130,44 @@ interface CallLingoState {
   setShowLanguageSettings: (show: boolean) => void
   sidebarOpen: boolean
   setSidebarOpen: (open: boolean) => void
+
+  // Navigation Tabs
+  activeTab: 'chats' | 'status' | 'channels' | 'calls' | 'explore'
+  setActiveTab: (tab: 'chats' | 'status' | 'channels' | 'calls' | 'explore') => void
+
+  // Status/Stories
+  statuses: StatusItem[]
+  setStatuses: (statuses: StatusItem[]) => void
+  showStatusViewer: boolean
+  setShowStatusViewer: (show: boolean) => void
+  activeStatusIndex: number
+  setActiveStatusIndex: (index: number) => void
+  showCreateStatus: boolean
+  setShowCreateStatus: (show: boolean) => void
+
+  // Group/Channel/Room/Explore dialogs
+  showCreateGroup: boolean
+  setShowCreateGroup: (show: boolean) => void
+  showCreateChannel: boolean
+  setShowCreateChannel: (show: boolean) => void
+  showExplore: boolean
+  setShowExplore: (show: boolean) => void
+  showBroadcast: boolean
+  setShowBroadcast: (show: boolean) => void
+
+  // Room state
+  activeRoom: RoomItem | null
+  setActiveRoom: (room: RoomItem | null) => void
+  isInRoom: boolean
+  setIsInRoom: (inRoom: boolean) => void
+  roomRole: 'speaker' | 'listener' | null
+  setRoomRole: (role: 'speaker' | 'listener' | null) => void
+  isMicOn: boolean
+  setIsMicOn: (on: boolean) => void
+  isHandRaised: boolean
+  setIsHandRaised: (raised: boolean) => void
+  roomSubtitles: Array<{ original: string; translated: string; speakerName: string }>
+  addRoomSubtitle: (original: string, translated: string, speakerName: string) => void
 
   // Call State
   isInCall: boolean
@@ -183,6 +261,50 @@ export const useChatLingoStore = create<CallLingoState>((set) => ({
   setShowLanguageSettings: (show) => set({ showLanguageSettings: show }),
   sidebarOpen: true,
   setSidebarOpen: (open) => set({ sidebarOpen: open }),
+
+  // Navigation Tabs
+  activeTab: 'chats',
+  setActiveTab: (tab) => set({ activeTab: tab }),
+
+  // Status/Stories
+  statuses: [],
+  setStatuses: (statuses) => set({ statuses }),
+  showStatusViewer: false,
+  setShowStatusViewer: (show) => set({ showStatusViewer: show }),
+  activeStatusIndex: 0,
+  setActiveStatusIndex: (index) => set({ activeStatusIndex: index }),
+  showCreateStatus: false,
+  setShowCreateStatus: (show) => set({ showCreateStatus: show }),
+
+  // Group/Channel/Room/Explore dialogs
+  showCreateGroup: false,
+  setShowCreateGroup: (show) => set({ showCreateGroup: show }),
+  showCreateChannel: false,
+  setShowCreateChannel: (show) => set({ showCreateChannel: show }),
+  showExplore: false,
+  setShowExplore: (show) => set({ showExplore: show }),
+  showBroadcast: false,
+  setShowBroadcast: (show) => set({ showBroadcast: show }),
+
+  // Room state
+  activeRoom: null,
+  setActiveRoom: (room) => set({ activeRoom: room }),
+  isInRoom: false,
+  setIsInRoom: (inRoom) => set({ isInRoom: inRoom }),
+  roomRole: null,
+  setRoomRole: (role) => set({ roomRole: role }),
+  isMicOn: true,
+  setIsMicOn: (on) => set({ isMicOn: on }),
+  isHandRaised: false,
+  setIsHandRaised: (raised) => set({ isHandRaised: raised }),
+  roomSubtitles: [],
+  addRoomSubtitle: (original, translated, speakerName) =>
+    set((state) => ({
+      roomSubtitles: [
+        ...state.roomSubtitles.slice(-4),
+        { original, translated, speakerName },
+      ],
+    })),
 
   // Call State - Initial values
   isInCall: false,

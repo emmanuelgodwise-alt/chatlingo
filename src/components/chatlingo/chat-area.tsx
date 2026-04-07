@@ -20,6 +20,9 @@ import {
   CheckCheck,
   Check,
   Lock,
+  Play,
+  Pause,
+  Trash2,
 } from 'lucide-react'
 
 interface SocketType {
@@ -50,6 +53,18 @@ export function ChatArea({ socket }: { socket: SocketType | null }) {
   const scrollRef = useRef<HTMLDivElement>(null)
   const typingTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const inputRef = useRef<HTMLInputElement>(null)
+
+  // Voice message state
+  const [isRecording, setIsRecording] = useState(false)
+  const [recordingTime, setRecordingTime] = useState(0)
+  const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(null)
+  const [audioChunks, setAudioChunks] = useState<Blob[]>([])
+  const recordingTimerRef = useRef<ReturnType<typeof setInterval> | null>(null)
+  const micPressRef = useRef(false)
+
+  // Voice message playback state
+  const [playingMessageId, setPlayingMessageId] = useState<string | null>(null)
+  const [audioEl, setAudioEl] = useState<HTMLAudioElement | null>(null)
 
   // Load messages when conversation changes
   useEffect(() => {
@@ -174,7 +189,6 @@ export function ChatArea({ socket }: { socket: SocketType | null }) {
     setInputValue('')
     setSending(true)
 
-    // Emit stop-typing
     socket.emit('stop-typing', {
       conversationId: activeConversation.id,
       userId: user.id,
@@ -189,7 +203,6 @@ export function ChatArea({ socket }: { socket: SocketType | null }) {
         receiverLanguage: activeConversation.theirLanguage,
       })
     } catch {
-      // Fallback: save via REST API
       try {
         const res = await fetch(
           `/api/conversations/${activeConversation.id}/messages`,
@@ -225,6 +238,100 @@ export function ChatArea({ socket }: { socket: SocketType | null }) {
     }
   }
 
+  // Voice recording: start on press
+  const startRecording = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
+      const recorder = new MediaRecorder(stream)
+      const chunks: Blob[] = []
+
+      recorder.ondataavailable = (event) => {
+        if (event.data.size > 0) chunks.push(event.data)
+      }
+
+      recorder.onstop = async () => {
+        stream.getTracks().forEach((t) => t.stop())
+        const audioBlob = new Blob(chunks, { type: 'audio/webm' })
+
+        if (!socket || !activeConversation || !user) return
+
+        // Send voice message
+        socket.emit('send-message', {
+          conversationId: activeConversation.id,
+          senderId: user.id,
+          content: `🎤 Voice message`,
+          senderLanguage: activeConversation.myLanguage,
+          receiverLanguage: activeConversation.theirLanguage,
+          messageType: 'voice',
+          audioData: audioBlob,
+        })
+
+        setAudioChunks([])
+      }
+
+      recorder.start()
+      setMediaRecorder(recorder)
+      setAudioChunks([])
+      setIsRecording(true)
+      setRecordingTime(0)
+
+      recordingTimerRef.current = setInterval(() => {
+        setRecordingTime((prev) => prev + 1)
+      }, 1000)
+    } catch {
+      // Microphone access denied
+    }
+  }
+
+  const stopRecording = () => {
+    if (mediaRecorder && mediaRecorder.state === 'recording') {
+      mediaRecorder.stop()
+    }
+    setIsRecording(false)
+    if (recordingTimerRef.current) {
+      clearInterval(recordingTimerRef.current)
+      recordingTimerRef.current = null
+    }
+    setMediaRecorder(null)
+  }
+
+  // Mic button handlers
+  const handleMicDown = (e: React.MouseEvent | React.TouchEvent) => {
+    e.preventDefault()
+    micPressRef.current = true
+    startRecording()
+  }
+
+  const handleMicUp = () => {
+    if (micPressRef.current) {
+      micPressRef.current = false
+      stopRecording()
+    }
+  }
+
+  const formatRecordingTime = (seconds: number) => {
+    const m = Math.floor(seconds / 60).toString().padStart(2, '0')
+    const s = (seconds % 60).toString().padStart(2, '0')
+    return `${m}:${s}`
+  }
+
+  // Voice playback
+  const handlePlayVoice = (messageId: string, audioUrl?: string) => {
+    if (playingMessageId === messageId) {
+      audioEl?.pause()
+      setPlayingMessageId(null)
+      return
+    }
+    if (audioEl) audioEl.pause()
+    if (audioUrl) {
+      const newAudio = new Audio(audioUrl)
+      newAudio.play()
+      setAudioEl(newAudio)
+      setPlayingMessageId(messageId)
+      newAudio.onended = () => setPlayingMessageId(null)
+    }
+  }
+
   const formatMessageTime = (dateStr: string) => {
     const date = new Date(dateStr)
     if (isToday(date)) return format(date, 'HH:mm')
@@ -247,7 +354,6 @@ export function ChatArea({ socket }: { socket: SocketType | null }) {
     .toUpperCase()
     .slice(0, 2)
 
-  // Determine if this is the first message from this sender in a group (for tail)
   const isFirstFromSender = (index: number) => {
     if (index === 0) return true
     return messages[index - 1]?.senderId !== messages[index]?.senderId
@@ -255,7 +361,7 @@ export function ChatArea({ socket }: { socket: SocketType | null }) {
 
   return (
     <div className="flex-1 flex flex-col h-full">
-      {/* ===== WhatsApp Chat Header ===== */}
+      {/* Header */}
       <div className="bg-[#075E54] px-2 sm:px-4 py-2 flex items-center gap-2 wa-shadow-header shrink-0">
         <button
           className="md:hidden p-1.5 text-white/80 hover:text-white rounded-full hover:bg-white/10 transition-colors"
@@ -285,14 +391,12 @@ export function ChatArea({ socket }: { socket: SocketType | null }) {
             ) : (
               <span className="text-xs text-white/60">last seen recently</span>
             )}
-            {/* Subtle language indicator */}
             <span className="text-white/40 text-xs ml-1">
               {getLanguageFlag(myLanguage)} ↔ {getLanguageFlag(theirLanguage)}
             </span>
           </div>
         </div>
 
-        {/* Header Actions */}
         <div className="flex items-center gap-0.5">
           <button
             onClick={() => {
@@ -362,13 +466,6 @@ export function ChatArea({ socket }: { socket: SocketType | null }) {
                     <Search className="w-4 h-4 text-[#667781]" />
                     Search
                   </button>
-                  <button
-                    onClick={() => setShowHeaderMenu(false)}
-                    className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-[#111B21] hover:bg-[#F0F2F5] transition-colors"
-                  >
-                    <Search className="w-4 h-4 text-[#667781]" />
-                    Contact info
-                  </button>
                 </div>
               </>
             )}
@@ -376,7 +473,7 @@ export function ChatArea({ socket }: { socket: SocketType | null }) {
         </div>
       </div>
 
-      {/* ===== Chat Messages Area with WhatsApp Wallpaper ===== */}
+      {/* Messages Area */}
       <div
         ref={scrollRef}
         className="flex-1 overflow-y-auto scrollbar-thin wa-chat-bg px-4 sm:px-8 py-3"
@@ -403,10 +500,8 @@ export function ChatArea({ socket }: { socket: SocketType | null }) {
             const isMine = message.senderId === user?.id
             const isFirst = isFirstFromSender(index)
             const hasOriginal = showOriginal[message.id]
+            const isVoiceMessage = message.content.startsWith('🎤 Voice message')
 
-            // Determine what to display:
-            // - For sent messages: show original text (what user typed)
-            // - For received messages: show translatedContent if exists, else original
             const displayText = isMine
               ? message.content
               : (message.translatedContent || message.content)
@@ -423,11 +518,10 @@ export function ChatArea({ socket }: { socket: SocketType | null }) {
                 className={`flex mb-0.5 ${isMine ? 'justify-end' : 'justify-start'}`}
               >
                 <div
-                  className={`flex flex-col max-w-[85%] sm:max-w-[65%] ${
-                    isMine ? 'items-end' : 'items-start'
+                  className={`flex flex-col ${isMine ? 'items-end' : 'items-start'} ${
+                    isVoiceMessage ? 'max-w-[85%] sm:max-w-[70%]' : 'max-w-[85%] sm:max-w-[65%]'
                   }`}
                 >
-                  {/* Sender name for group chats */}
                   {!isMine && isFirst && (
                     <p className="text-[12px] text-[#53BDEB] font-medium mb-0.5 ml-3">
                       {message.sender?.name || 'Unknown'}
@@ -441,14 +535,38 @@ export function ChatArea({ socket }: { socket: SocketType | null }) {
                         ? `bg-[#D9FDD3] ${isFirst ? 'wa-bubble-tail-right rounded-tr-none' : 'rounded-tr-md'} rounded-tl-lg rounded-bl-lg rounded-br-lg`
                         : `bg-white ${isFirst ? 'wa-bubble-tail-left rounded-tl-none' : 'rounded-tl-md'} rounded-tr-lg rounded-bl-lg rounded-br-lg`
                     }`}
-                    style={{ minWidth: '80px' }}
+                    style={{ minWidth: isVoiceMessage ? '200px' : '80px' }}
                   >
-                    {/* Message content */}
-                    <p className="text-[14.2px] text-[#111B21] whitespace-pre-wrap break-words leading-[19px] pr-12">
-                      {displayText}
-                    </p>
+                    {isVoiceMessage ? (
+                      /* Voice Message UI */
+                      <div className="flex items-center gap-2 py-1 min-w-[180px]">
+                        <button
+                          onClick={() => handlePlayVoice(message.id)}
+                          className="w-8 h-8 rounded-full bg-[#075E54] flex items-center justify-center shrink-0"
+                        >
+                          {playingMessageId === message.id ? (
+                            <Pause className="w-4 h-4 text-white" />
+                          ) : (
+                            <Play className="w-4 h-4 text-white ml-0.5" />
+                          )}
+                        </button>
+                        <div className="flex-1">
+                          <div className="wa-voice-waveform">
+                            {[...Array(10)].map((_, i) => (
+                              <div key={i} className="bar" />
+                            ))}
+                          </div>
+                        </div>
+                        <span className="text-[11px] text-[#667781] shrink-0">0:12</span>
+                      </div>
+                    ) : (
+                      /* Text Message */
+                      <p className="text-[14.2px] text-[#111B21] whitespace-pre-wrap break-words leading-[19px] pr-12">
+                        {displayText}
+                      </p>
+                    )}
 
-                    {/* Original text (tap to reveal) - only for received messages with translation */}
+                    {/* Original text (tap to reveal) */}
                     {!isMine && hasTranslation && hasOriginal && (
                       <div className="mt-1.5 pt-1.5 border-t border-[#E9EDEF]">
                         <p className="text-[12px] text-[#8696A0] italic whitespace-pre-wrap break-words leading-[16px]">
@@ -457,7 +575,6 @@ export function ChatArea({ socket }: { socket: SocketType | null }) {
                       </div>
                     )}
 
-                    {/* Tap to reveal button - only for received messages with translation */}
                     {!isMine && hasTranslation && !hasOriginal && (
                       <button
                         onClick={() => toggleOriginal(message.id)}
@@ -468,8 +585,8 @@ export function ChatArea({ socket }: { socket: SocketType | null }) {
                       </button>
                     )}
 
-                    {/* Time + ticks - bottom right of bubble */}
-                    <div className={`flex items-center gap-0.5 justify-end -mt-1 ${!isMine && hasTranslation && hasOriginal ? 'mt-0' : ''}`}>
+                    {/* Time + ticks */}
+                    <div className="flex items-center gap-0.5 justify-end -mt-1">
                       <span className={`text-[11px] ${isMine ? 'text-black/45' : 'text-[#667781]'}`}>
                         {formatMessageTime(message.createdAt)}
                       </span>
@@ -498,53 +615,69 @@ export function ChatArea({ socket }: { socket: SocketType | null }) {
         </div>
       </div>
 
-      {/* ===== WhatsApp Input Bar ===== */}
-      <div className="bg-[#F0F2F5] px-2 sm:px-4 py-2 flex items-center gap-1 sm:gap-2 shrink-0">
-        {/* Emoji */}
-        <button className="p-2 text-[#667781] hover:text-[#111B21] rounded-full hover:bg-[#E9EDEF] transition-colors shrink-0">
-          <Smile className="w-6 h-6" />
-        </button>
-
-        {/* Attach */}
-        <button className="p-2 text-[#667781] hover:text-[#111B21] rounded-full hover:bg-[#E9EDEF] transition-colors shrink-0">
-          <Paperclip className="w-5 h-5 rotate-45" />
-        </button>
-
-        {/* Text Input */}
-        <div className="flex-1 relative">
-          <input
-            ref={inputRef}
-            value={inputValue}
-            onChange={(e) => {
-              setInputValue(e.target.value)
-              handleTypingInput()
-            }}
-            onKeyDown={handleKeyDown}
-            placeholder="Type a message"
-            className="w-full h-11 px-4 bg-white rounded-full border-none text-[15px] text-[#111B21] placeholder:text-[#667781] focus:outline-none focus:ring-0 shadow-sm"
-            disabled={sending}
-          />
-          {/* Subtle language flag watermark */}
-          <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[#8696A0] text-xs pointer-events-none">
-            {getLanguageFlag(myLanguage)}
-          </span>
-        </div>
-
-        {/* Send / Mic */}
-        {inputValue.trim() ? (
+      {/* Recording UI */}
+      {isRecording && (
+        <div className="bg-[#F0F2F5] px-4 py-3 flex items-center gap-3 border-t border-[#E9EDEF] shrink-0">
+          <div className="w-3 h-3 rounded-full bg-red-500 wa-recording-pulse" />
+          <span className="text-sm font-medium text-[#111B21]">{formatRecordingTime(recordingTime)}</span>
+          <div className="flex-1" />
           <button
-            onClick={handleSend}
-            disabled={sending}
-            className="p-2.5 bg-[#075E54] hover:bg-[#064E46] text-white rounded-full transition-colors shrink-0 shadow-sm"
+            onClick={stopRecording}
+            className="p-2 text-red-500 hover:bg-red-50 rounded-full transition-colors"
           >
-            <SendHorizonal className="w-5 h-5" />
+            <Trash2 className="w-5 h-5" />
           </button>
-        ) : (
-          <button className="p-2.5 text-[#667781] hover:text-[#111B21] rounded-full hover:bg-[#E9EDEF] transition-colors shrink-0">
-            <Mic className="w-6 h-6" />
+        </div>
+      )}
+
+      {/* Input Bar */}
+      {!isRecording && (
+        <div className="bg-[#F0F2F5] px-2 sm:px-4 py-2 flex items-center gap-1 sm:gap-2 shrink-0">
+          <button className="p-2 text-[#667781] hover:text-[#111B21] rounded-full hover:bg-[#E9EDEF] transition-colors shrink-0">
+            <Smile className="w-6 h-6" />
           </button>
-        )}
-      </div>
+          <button className="p-2 text-[#667781] hover:text-[#111B21] rounded-full hover:bg-[#E9EDEF] transition-colors shrink-0">
+            <Paperclip className="w-5 h-5 rotate-45" />
+          </button>
+          <div className="flex-1 relative">
+            <input
+              ref={inputRef}
+              value={inputValue}
+              onChange={(e) => {
+                setInputValue(e.target.value)
+                handleTypingInput()
+              }}
+              onKeyDown={handleKeyDown}
+              placeholder="Type a message"
+              className="w-full h-11 px-4 bg-white rounded-full border-none text-[15px] text-[#111B21] placeholder:text-[#667781] focus:outline-none focus:ring-0 shadow-sm"
+              disabled={sending}
+            />
+            <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[#8696A0] text-xs pointer-events-none">
+              {getLanguageFlag(myLanguage)}
+            </span>
+          </div>
+          {inputValue.trim() ? (
+            <button
+              onClick={handleSend}
+              disabled={sending}
+              className="p-2.5 bg-[#075E54] hover:bg-[#064E46] text-white rounded-full transition-colors shrink-0 shadow-sm"
+            >
+              <SendHorizonal className="w-5 h-5" />
+            </button>
+          ) : (
+            <button
+              onMouseDown={handleMicDown}
+              onMouseUp={handleMicUp}
+              onMouseLeave={handleMicUp}
+              onTouchStart={handleMicDown}
+              onTouchEnd={handleMicUp}
+              className="p-2.5 text-[#667781] hover:text-[#111B21] rounded-full hover:bg-[#E9EDEF] transition-colors shrink-0 select-none"
+            >
+              <Mic className="w-6 h-6" />
+            </button>
+          )}
+        </div>
+      )}
     </div>
   )
 }
