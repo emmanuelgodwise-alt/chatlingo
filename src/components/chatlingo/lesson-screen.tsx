@@ -355,54 +355,54 @@ export function LessonScreen() {
     const passedScore = data.lessonCompleted
 
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen bg-[#F0F2F5] p-6 animate-fadeIn">
+      <div className="flex flex-col items-center justify-center min-h-screen bg-[#F5F0EA] p-6 animate-fadeIn">
         {/* Confetti / Celebration */}
         <div className="text-6xl mb-4">{perfectScore ? '🏆' : passedScore ? '🎉' : '💪'}</div>
-        <PartyPopper className="w-10 h-10 text-[#25D366] mb-2" />
+        <PartyPopper className="w-10 h-10 text-[#C45B28] mb-2" />
 
-        <h1 className="text-2xl font-bold text-[#111B21] mb-1">
+        <h1 className="text-2xl font-bold text-[#1C1917] mb-1">
           {perfectScore ? 'Perfect Score!' : passedScore ? 'Well Done!' : 'Keep Practicing!'}
         </h1>
-        <p className="text-[#667781] text-sm mb-6">
+        <p className="text-[#78716C] text-sm mb-6">
           {activeLesson.title}
         </p>
 
         {/* Score Card */}
-        <div className="bg-white rounded-2xl p-6 w-full max-w-sm shadow-sm border border-[#E9EDEF] mb-4">
+        <div className="bg-white rounded-2xl p-6 w-full max-w-sm shadow-sm border border-[#E2D9CF] mb-4">
           {/* Score */}
           <div className="text-center mb-4">
-            <div className={`text-5xl font-bold mb-1 ${data.score >= 70 ? 'text-[#25D366]' : 'text-[#FF6B6B]'}`}>
+            <div className={`text-5xl font-bold mb-1 ${data.score >= 70 ? 'text-[#C45B28]' : 'text-[#FF6B6B]'}`}>
               {data.score}%
             </div>
-            <p className="text-[#667781] text-sm">
+            <p className="text-[#78716C] text-sm">
               You got {lessonScore} out of {data.totalExercises} correct!
             </p>
           </div>
 
           {/* Stats Grid */}
           <div className="grid grid-cols-3 gap-3">
-            <div className="text-center bg-[#F0F2F5] rounded-xl p-3">
+            <div className="text-center bg-[#F5F0EA] rounded-xl p-3">
               <Star className="w-5 h-5 text-[#FFB800] mx-auto mb-1" />
-              <div className="text-lg font-bold text-[#111B21]">+{data.xpEarned}</div>
-              <div className="text-[10px] text-[#667781]">XP Earned</div>
+              <div className="text-lg font-bold text-[#1C1917]">+{data.xpEarned}</div>
+              <div className="text-[10px] text-[#78716C]">XP Earned</div>
             </div>
-            <div className="text-center bg-[#F0F2F5] rounded-xl p-3">
-              <Flame className="w-5 h-5 text-[#FF6B35] mx-auto mb-1" />
-              <div className="text-lg font-bold text-[#111B21]">{data.streak}</div>
-              <div className="text-[10px] text-[#667781]">Day Streak</div>
+            <div className="text-center bg-[#F5F0EA] rounded-xl p-3">
+              <Flame className="w-5 h-5 text-[#C45B28] mx-auto mb-1" />
+              <div className="text-lg font-bold text-[#1C1917]">{data.streak}</div>
+              <div className="text-[10px] text-[#78716C]">Day Streak</div>
             </div>
-            <div className="text-center bg-[#F0F2F5] rounded-xl p-3">
-              <Trophy className="w-5 h-5 text-[#25D366] mx-auto mb-1" />
-              <div className="text-lg font-bold text-[#111B21]">{data.newTotalXp}</div>
-              <div className="text-[10px] text-[#667781]">Total XP</div>
+            <div className="text-center bg-[#F5F0EA] rounded-xl p-3">
+              <Trophy className="w-5 h-5 text-[#C45B28] mx-auto mb-1" />
+              <div className="text-lg font-bold text-[#1C1917]">{data.newTotalXp}</div>
+              <div className="text-[10px] text-[#78716C]">Total XP</div>
             </div>
           </div>
 
           {/* Completion Badge */}
           {passedScore && (
             <div className="mt-4 flex items-center justify-center gap-2 bg-[#E7FCE3] rounded-xl py-2.5 px-4">
-              <CheckCircle2 className="w-5 h-5 text-[#25D366]" />
-              <span className="text-sm font-semibold text-[#075E54]">Lesson Completed!</span>
+              <CheckCircle2 className="w-5 h-5 text-[#C45B28]" />
+              <span className="text-sm font-semibold text-[#0F4C5C]">Lesson Completed!</span>
             </div>
           )}
         </div>
@@ -411,14 +411,14 @@ export function LessonScreen() {
         <div className="w-full max-w-sm space-y-2">
           <Button
             onClick={handleQuit}
-            className="w-full h-12 rounded-xl bg-[#25D366] hover:bg-[#22C55E] text-white font-semibold text-base"
+            className="w-full h-12 rounded-xl bg-[#C45B28] hover:bg-[#A04920] text-white font-semibold text-base"
           >
             Continue
           </Button>
           <Button
             onClick={handleTryAgain}
             variant="outline"
-            className="w-full h-12 rounded-xl border-[#E9EDEF] text-[#075E54] font-semibold text-base hover:bg-[#F0F2F5]"
+            className="w-full h-12 rounded-xl border-[#E2D9CF] text-[#0F4C5C] font-semibold text-base hover:bg-[#F5F0EA]"
           >
             <RotateCcw className="w-4 h-4 mr-2" />
             Try Again
@@ -434,9 +434,9 @@ export function LessonScreen() {
 
   if (submitting) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen bg-[#F0F2F5]">
-        <Loader2 className="w-10 h-10 text-[#25D366] animate-spin mb-4" />
-        <p className="text-[#667781] text-sm">Submitting your results...</p>
+      <div className="flex flex-col items-center justify-center min-h-screen bg-[#F5F0EA]">
+        <Loader2 className="w-10 h-10 text-[#C45B28] animate-spin mb-4" />
+        <p className="text-[#78716C] text-sm">Submitting your results...</p>
       </div>
     )
   }
@@ -449,15 +449,15 @@ export function LessonScreen() {
   const isOptionDisabled = feedbackState !== 'idle'
 
   return (
-    <div className="flex flex-col min-h-screen bg-[#F0F2F5]">
+    <div className="flex flex-col min-h-screen bg-[#F5F0EA]">
       {/* ========== PROGRESS BAR ========== */}
       <div className="bg-white shrink-0 wa-shadow-sm">
         <div className="flex items-center px-4 py-3 gap-3">
           {/* Quit Button */}
           <AlertDialog open={showQuitDialog} onOpenChange={setShowQuitDialog}>
             <AlertDialogTrigger asChild>
-              <button className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-[#F0F2F5] transition-colors">
-                <X className="w-5 h-5 text-[#667781]" />
+              <button className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-[#F5F0EA] transition-colors">
+                <X className="w-5 h-5 text-[#78716C]" />
               </button>
             </AlertDialogTrigger>
             <AlertDialogContent>
@@ -482,17 +482,17 @@ export function LessonScreen() {
           {/* Progress Info */}
           <div className="flex-1">
             <div className="flex items-center justify-between mb-1.5">
-              <span className="text-xs font-medium text-[#667781]">
+              <span className="text-xs font-medium text-[#78716C]">
                 {currentExerciseIndex + 1} / {totalExercises} exercises
               </span>
-              <span className="text-xs text-[#25D366] font-semibold">
+              <span className="text-xs text-[#C45B28] font-semibold">
                 {lessonScore} correct
               </span>
             </div>
             {/* Progress Bar */}
-            <div className="w-full h-2 bg-[#E9EDEF] rounded-full overflow-hidden">
+            <div className="w-full h-2 bg-[#E2D9CF] rounded-full overflow-hidden">
               <div
-                className="h-full bg-[#25D366] rounded-full transition-all duration-500 ease-out"
+                className="h-full bg-[#C45B28] rounded-full transition-all duration-500 ease-out"
                 style={{ width: `${progress}%` }}
               />
             </div>
@@ -500,7 +500,7 @@ export function LessonScreen() {
 
           {/* Lesson Title Pill */}
           <div className="hidden sm:block bg-[#E7FCE3] rounded-full px-3 py-1">
-            <span className="text-[10px] font-semibold text-[#075E54] whitespace-nowrap">
+            <span className="text-[10px] font-semibold text-[#0F4C5C] whitespace-nowrap">
               {activeLesson.category}
             </span>
           </div>
@@ -512,7 +512,7 @@ export function LessonScreen() {
         {/* XP Animation */}
         {xpAnim && (
           <div className="fixed top-20 left-1/2 -translate-x-1/2 z-50 animate-slideUp pointer-events-none">
-            <div className="bg-[#25D366] text-white px-4 py-2 rounded-full font-bold text-sm shadow-lg flex items-center gap-1">
+            <div className="bg-[#C45B28] text-white px-4 py-2 rounded-full font-bold text-sm shadow-lg flex items-center gap-1">
               <Star className="w-4 h-4 fill-current" />
               +{exercise.xpReward} XP
             </div>
@@ -525,7 +525,7 @@ export function LessonScreen() {
             exercise.type === 'translation' ? 'bg-blue-50 text-blue-700' :
             exercise.type === 'fill_blank' ? 'bg-purple-50 text-purple-700' :
             exercise.type === 'listening' ? 'bg-orange-50 text-orange-700' :
-            exercise.type === 'matching' ? 'bg-emerald-50 text-emerald-700' :
+            exercise.type === 'matching' ? 'bg-amber-50 text-amber-700' :
             'bg-rose-50 text-rose-700'
           }`}>
             {exercise.type === 'translation' && '🌐'}
@@ -609,12 +609,12 @@ export function LessonScreen() {
       </div>
 
       {/* ========== BOTTOM BAR ========== */}
-      <div className="bg-white border-t border-[#E9EDEF] px-4 py-3 shrink-0 safe-area-bottom">
+      <div className="bg-white border-t border-[#E2D9CF] px-4 py-3 shrink-0 safe-area-bottom">
         {/* Hint Button for non-matching, non-speaking exercises */}
         {exercise.type !== 'matching' && exercise.type !== 'speaking' && exercise.hint && !showHint && (
           <button
             onClick={() => setShowHint(true)}
-            className="w-full flex items-center justify-center gap-2 py-2 mb-2 text-[#667781] hover:text-[#075E54] transition-colors"
+            className="w-full flex items-center justify-center gap-2 py-2 mb-2 text-[#78716C] hover:text-[#0F4C5C] transition-colors"
           >
             <Lightbulb className="w-4 h-4" />
             <span className="text-sm font-medium">Show Hint</span>
@@ -624,7 +624,7 @@ export function LessonScreen() {
         {/* Check / Continue Button */}
         {exercise.type === 'matching' ? (
           <div className="text-center py-2">
-            <p className="text-sm text-[#667781]">
+            <p className="text-sm text-[#78716C]">
               Tap a word, then tap its translation
             </p>
           </div>
@@ -632,7 +632,7 @@ export function LessonScreen() {
           speechFeedback === 'idle' && !isRecording ? (
             <Button
               onClick={handleStartRecording}
-              className="w-full h-12 rounded-xl bg-[#25D366] hover:bg-[#22C55E] text-white font-semibold text-base"
+              className="w-full h-12 rounded-xl bg-[#C45B28] hover:bg-[#A04920] text-white font-semibold text-base"
             >
               <Mic className="w-5 h-5 mr-2" />
               Start Speaking
@@ -647,14 +647,14 @@ export function LessonScreen() {
             </Button>
           ) : (
             <div className="text-center py-2">
-              <p className="text-sm text-[#667781]">Moving to next exercise...</p>
+              <p className="text-sm text-[#78716C]">Moving to next exercise...</p>
             </div>
           )
         ) : (
           <Button
             onClick={handleCheck}
             disabled={!selectedOption || isOptionDisabled}
-            className="w-full h-12 rounded-xl font-semibold text-base transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed bg-[#25D366] hover:bg-[#22C55E] text-white"
+            className="w-full h-12 rounded-xl font-semibold text-base transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed bg-[#C45B28] hover:bg-[#A04920] text-white"
           >
             Check
           </Button>
@@ -690,14 +690,14 @@ function TranslationExercise({
   return (
     <div className="w-full max-w-md space-y-6">
       {/* Instruction */}
-      <p className="text-center text-sm font-medium text-[#667781]">
+      <p className="text-center text-sm font-medium text-[#78716C]">
         Translate this to {nativeLanguage}
       </p>
 
       {/* Word/Phrase Display */}
-      <div className="bg-white rounded-2xl p-8 text-center shadow-sm border border-[#E9EDEF]">
-        <p className="text-2xl font-bold text-[#111B21] mb-1">{exercise.question}</p>
-        <p className="text-xs text-[#667781]">{targetLanguage}</p>
+      <div className="bg-white rounded-2xl p-8 text-center shadow-sm border border-[#E2D9CF]">
+        <p className="text-2xl font-bold text-[#1C1917] mb-1">{exercise.question}</p>
+        <p className="text-xs text-[#78716C]">{targetLanguage}</p>
       </div>
 
       {/* Hint */}
@@ -723,22 +723,22 @@ function TranslationExercise({
               disabled={feedbackState !== 'idle'}
               className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-xl border-2 transition-all duration-200 text-left ${
                 showCorrect
-                  ? 'border-[#25D366] bg-[#E7FCE3] text-[#075E54]'
+                  ? 'border-[#C45B28] bg-[#E7FCE3] text-[#0F4C5C]'
                   : showWrong
                   ? 'border-[#FF6B6B] bg-[#FEE2E2] text-[#991B1B] animate-[shake_0.4s_ease-in-out]'
                   : isSelected
-                  ? 'border-[#25D366] bg-[#D9FDD3] text-[#111B21]'
-                  : 'border-[#E9EDEF] bg-white text-[#111B21] hover:border-[#25D366]/50 hover:bg-[#F0F2F5]'
+                  ? 'border-[#C45B28] bg-[#E8DDD3] text-[#1C1917]'
+                  : 'border-[#E2D9CF] bg-white text-[#1C1917] hover:border-[#C45B28]/50 hover:bg-[#F5F0EA]'
               }`}
             >
               <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 text-sm font-bold transition-colors ${
                 showCorrect
-                  ? 'bg-[#25D366] text-white'
+                  ? 'bg-[#C45B28] text-white'
                   : showWrong
                   ? 'bg-[#FF6B6B] text-white'
                   : isSelected
-                  ? 'bg-[#25D366]/20 text-[#25D366]'
-                  : 'bg-[#F0F2F5] text-[#667781]'
+                  ? 'bg-[#C45B28]/20 text-[#C45B28]'
+                  : 'bg-[#F5F0EA] text-[#78716C]'
               }`}>
                 {showCorrect ? <Check className="w-4 h-4" /> : showWrong ? <X className="w-4 h-4" /> : ''}
               </div>
@@ -776,23 +776,23 @@ function FillBlankExercise({
   return (
     <div className="w-full max-w-md space-y-6">
       {/* Instruction */}
-      <p className="text-center text-sm font-medium text-[#667781]">
+      <p className="text-center text-sm font-medium text-[#78716C]">
         Fill in the blank
       </p>
 
       {/* Sentence with Blank */}
-      <div className="bg-white rounded-2xl p-8 text-center shadow-sm border border-[#E9EDEF]">
-        <p className="text-xl font-semibold text-[#111B21] leading-relaxed">
+      <div className="bg-white rounded-2xl p-8 text-center shadow-sm border border-[#E2D9CF]">
+        <p className="text-xl font-semibold text-[#1C1917] leading-relaxed">
           {displaySentence.split('\u00AD\u00AD\u00AD\u00AD\u00AD').map((part, idx, arr) => (
             <span key={idx}>
               {part}
               {idx < arr.length - 1 && (
                 <span className={`inline-block min-w-[80px] border-b-2 mx-1 transition-colors ${
-                  selectedOption ? 'border-[#25D366]' : 'border-[#667781]'
+                  selectedOption ? 'border-[#C45B28]' : 'border-[#78716C]'
                 }`}>
                   {feedbackState !== 'idle' && (
                     <span className={`text-sm font-bold ${
-                      feedbackState === 'correct' ? 'text-[#25D366]' : 'text-[#FF6B6B]'
+                      feedbackState === 'correct' ? 'text-[#C45B28]' : 'text-[#FF6B6B]'
                     }`}>
                       {selectedOption}
                     </span>
@@ -827,22 +827,22 @@ function FillBlankExercise({
               disabled={feedbackState !== 'idle'}
               className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-xl border-2 transition-all duration-200 text-left ${
                 showCorrect
-                  ? 'border-[#25D366] bg-[#E7FCE3] text-[#075E54]'
+                  ? 'border-[#C45B28] bg-[#E7FCE3] text-[#0F4C5C]'
                   : showWrong
                   ? 'border-[#FF6B6B] bg-[#FEE2E2] text-[#991B1B] animate-[shake_0.4s_ease-in-out]'
                   : isSelected
-                  ? 'border-[#25D366] bg-[#D9FDD3] text-[#111B21]'
-                  : 'border-[#E9EDEF] bg-white text-[#111B21] hover:border-[#25D366]/50 hover:bg-[#F0F2F5]'
+                  ? 'border-[#C45B28] bg-[#E8DDD3] text-[#1C1917]'
+                  : 'border-[#E2D9CF] bg-white text-[#1C1917] hover:border-[#C45B28]/50 hover:bg-[#F5F0EA]'
               }`}
             >
               <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 text-sm font-bold transition-colors ${
                 showCorrect
-                  ? 'bg-[#25D366] text-white'
+                  ? 'bg-[#C45B28] text-white'
                   : showWrong
                   ? 'bg-[#FF6B6B] text-white'
                   : isSelected
-                  ? 'bg-[#25D366]/20 text-[#25D366]'
-                  : 'bg-[#F0F2F5] text-[#667781]'
+                  ? 'bg-[#C45B28]/20 text-[#C45B28]'
+                  : 'bg-[#F5F0EA] text-[#78716C]'
               }`}>
                 {showCorrect ? <Check className="w-4 h-4" /> : showWrong ? <X className="w-4 h-4" /> : ''}
               </div>
@@ -881,7 +881,7 @@ function ListeningExercise({
   return (
     <div className="w-full max-w-md space-y-6">
       {/* Instruction */}
-      <p className="text-center text-sm font-medium text-[#667781]">
+      <p className="text-center text-sm font-medium text-[#78716C]">
         Listen and choose the correct translation
       </p>
 
@@ -891,13 +891,13 @@ function ListeningExercise({
           onClick={onPlay}
           className={`w-20 h-20 rounded-full flex items-center justify-center transition-all duration-200 shadow-lg ${
             hasPlayed
-              ? 'bg-[#25D366] hover:bg-[#22C55E] hover:scale-105'
-              : 'bg-[#075E54] hover:bg-[#064E46] hover:scale-105 animate-pulse'
+              ? 'bg-[#C45B28] hover:bg-[#A04920] hover:scale-105'
+              : 'bg-[#0F4C5C] hover:bg-[#064E46] hover:scale-105 animate-pulse'
           }`}
         >
           <Volume2 className="w-9 h-9 text-white" />
         </button>
-        <p className="text-xs text-[#667781]">
+        <p className="text-xs text-[#78716C]">
           {hasPlayed ? 'Tap to replay' : 'Tap to listen'} · {targetLanguage}
         </p>
       </div>
@@ -917,22 +917,22 @@ function ListeningExercise({
               disabled={feedbackState !== 'idle'}
               className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-xl border-2 transition-all duration-200 text-left ${
                 showCorrect
-                  ? 'border-[#25D366] bg-[#E7FCE3] text-[#075E54]'
+                  ? 'border-[#C45B28] bg-[#E7FCE3] text-[#0F4C5C]'
                   : showWrong
                   ? 'border-[#FF6B6B] bg-[#FEE2E2] text-[#991B1B] animate-[shake_0.4s_ease-in-out]'
                   : isSelected
-                  ? 'border-[#25D366] bg-[#D9FDD3] text-[#111B21]'
-                  : 'border-[#E9EDEF] bg-white text-[#111B21] hover:border-[#25D366]/50 hover:bg-[#F0F2F5]'
+                  ? 'border-[#C45B28] bg-[#E8DDD3] text-[#1C1917]'
+                  : 'border-[#E2D9CF] bg-white text-[#1C1917] hover:border-[#C45B28]/50 hover:bg-[#F5F0EA]'
               }`}
             >
               <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 text-sm font-bold transition-colors ${
                 showCorrect
-                  ? 'bg-[#25D366] text-white'
+                  ? 'bg-[#C45B28] text-white'
                   : showWrong
                   ? 'bg-[#FF6B6B] text-white'
                   : isSelected
-                  ? 'bg-[#25D366]/20 text-[#25D366]'
-                  : 'bg-[#F0F2F5] text-[#667781]'
+                  ? 'bg-[#C45B28]/20 text-[#C45B28]'
+                  : 'bg-[#F5F0EA] text-[#78716C]'
               }`}>
                 {showCorrect ? <Check className="w-4 h-4" /> : showWrong ? <X className="w-4 h-4" /> : ''}
               </div>
@@ -998,18 +998,18 @@ function MatchingExercise({
     <div className="w-full max-w-md space-y-6">
       {/* Instruction */}
       <div className="text-center space-y-1">
-        <p className="text-sm font-medium text-[#667781]">
+        <p className="text-sm font-medium text-[#78716C]">
           Match the words with their translations
         </p>
-        <p className="text-xs text-[#8696A0]">
+        <p className="text-xs text-[#9CA3AF]">
           {matchedPairs.size} / {pairs.size} matched
         </p>
       </div>
 
       {/* Matching Progress Bar */}
-      <div className="w-full h-1.5 bg-[#E9EDEF] rounded-full overflow-hidden">
+      <div className="w-full h-1.5 bg-[#E2D9CF] rounded-full overflow-hidden">
         <div
-          className="h-full bg-[#25D366] rounded-full transition-all duration-300"
+          className="h-full bg-[#C45B28] rounded-full transition-all duration-300"
           style={{ width: `${(matchedPairs.size / pairs.size) * 100}%` }}
         />
       </div>
@@ -1018,7 +1018,7 @@ function MatchingExercise({
       <div className="grid grid-cols-2 gap-3">
         {/* Left Column */}
         <div className="space-y-2">
-          <p className="text-[10px] font-semibold text-[#667781] uppercase tracking-wider mb-1 text-center">
+          <p className="text-[10px] font-semibold text-[#78716C] uppercase tracking-wider mb-1 text-center">
             {exercise.question || 'Words'}
           </p>
           {leftWords.map((word) => {
@@ -1031,13 +1031,13 @@ function MatchingExercise({
                 disabled={matched || feedbackState !== 'idle'}
                 className={`w-full px-4 py-3 rounded-xl border-2 text-center transition-all duration-200 text-sm font-medium ${
                   matched
-                    ? 'border-[#25D366] bg-[#E7FCE3] text-[#075E54] opacity-60'
+                    ? 'border-[#C45B28] bg-[#E7FCE3] text-[#0F4C5C] opacity-60'
                     : selected
-                    ? 'border-[#25D366] bg-[#D9FDD3] text-[#111B21] shadow-sm'
-                    : 'border-[#E9EDEF] bg-white text-[#111B21] hover:border-[#25D366]/50'
+                    ? 'border-[#C45B28] bg-[#E8DDD3] text-[#1C1917] shadow-sm'
+                    : 'border-[#E2D9CF] bg-white text-[#1C1917] hover:border-[#C45B28]/50'
                 }`}
               >
-                {matched && <Check className="w-3 h-3 inline mr-1 text-[#25D366]" />}
+                {matched && <Check className="w-3 h-3 inline mr-1 text-[#C45B28]" />}
                 {word}
               </button>
             )
@@ -1046,12 +1046,12 @@ function MatchingExercise({
 
         {/* Arrow Divider */}
         <div className="col-span-2 flex justify-center -my-2">
-          <ArrowDownUp className="w-5 h-5 text-[#E9EDEF] -rotate-90" />
+          <ArrowDownUp className="w-5 h-5 text-[#E2D9CF] -rotate-90" />
         </div>
 
         {/* Right Column */}
         <div className="space-y-2">
-          <p className="text-[10px] font-semibold text-[#667781] uppercase tracking-wider mb-1 text-center">
+          <p className="text-[10px] font-semibold text-[#78716C] uppercase tracking-wider mb-1 text-center">
             Translations
           </p>
           {rightWords.map((word) => {
@@ -1066,13 +1066,13 @@ function MatchingExercise({
                   isWrong
                     ? 'border-[#FF6B6B] bg-[#FEE2E2] text-[#991B1B] animate-[shake_0.4s_ease-in-out]'
                     : matched
-                    ? 'border-[#25D366] bg-[#E7FCE3] text-[#075E54] opacity-60'
+                    ? 'border-[#C45B28] bg-[#E7FCE3] text-[#0F4C5C] opacity-60'
                     : selectedLeft
-                    ? 'border-[#E9EDEF] bg-white text-[#111B21] hover:border-[#25D366]/50'
-                    : 'border-[#E9EDEF] bg-[#F0F2F5] text-[#8696A0] cursor-not-allowed'
+                    ? 'border-[#E2D9CF] bg-white text-[#1C1917] hover:border-[#C45B28]/50'
+                    : 'border-[#E2D9CF] bg-[#F5F0EA] text-[#9CA3AF] cursor-not-allowed'
                 }`}
               >
-                {matched && <Check className="w-3 h-3 inline mr-1 text-[#25D366]" />}
+                {matched && <Check className="w-3 h-3 inline mr-1 text-[#C45B28]" />}
                 {word}
               </button>
             )
@@ -1109,16 +1109,16 @@ function SpeakingExercise({
   return (
     <div className="w-full max-w-md space-y-6">
       {/* Instruction */}
-      <p className="text-center text-sm font-medium text-[#667781]">
-        Say this in <span className="font-semibold text-[#111B21]">{targetLanguage}</span>
+      <p className="text-center text-sm font-medium text-[#78716C]">
+        Say this in <span className="font-semibold text-[#1C1917]">{targetLanguage}</span>
       </p>
 
       {/* Word/Phrase to Pronounce */}
-      <div className="bg-white rounded-2xl p-8 text-center shadow-sm border border-[#E9EDEF]">
-        <p className="text-2xl font-bold text-[#111B21] mb-2">{exercise.question}</p>
+      <div className="bg-white rounded-2xl p-8 text-center shadow-sm border border-[#E2D9CF]">
+        <p className="text-2xl font-bold text-[#1C1917] mb-2">{exercise.question}</p>
         <button
           onClick={onPlayPronunciation}
-          className="inline-flex items-center gap-1.5 text-[#25D366] hover:text-[#22C55E] transition-colors"
+          className="inline-flex items-center gap-1.5 text-[#C45B28] hover:text-[#A04920] transition-colors"
         >
           <Volume2 className="w-4 h-4" />
           <span className="text-xs font-medium">Listen to pronunciation</span>
@@ -1134,10 +1134,10 @@ function SpeakingExercise({
             isRecording
               ? 'bg-red-500 hover:bg-red-600 scale-110 animate-pulse'
               : speechFeedback === 'correct'
-              ? 'bg-[#25D366] scale-110'
+              ? 'bg-[#C45B28] scale-110'
               : speechFeedback === 'wrong'
               ? 'bg-[#FF6B6B] scale-110'
-              : 'bg-[#075E54] hover:bg-[#064E46] hover:scale-105'
+              : 'bg-[#0F4C5C] hover:bg-[#064E46] hover:scale-105'
           }`}
         >
           {isRecording ? (
@@ -1166,15 +1166,15 @@ function SpeakingExercise({
         {(recognizedText || speechFeedback !== 'idle') && (
           <div className={`w-full rounded-xl p-4 text-center transition-all ${
             speechFeedback === 'correct'
-              ? 'bg-[#E7FCE3] border-2 border-[#25D366]'
+              ? 'bg-[#E7FCE3] border-2 border-[#C45B28]'
               : speechFeedback === 'wrong'
               ? 'bg-[#FEE2E2] border-2 border-[#FF6B6B]'
-              : 'bg-[#F0F2F5] border-2 border-transparent'
+              : 'bg-[#F5F0EA] border-2 border-transparent'
           }`}>
-            <p className="text-xs text-[#667781] mb-1">You said:</p>
-            <p className="text-base font-medium text-[#111B21]">{recognizedText || '—'}</p>
+            <p className="text-xs text-[#78716C] mb-1">You said:</p>
+            <p className="text-base font-medium text-[#1C1917]">{recognizedText || '—'}</p>
             {speechFeedback === 'correct' && (
-              <p className="text-xs font-semibold text-[#25D366] mt-1 flex items-center justify-center gap-1">
+              <p className="text-xs font-semibold text-[#C45B28] mt-1 flex items-center justify-center gap-1">
                 <CheckCircle2 className="w-3.5 h-3.5" />
                 Correct!
               </p>
@@ -1185,8 +1185,8 @@ function SpeakingExercise({
                   <XCircle className="w-3.5 h-3.5" />
                   Not quite right
                 </p>
-                <p className="text-xs text-[#667781] mt-0.5">
-                  Correct answer: <span className="font-semibold text-[#111B21]">{exercise.correctAnswer}</span>
+                <p className="text-xs text-[#78716C] mt-0.5">
+                  Correct answer: <span className="font-semibold text-[#1C1917]">{exercise.correctAnswer}</span>
                 </p>
               </div>
             )}

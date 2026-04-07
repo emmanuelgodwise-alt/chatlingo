@@ -80,7 +80,7 @@ export function LearnPairDialog() {
       <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center">
         <div className="bg-white rounded-xl shadow-xl max-w-md w-full mx-4">
           {/* Green Header */}
-          <div className="bg-[#075E54] px-6 py-5 rounded-t-xl flex items-start justify-between">
+          <div className="bg-[#0F4C5C] px-6 py-5 rounded-t-xl flex items-start justify-between">
             <div>
               <h2 className="flex items-center gap-2 text-white text-xl font-semibold">
                 <span className="text-2xl">🤝</span>
@@ -100,22 +100,22 @@ export function LearnPairDialog() {
 
           {/* No Profile State */}
           <div className="p-8 text-center">
-            <div className="w-16 h-16 rounded-full bg-[#F0F2F5] flex items-center justify-center mx-auto mb-4">
-              <AlertCircle className="w-8 h-8 text-[#667781]" />
+            <div className="w-16 h-16 rounded-full bg-[#F5F0EA] flex items-center justify-center mx-auto mb-4">
+              <AlertCircle className="w-8 h-8 text-[#78716C]" />
             </div>
-            <h3 className="text-base font-medium text-[#111B21] mb-2">
+            <h3 className="text-base font-medium text-[#1C1917] mb-2">
               Learning profile required
             </h3>
-            <p className="text-sm text-[#667781]">
+            <p className="text-sm text-[#78716C]">
               Set up your learning profile first before adding a language exchange
               partner.
             </p>
           </div>
 
-          <div className="px-6 pb-5 pt-2 border-t border-[#E9EDEF] flex justify-end">
+          <div className="px-6 pb-5 pt-2 border-t border-[#E2D9CF] flex justify-end">
             <button
               onClick={() => setShowLearnPairDialog(false)}
-              className="text-sm text-[#667781] hover:text-[#111B21] transition-colors"
+              className="text-sm text-[#78716C] hover:text-[#1C1917] transition-colors"
             >
               Close
             </button>
@@ -129,7 +129,7 @@ export function LearnPairDialog() {
     <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center">
       <div className="bg-white rounded-xl shadow-xl max-w-md w-full mx-4 max-h-[80vh] overflow-y-auto">
         {/* Green Header */}
-        <div className="bg-[#075E54] px-6 py-5 rounded-t-xl flex items-start justify-between">
+        <div className="bg-[#0F4C5C] px-6 py-5 rounded-t-xl flex items-start justify-between">
           <div>
             <h2 className="flex items-center gap-2 text-white text-xl font-semibold">
               <span className="text-2xl">🤝</span>
@@ -151,10 +151,10 @@ export function LearnPairDialog() {
         <div className="p-4 space-y-3">
           {/* Selected Contact Exchange Preview */}
           {selectedContact && (
-            <div className="bg-[#25D366]/10 border border-[#25D366]/20 rounded-lg p-4 space-y-3">
+            <div className="bg-[#C45B28]/10 border border-[#C45B28]/20 rounded-lg p-4 space-y-3">
               <div className="flex items-center justify-center gap-3">
                 <div className="flex flex-col items-center gap-1">
-                  <div className="w-10 h-10 rounded-full bg-[#DFE5E7] flex items-center justify-center text-sm font-semibold text-[#111B21]">
+                  <div className="w-10 h-10 rounded-full bg-[#E2D9CF] flex items-center justify-center text-sm font-semibold text-[#1C1917]">
                     {selectedContact.name
                       .split(' ')
                       .map((n) => n[0])
@@ -162,17 +162,17 @@ export function LearnPairDialog() {
                       .toUpperCase()
                       .slice(0, 2)}
                   </div>
-                  <span className="text-xs font-medium text-[#111B21]">
+                  <span className="text-xs font-medium text-[#1C1917]">
                     You
                   </span>
                 </div>
-                <div className="flex items-center gap-1.5 text-xs text-[#075E54] font-medium px-3 py-1 bg-white rounded-full">
+                <div className="flex items-center gap-1.5 text-xs text-[#0F4C5C] font-medium px-3 py-1 bg-white rounded-full">
                   <span>{getLanguageFlag(selectedContact.preferredLanguage)}</span>
                   <ArrowRight className="w-3 h-3" />
                   <span>{getLanguageFlag(learningProfile.nativeLanguage)}</span>
                 </div>
                 <div className="flex flex-col items-center gap-1">
-                  <div className="w-10 h-10 rounded-full bg-[#DFE5E7] flex items-center justify-center text-sm font-semibold text-[#111B21]">
+                  <div className="w-10 h-10 rounded-full bg-[#E2D9CF] flex items-center justify-center text-sm font-semibold text-[#1C1917]">
                     {selectedContact.name
                       .split(' ')
                       .map((n) => n[0])
@@ -180,12 +180,12 @@ export function LearnPairDialog() {
                       .toUpperCase()
                       .slice(0, 2)}
                   </div>
-                  <span className="text-xs font-medium text-[#111B21] truncate max-w-16">
+                  <span className="text-xs font-medium text-[#1C1917] truncate max-w-16">
                     {selectedContact.name.split(' ')[0]}
                   </span>
                 </div>
               </div>
-              <p className="text-center text-xs text-[#075E54]">
+              <p className="text-center text-xs text-[#0F4C5C]">
                 You learn{' '}
                 <span className="font-medium">
                   {getLanguageFlag(selectedContact.preferredLanguage)}{' '}
@@ -200,7 +200,7 @@ export function LearnPairDialog() {
               <button
                 onClick={handlePair}
                 disabled={submitting}
-                className="w-full bg-[#075E54] hover:bg-[#128C7E] text-white rounded-lg px-6 py-2.5 text-sm font-medium transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+                className="w-full bg-[#0F4C5C] hover:bg-[#1A6B7A] text-white rounded-lg px-6 py-2.5 text-sm font-medium transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
               >
                 {submitting ? (
                   <>
@@ -217,18 +217,18 @@ export function LearnPairDialog() {
           {/* Contact List */}
           {loading ? (
             <div className="flex items-center justify-center py-10">
-              <span className="w-5 h-5 border-2 border-[#25D366]/30 border-t-[#25D366] rounded-full animate-spin" />
+              <span className="w-5 h-5 border-2 border-[#C45B28]/30 border-t-[#C45B28] rounded-full animate-spin" />
             </div>
           ) : contacts.length === 0 ? (
             <div className="py-10 text-center">
-              <p className="text-sm text-[#667781]">No contacts yet</p>
-              <p className="text-xs text-[#8696A0] mt-1">
+              <p className="text-sm text-[#78716C]">No contacts yet</p>
+              <p className="text-xs text-[#9CA3AF] mt-1">
                 Add contacts first to find a learning partner
               </p>
             </div>
           ) : (
             <div className="space-y-1">
-              <p className="text-xs text-[#8696A0] font-medium px-2 py-1 uppercase tracking-wider">
+              <p className="text-xs text-[#9CA3AF] font-medium px-2 py-1 uppercase tracking-wider">
                 {contacts.length} contact{contacts.length !== 1 ? 's' : ''}
               </p>
               {contacts.map((contact) => {
@@ -250,17 +250,17 @@ export function LearnPairDialog() {
                     }
                     className={`w-full flex items-center gap-3 p-3 rounded-lg transition-colors text-left ${
                       isSelected
-                        ? 'bg-[#25D366]/10 border border-[#25D366]/20'
-                        : 'hover:bg-[#F0F2F5] border border-transparent'
+                        ? 'bg-[#C45B28]/10 border border-[#C45B28]/20'
+                        : 'hover:bg-[#F5F0EA] border border-transparent'
                     }`}
                   >
                     {/* Avatar */}
                     <div className="relative shrink-0">
-                      <div className="w-11 h-11 rounded-full bg-[#DFE5E7] flex items-center justify-center text-sm font-semibold text-[#111B21]">
+                      <div className="w-11 h-11 rounded-full bg-[#E2D9CF] flex items-center justify-center text-sm font-semibold text-[#1C1917]">
                         {initials}
                       </div>
                       {contact.online && (
-                        <div className="absolute bottom-0 right-0 w-3 h-3 bg-[#25D366] rounded-full border-2 border-white" />
+                        <div className="absolute bottom-0 right-0 w-3 h-3 bg-[#C45B28] rounded-full border-2 border-white" />
                       )}
                     </div>
 
@@ -269,23 +269,23 @@ export function LearnPairDialog() {
                       <div className="flex items-center gap-2">
                         <p
                           className={`text-sm font-medium truncate ${
-                            isSelected ? 'text-[#075E54]' : 'text-[#111B21]'
+                            isSelected ? 'text-[#0F4C5C]' : 'text-[#1C1917]'
                           }`}
                         >
                           {contact.name}
                         </p>
                         {isSelected && (
-                          <span className="text-[#25D366] text-xs">✓</span>
+                          <span className="text-[#C45B28] text-xs">✓</span>
                         )}
                       </div>
                       <div className="flex items-center gap-1.5 mt-0.5">
-                        <Globe className="w-3 h-3 text-[#667781]" />
-                        <span className="text-xs text-[#667781]">
+                        <Globe className="w-3 h-3 text-[#78716C]" />
+                        <span className="text-xs text-[#78716C]">
                           {getLanguageFlag(contact.preferredLanguage)}{' '}
                           {contact.preferredLanguage}
                         </span>
                         {!contact.online && (
-                          <span className="text-xs text-[#8696A0]">
+                          <span className="text-xs text-[#9CA3AF]">
                             · offline
                           </span>
                         )}
@@ -297,8 +297,8 @@ export function LearnPairDialog() {
                       <div
                         className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${
                           isSelected
-                            ? 'border-[#25D366] bg-[#25D366]'
-                            : 'border-[#E9EDEF]'
+                            ? 'border-[#C45B28] bg-[#C45B28]'
+                            : 'border-[#E2D9CF]'
                         }`}
                       >
                         {isSelected && (
@@ -326,10 +326,10 @@ export function LearnPairDialog() {
         </div>
 
         {/* Footer */}
-        <div className="px-6 pb-5 pt-2 border-t border-[#E9EDEF] flex justify-end">
+        <div className="px-6 pb-5 pt-2 border-t border-[#E2D9CF] flex justify-end">
           <button
             onClick={() => setShowLearnPairDialog(false)}
-            className="text-sm text-[#667781] hover:text-[#111B21] transition-colors"
+            className="text-sm text-[#78716C] hover:text-[#1C1917] transition-colors"
           >
             Close
           </button>

@@ -99,11 +99,11 @@ export function SignUpForm() {
 
         <Card className="shadow-xl border-0 rounded-lg overflow-hidden">
           <CardHeader className="text-center pb-2 pt-6 px-6">
-            <CardTitle className="text-xl text-[#111B21] flex items-center justify-center gap-2">
-              <UserPlus className="w-5 h-5 text-[#075E54]" />
+            <CardTitle className="text-xl text-[#1C1917] flex items-center justify-center gap-2">
+              <UserPlus className="w-5 h-5 text-[#0F4C5C]" />
               Create Your Account
             </CardTitle>
-            <CardDescription className="text-[#667781]">
+            <CardDescription className="text-[#78716C]">
               Join millions breaking language barriers
             </CardDescription>
           </CardHeader>
@@ -116,19 +116,19 @@ export function SignUpForm() {
               )}
 
               <div className="space-y-1.5">
-                <Label htmlFor="name" className="text-[#111B21] text-sm font-medium">Full Name *</Label>
+                <Label htmlFor="name" className="text-[#1C1917] text-sm font-medium">Full Name *</Label>
                 <Input
                   id="name"
                   placeholder="Enter your full name"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   required
-                  className="h-11 rounded-md border-[#E9EDEF] focus:border-[#25D366] focus:ring-[#25D366]/20"
+                  className="h-11 rounded-md border-[#E2D9CF] focus:border-[#C45B28] focus:ring-[#C45B28]/20"
                 />
               </div>
 
               <div className="space-y-1.5">
-                <Label htmlFor="email" className="text-[#111B21] text-sm font-medium">Email Address *</Label>
+                <Label htmlFor="email" className="text-[#1C1917] text-sm font-medium">Email Address *</Label>
                 <Input
                   id="email"
                   type="email"
@@ -136,24 +136,24 @@ export function SignUpForm() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  className="h-11 rounded-md border-[#E9EDEF] focus:border-[#25D366] focus:ring-[#25D366]/20"
+                  className="h-11 rounded-md border-[#E2D9CF] focus:border-[#C45B28] focus:ring-[#C45B28]/20"
                 />
               </div>
 
               <div className="space-y-1.5">
-                <Label htmlFor="phone" className="text-[#111B21] text-sm font-medium">Phone Number</Label>
+                <Label htmlFor="phone" className="text-[#1C1917] text-sm font-medium">Phone Number</Label>
                 <Input
                   id="phone"
                   type="tel"
                   placeholder="+1 (555) 000-0000"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
-                  className="h-11 rounded-md border-[#E9EDEF] focus:border-[#25D366] focus:ring-[#25D366]/20"
+                  className="h-11 rounded-md border-[#E2D9CF] focus:border-[#C45B28] focus:ring-[#C45B28]/20"
                 />
               </div>
 
               <div className="space-y-1.5">
-                <Label htmlFor="password" className="text-[#111B21] text-sm font-medium">Password *</Label>
+                <Label htmlFor="password" className="text-[#1C1917] text-sm font-medium">Password *</Label>
                 <Input
                   id="password"
                   type="password"
@@ -161,12 +161,12 @@ export function SignUpForm() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  className="h-11 rounded-md border-[#E9EDEF] focus:border-[#25D366] focus:ring-[#25D366]/20"
+                  className="h-11 rounded-md border-[#E2D9CF] focus:border-[#C45B28] focus:ring-[#C45B28]/20"
                 />
               </div>
 
               <div className="space-y-1.5">
-                <Label htmlFor="confirmPassword" className="text-[#111B21] text-sm font-medium">Confirm Password *</Label>
+                <Label htmlFor="confirmPassword" className="text-[#1C1917] text-sm font-medium">Confirm Password *</Label>
                 <Input
                   id="confirmPassword"
                   type="password"
@@ -174,19 +174,19 @@ export function SignUpForm() {
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   required
-                  className="h-11 rounded-md border-[#E9EDEF] focus:border-[#25D366] focus:ring-[#25D366]/20"
+                  className="h-11 rounded-md border-[#E2D9CF] focus:border-[#C45B28] focus:ring-[#C45B28]/20"
                 />
               </div>
 
               <div className="space-y-1.5">
-                <Label htmlFor="language" className="text-[#111B21] text-sm font-medium">
+                <Label htmlFor="language" className="text-[#1C1917] text-sm font-medium">
                   <span className="flex items-center gap-1.5">
-                    <Globe className="w-4 h-4 text-[#075E54]" />
+                    <Globe className="w-4 h-4 text-[#0F4C5C]" />
                     Your Preferred Language *
                   </span>
                 </Label>
                 <Select value={preferredLanguage} onValueChange={setPreferredLanguage}>
-                  <SelectTrigger className="h-11 rounded-md border-[#E9EDEF] focus:border-[#25D366] focus:ring-[#25D366]/20">
+                  <SelectTrigger className="h-11 rounded-md border-[#E2D9CF] focus:border-[#C45B28] focus:ring-[#C45B28]/20">
                     <SelectValue placeholder="Select your language" />
                   </SelectTrigger>
                   <SelectContent>
@@ -205,7 +205,7 @@ export function SignUpForm() {
             <CardFooter className="flex flex-col gap-4 pt-2 pb-6 px-6">
               <Button
                 type="submit"
-                className="w-full h-11 bg-[#25D366] hover:bg-[#22C55E] text-white font-semibold rounded-md shadow-sm"
+                className="w-full h-11 bg-[#C45B28] hover:bg-[#A04920] text-white font-semibold rounded-md shadow-sm"
                 disabled={loading}
               >
                 {loading ? (
@@ -217,12 +217,12 @@ export function SignUpForm() {
                   'Next'
                 )}
               </Button>
-              <p className="text-sm text-[#667781]">
+              <p className="text-sm text-[#78716C]">
                 Already have an account?{' '}
                 <button
                   type="button"
                   onClick={() => setView('login')}
-                  className="text-[#075E54] hover:text-[#128C7E] font-semibold"
+                  className="text-[#0F4C5C] hover:text-[#1A6B7A] font-semibold"
                 >
                   Sign in
                 </button>

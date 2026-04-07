@@ -42,41 +42,41 @@
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
 
-  /* WhatsApp Colors */
-  --color-wa-header: #075E54;
-  --color-wa-header-light: #128C7E;
-  --color-wa-green: #25D366;
-  --color-wa-sent: #D9FDD3;
-  --color-wa-chat-bg: #ECE5DD;
-  --color-wa-received: #FFFFFF;
-  --color-wa-input-bg: #F0F2F5;
-  --color-wa-text: #111B21;
-  --color-wa-text-secondary: #667781;
-  --color-wa-blue-tick: #53BDEB;
-  --color-wa-border: #E9EDEF;
-  --color-wa-unread: #25D366;
+  /* ChatLingo Brand Colors — Deep Teal & Warm Copper */
+  --color-wa-header: #0F4C5C;
+  --color-wa-header-light: #1A6B7A;
+  --color-wa-green: #C45B28;
+  --color-wa-sent: #E8DDD3;
+  --color-wa-chat-bg: #FAF6F1;
+  --color-wa-received: #FFFDF9;
+  --color-wa-input-bg: #F5F0EA;
+  --color-wa-text: #1C1917;
+  --color-wa-text-secondary: #78716C;
+  --color-wa-blue-tick: #C45B28;
+  --color-wa-border: #E2D9CF;
+  --color-wa-unread: #C45B28;
 }
 
 :root {
   --radius: 0.625rem;
   --background: #FFFFFF;
-  --foreground: #111B21;
+  --foreground: #1C1917;
   --card: #FFFFFF;
-  --card-foreground: #111B21;
+  --card-foreground: #1C1917;
   --popover: #FFFFFF;
-  --popover-foreground: #111B21;
-  --primary: #075E54;
+  --popover-foreground: #1C1917;
+  --primary: #0F4C5C;
   --primary-foreground: #FFFFFF;
-  --secondary: #F0F2F5;
-  --secondary-foreground: #111B21;
-  --muted: #F0F2F5;
-  --muted-foreground: #667781;
-  --accent: #F0F2F5;
-  --accent-foreground: #111B21;
+  --secondary: #F5F0EA;
+  --secondary-foreground: #1C1917;
+  --muted: #F5F0EA;
+  --muted-foreground: #78716C;
+  --accent: #F5F0EA;
+  --accent-foreground: #1C1917;
   --destructive: oklch(0.577 0.245 27.325);
-  --border: #E9EDEF;
-  --input: #E9EDEF;
-  --ring: #25D366;
+  --border: #E2D9CF;
+  --input: #E2D9CF;
+  --ring: #C45B28;
 }
 
 @layer base {
@@ -90,28 +90,28 @@
   }
 }
 
-/* ===== WhatsApp Chat Wallpaper Doodle Pattern ===== */
+/* ===== ChatLingo Chat Wallpaper — Subtle Warm Pattern ===== */
 .wa-chat-bg {
-  background-color: #ECE5DD;
+  background-color: #FAF6F1;
   background-image:
-    /* Subtle doodle-like pattern using CSS shapes */
-    radial-gradient(circle at 10% 20%, rgba(134, 171, 142, 0.08) 2px, transparent 2px),
-    radial-gradient(circle at 30% 60%, rgba(134, 171, 142, 0.06) 1.5px, transparent 1.5px),
-    radial-gradient(circle at 50% 30%, rgba(134, 171, 142, 0.07) 2.5px, transparent 2.5px),
-    radial-gradient(circle at 70% 80%, rgba(134, 171, 142, 0.05) 2px, transparent 2px),
-    radial-gradient(circle at 90% 10%, rgba(134, 171, 142, 0.08) 1.5px, transparent 1.5px),
-    radial-gradient(circle at 20% 90%, rgba(134, 171, 142, 0.06) 2px, transparent 2px),
-    radial-gradient(circle at 80% 40%, rgba(134, 171, 142, 0.07) 2.5px, transparent 2.5px),
-    radial-gradient(circle at 40% 10%, rgba(134, 171, 142, 0.05) 1.5px, transparent 1.5px),
-    radial-gradient(circle at 60% 70%, rgba(134, 171, 142, 0.08) 2px, transparent 2px),
-    radial-gradient(circle at 15% 50%, rgba(134, 171, 142, 0.06) 1px, transparent 1px),
+    /* Subtle warm dot pattern */
+    radial-gradient(circle at 10% 20%, rgba(15, 76, 92, 0.05) 2px, transparent 2px),
+    radial-gradient(circle at 30% 60%, rgba(15, 76, 92, 0.04) 1.5px, transparent 1.5px),
+    radial-gradient(circle at 50% 30%, rgba(15, 76, 92, 0.05) 2.5px, transparent 2.5px),
+    radial-gradient(circle at 70% 80%, rgba(15, 76, 92, 0.03) 2px, transparent 2px),
+    radial-gradient(circle at 90% 10%, rgba(15, 76, 92, 0.05) 1.5px, transparent 1.5px),
+    radial-gradient(circle at 20% 90%, rgba(15, 76, 92, 0.04) 2px, transparent 2px),
+    radial-gradient(circle at 80% 40%, rgba(15, 76, 92, 0.05) 2.5px, transparent 2.5px),
+    radial-gradient(circle at 40% 10%, rgba(15, 76, 92, 0.03) 1.5px, transparent 1.5px),
+    radial-gradient(circle at 60% 70%, rgba(15, 76, 92, 0.05) 2px, transparent 2px),
+    radial-gradient(circle at 15% 50%, rgba(15, 76, 92, 0.04) 1px, transparent 1px),
     /* Small plus signs */
-    linear-gradient(0deg, transparent 45%, rgba(134, 171, 142, 0.06) 45%, rgba(134, 171, 142, 0.06) 55%, transparent 55%),
-    linear-gradient(90deg, transparent 45%, rgba(134, 171, 142, 0.06) 45%, rgba(134, 171, 142, 0.06) 55%, transparent 55%);
+    linear-gradient(0deg, transparent 45%, rgba(15, 76, 92, 0.04) 45%, rgba(15, 76, 92, 0.04) 55%, transparent 55%),
+    linear-gradient(90deg, transparent 45%, rgba(15, 76, 92, 0.04) 45%, rgba(15, 76, 92, 0.04) 55%, transparent 55%);
   background-size: 120px 120px;
 }
 
-/* ===== WhatsApp Chat Bubble Tails ===== */
+/* ===== Chat Bubble Tails ===== */
 .wa-bubble-tail-left {
   position: relative;
 }
@@ -122,7 +122,7 @@
   left: -8px;
   width: 0;
   height: 0;
-  border-top: 6px solid #FFFFFF;
+  border-top: 6px solid #FFFDF9;
   border-left: 8px solid transparent;
 }
 
@@ -136,7 +136,7 @@
   right: -8px;
   width: 0;
   height: 0;
-  border-top: 6px solid #D9FDD3;
+  border-top: 6px solid #E8DDD3;
   border-right: 8px solid transparent;
 }
 
@@ -150,7 +150,7 @@
 .typing-dots span {
   width: 7px;
   height: 7px;
-  background-color: #8696A0;
+  background-color: #78716C;
   border-radius: 50%;
   display: block;
   animation: typing-bounce 1.4s infinite ease-in-out;
@@ -189,7 +189,7 @@
   background-color: rgba(0, 0, 0, 0.35);
 }
 
-/* ===== WhatsApp-style Shadows ===== */
+/* ===== Shadows ===== */
 .wa-shadow-sm {
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.06);
 }
@@ -202,7 +202,7 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-/* ===== WhatsApp FAB ===== */
+/* ===== FAB — Floating Action Button ===== */
 .wa-fab {
   position: absolute;
   bottom: 20px;
@@ -210,12 +210,12 @@
   width: 56px;
   height: 56px;
   border-radius: 50%;
-  background-color: #25D366;
+  background-color: #C45B28;
   color: white;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 12px rgba(37, 211, 102, 0.4);
+  box-shadow: 0 4px 12px rgba(196, 91, 40, 0.4);
   cursor: pointer;
   transition: all 0.2s ease;
   border: none;
@@ -223,8 +223,8 @@
 }
 
 .wa-fab:hover {
-  background-color: #22C55E;
-  box-shadow: 0 6px 16px rgba(37, 211, 102, 0.5);
+  background-color: #A04920;
+  box-shadow: 0 6px 16px rgba(196, 91, 40, 0.5);
   transform: scale(1.05);
 }
 
@@ -232,7 +232,7 @@
   transform: scale(0.95);
 }
 
-/* ===== WhatsApp Dialog/Modal Overrides ===== */
+/* ===== Dialog/Modal Overrides ===== */
 .wa-dialog-overlay {
   background-color: rgba(0, 0, 0, 0.6) !important;
 }
@@ -245,7 +245,7 @@
   right: 0;
   height: 56px;
   background: white;
-  border-top: 1px solid #E9EDEF;
+  border-top: 1px solid #E2D9CF;
   display: flex;
   align-items: center;
   justify-content: space-around;
@@ -265,17 +265,17 @@
 }
 
 .wa-bottom-nav-item.active {
-  color: #25D366;
+  color: #C45B28;
 }
 
 .wa-bottom-nav-item.inactive {
-  color: #667781;
+  color: #78716C;
 }
 
 /* ===== Message time formatting ===== */
 .wa-msg-time {
   font-size: 11px;
-  color: #667781;
+  color: #78716C;
   white-space: nowrap;
 }
 
@@ -283,18 +283,18 @@
   color: rgba(0, 0, 0, 0.45);
 }
 
-/* ===== Blue ticks ===== */
+/* ===== Blue ticks — now copper ticks ===== */
 .wa-tick-blue {
-  color: #53BDEB;
+  color: #C45B28;
 }
 
 .wa-tick-gray {
-  color: #8696A0;
+  color: #9CA3AF;
 }
 
 /* ===== Unread badge ===== */
 .wa-unread-badge {
-  background-color: #25D366;
+  background-color: #C45B28;
   color: white;
   font-size: 11px;
   font-weight: 600;
@@ -309,12 +309,12 @@
 
 /* ===== Auth page gradient ===== */
 .wa-auth-gradient {
-  background: linear-gradient(135deg, #075E54 0%, #128C7E 100%);
+  background: linear-gradient(135deg, #0F4C5C 0%, #1A6B7A 100%);
 }
 
-/* ===== WhatsApp input bar ===== */
+/* ===== Input bar ===== */
 .wa-input-bar {
-  background-color: #F0F2F5;
+  background-color: #F5F0EA;
   border-radius: 8px;
 }
 
@@ -372,7 +372,7 @@
 .wa-voice-waveform .bar {
   width: 3px;
   border-radius: 2px;
-  background-color: #111B21;
+  background-color: #1C1917;
   animation: voiceBarBounce 1.2s ease-in-out infinite;
 }
 
@@ -424,9 +424,9 @@
 }
 
 @keyframes speakingRing {
-  0% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.6); }
-  70% { box-shadow: 0 0 0 8px rgba(37, 211, 102, 0); }
-  100% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); }
+  0% { box-shadow: 0 0 0 0 rgba(196, 91, 40, 0.6); }
+  70% { box-shadow: 0 0 0 8px rgba(196, 91, 40, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(196, 91, 40, 0); }
 }
 
 /* ===== Live indicator ===== */

@@ -42,11 +42,11 @@ export function WordOfTheDay() {
 
   if (loading) {
     return (
-      <div className="rounded-xl overflow-hidden bg-[#F0F2F5] h-40 animate-pulse p-4 space-y-2">
-        <div className="h-3 bg-[#E9EDEF] rounded w-1/3" />
-        <div className="h-5 bg-[#E9EDEF] rounded w-2/3" />
-        <div className="h-3 bg-[#E9EDEF] rounded w-full" />
-        <div className="h-3 bg-[#E9EDEF] rounded w-4/5" />
+      <div className="rounded-xl overflow-hidden bg-[#F5F0EA] h-40 animate-pulse p-4 space-y-2">
+        <div className="h-3 bg-[#E2D9CF] rounded w-1/3" />
+        <div className="h-5 bg-[#E2D9CF] rounded w-2/3" />
+        <div className="h-3 bg-[#E2D9CF] rounded w-full" />
+        <div className="h-3 bg-[#E2D9CF] rounded w-4/5" />
       </div>
     )
   }
@@ -54,43 +54,43 @@ export function WordOfTheDay() {
   if (!wordData) return null
 
   return (
-    <div className="rounded-xl bg-white border border-[#E9EDEF] overflow-hidden shadow-sm">
+    <div className="rounded-xl bg-white border border-[#E2D9CF] overflow-hidden shadow-sm">
       {/* Header */}
       <div className="bg-[#E7FCE3] px-4 py-2.5 flex items-center gap-2">
-        <BookOpen className="w-4 h-4 text-[#075E54]" />
-        <span className="text-[#075E54] text-xs font-semibold">Word of the Day</span>
-        <span className="text-[#075E54]/60 text-xs ml-1">
+        <BookOpen className="w-4 h-4 text-[#0F4C5C]" />
+        <span className="text-[#0F4C5C] text-xs font-semibold">Word of the Day</span>
+        <span className="text-[#0F4C5C]/60 text-xs ml-1">
           {getLanguageFlag(wordData.language)} {wordData.language}
         </span>
       </div>
 
       {/* Content */}
       <div className="p-4 space-y-3">
-        <p className="text-xl font-bold text-[#111B21]">{wordData.phrase}</p>
+        <p className="text-xl font-bold text-[#1C1917]">{wordData.phrase}</p>
 
         {/* Translations */}
         <div className="space-y-1.5">
           {wordData.translations.slice(0, 5).map((t, idx) => (
             <div key={idx} className="flex items-center gap-2">
               <span className="text-sm">{getLanguageFlag(t.language)}</span>
-              <span className="text-sm text-[#667781]">{getLanguageLabel(t.language)}</span>
-              <span className="text-sm text-[#111B21] font-medium">{t.translation}</span>
+              <span className="text-sm text-[#78716C]">{getLanguageLabel(t.language)}</span>
+              <span className="text-sm text-[#1C1917] font-medium">{t.translation}</span>
             </div>
           ))}
         </div>
 
         {/* Cultural Note */}
         {wordData.culturalNote && (
-          <div className="flex items-start gap-2 bg-[#F0F2F5] rounded-lg p-3">
-            <Lightbulb className="w-4 h-4 text-[#25D366] mt-0.5 shrink-0" />
-            <p className="text-xs text-[#667781] leading-relaxed">{wordData.culturalNote}</p>
+          <div className="flex items-start gap-2 bg-[#F5F0EA] rounded-lg p-3">
+            <Lightbulb className="w-4 h-4 text-[#C45B28] mt-0.5 shrink-0" />
+            <p className="text-xs text-[#78716C] leading-relaxed">{wordData.culturalNote}</p>
           </div>
         )}
 
         {/* Practice Button */}
         <button
           onClick={handlePractice}
-          className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-[#25D366] hover:bg-[#22C55E] text-white text-sm font-medium rounded-full transition-colors"
+          className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-[#C45B28] hover:bg-[#A04920] text-white text-sm font-medium rounded-full transition-colors"
         >
           <Volume2 className="w-4 h-4" />
           Practice in Chat

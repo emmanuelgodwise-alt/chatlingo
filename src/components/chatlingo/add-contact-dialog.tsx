@@ -89,7 +89,7 @@ export function AddContactDialog() {
     <Dialog open onOpenChange={() => setShowAddContact(false)}>
       <DialogContent className="sm:max-w-md border-0 p-0 overflow-hidden">
         {/* WhatsApp Green Header */}
-        <div className="bg-[#075E54] px-6 py-5">
+        <div className="bg-[#0F4C5C] px-6 py-5">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2 text-white text-xl">
               <UserPlus className="w-5 h-5" />
@@ -104,12 +104,12 @@ export function AddContactDialog() {
         {/* Search */}
         <div className="px-4 pt-4">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#667781]" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#78716C]" />
             <Input
               placeholder="Search by name or email..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10 h-10 rounded-lg border-[#E9EDEF] bg-[#F0F2F5] focus:border-[#25D366] focus:ring-[#25D366]/20"
+              className="pl-10 h-10 rounded-lg border-[#E2D9CF] bg-[#F5F0EA] focus:border-[#C45B28] focus:ring-[#C45B28]/20"
             />
           </div>
         </div>
@@ -118,7 +118,7 @@ export function AddContactDialog() {
         <ScrollArea className="max-h-72 px-4 py-3">
           {searching && (
             <div className="flex items-center justify-center py-8">
-              <span className="w-5 h-5 border-2 border-[#25D366]/30 border-t-[#25D366] rounded-full animate-spin" />
+              <span className="w-5 h-5 border-2 border-[#C45B28]/30 border-t-[#C45B28] rounded-full animate-spin" />
             </div>
           )}
 
@@ -137,20 +137,20 @@ export function AddContactDialog() {
                 return (
                   <div
                     key={user.id}
-                    className="flex items-center gap-3 p-3 rounded-lg hover:bg-[#F0F2F5] transition-colors"
+                    className="flex items-center gap-3 p-3 rounded-lg hover:bg-[#F5F0EA] transition-colors"
                   >
                     <Avatar className="w-10 h-10 shrink-0">
-                      <AvatarFallback className="bg-[#DFE5E7] text-[#111B21] text-sm font-semibold">
+                      <AvatarFallback className="bg-[#E2D9CF] text-[#1C1917] text-sm font-semibold">
                         {initials}
                       </AvatarFallback>
                     </Avatar>
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-[#111B21] truncate">
+                      <p className="text-sm font-medium text-[#1C1917] truncate">
                         {user.name}
                       </p>
                       <div className="flex items-center gap-1.5 mt-0.5">
-                        <Globe className="w-3 h-3 text-[#667781]" />
-                        <span className="text-xs text-[#667781]">
+                        <Globe className="w-3 h-3 text-[#78716C]" />
+                        <span className="text-xs text-[#78716C]">
                           {getLanguageFlag(user.preferredLanguage)} {user.preferredLanguage}
                         </span>
                       </div>
@@ -160,8 +160,8 @@ export function AddContactDialog() {
                       variant={isAdded ? 'secondary' : 'default'}
                       className={
                         isAdded
-                          ? 'text-[#075E54] bg-[#F0F2F5] hover:bg-[#E9EDEF] border-none'
-                          : 'bg-[#25D366] hover:bg-[#22C55E] text-white border-none'
+                          ? 'text-[#0F4C5C] bg-[#F5F0EA] hover:bg-[#E2D9CF] border-none'
+                          : 'bg-[#C45B28] hover:bg-[#A04920] text-white border-none'
                       }
                       disabled={isAdded || isAdding}
                       onClick={() => handleAddContact(user.id)}
@@ -176,23 +176,23 @@ export function AddContactDialog() {
 
           {!searching && searchQuery.length >= 2 && searchResults.length === 0 && (
             <div className="py-8 text-center">
-              <p className="text-sm text-[#667781]">No users found</p>
-              <p className="text-xs text-[#8696A0] mt-1">Try a different search term</p>
+              <p className="text-sm text-[#78716C]">No users found</p>
+              <p className="text-xs text-[#9CA3AF] mt-1">Try a different search term</p>
             </div>
           )}
 
           {!searching && searchQuery.length < 2 && (
             <div className="py-8 text-center">
-              <p className="text-sm text-[#8696A0]">Type at least 2 characters to search</p>
+              <p className="text-sm text-[#9CA3AF]">Type at least 2 characters to search</p>
             </div>
           )}
         </ScrollArea>
 
-        <DialogFooter className="px-6 pb-4 pt-2 border-t border-[#E9EDEF]">
+        <DialogFooter className="px-6 pb-4 pt-2 border-t border-[#E2D9CF]">
           <Button
             variant="outline"
             onClick={() => setShowAddContact(false)}
-            className="text-[#667781] border-[#E9EDEF] hover:bg-[#F0F2F5]"
+            className="text-[#78716C] border-[#E2D9CF] hover:bg-[#F5F0EA]"
           >
             Close
           </Button>

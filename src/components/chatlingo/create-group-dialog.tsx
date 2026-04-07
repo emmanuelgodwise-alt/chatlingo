@@ -91,7 +91,7 @@ export function CreateGroupDialog() {
     <div className="fixed inset-0 z-[90] flex items-center justify-center bg-black/50">
       <div className="bg-white rounded-xl w-full max-w-md mx-4 overflow-hidden shadow-xl animate-fadeIn">
         {/* Header */}
-        <div className="bg-[#075E54] px-4 py-3 flex items-center gap-3">
+        <div className="bg-[#0F4C5C] px-4 py-3 flex items-center gap-3">
           <button
             onClick={() => setShowCreateGroup(false)}
             className="p-1 text-white/80 hover:text-white rounded-full hover:bg-white/10 transition-colors"
@@ -109,7 +109,7 @@ export function CreateGroupDialog() {
             onChange={(e) => setGroupName(e.target.value)}
             placeholder="Group name"
             maxLength={50}
-            className="w-full px-3 py-2 bg-[#F0F2F5] rounded-lg text-sm text-[#111B21] placeholder:text-[#667781] focus:outline-none focus:ring-2 focus:ring-[#25D366] border-none"
+            className="w-full px-3 py-2 bg-[#F5F0EA] rounded-lg text-sm text-[#1C1917] placeholder:text-[#78716C] focus:outline-none focus:ring-2 focus:ring-[#C45B28] border-none"
           />
 
           {/* Selected Contacts */}
@@ -121,7 +121,7 @@ export function CreateGroupDialog() {
                 return (
                   <span
                     key={id}
-                    className="inline-flex items-center gap-1 px-2 py-1 bg-[#E7FCE3] text-[#075E54] rounded-full text-xs font-medium"
+                    className="inline-flex items-center gap-1 px-2 py-1 bg-[#E7FCE3] text-[#0F4C5C] rounded-full text-xs font-medium"
                   >
                     {contact.name}
                     <button
@@ -138,19 +138,19 @@ export function CreateGroupDialog() {
 
           {/* Search */}
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#667781]" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#78716C]" />
             <Input
               placeholder="Search contacts..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10 h-9 bg-[#F0F2F5] border-none rounded-lg text-sm placeholder:text-[#667781] focus-visible:ring-0 focus-visible:bg-white focus-visible:border-[#E9EDEF]"
+              className="pl-10 h-9 bg-[#F5F0EA] border-none rounded-lg text-sm placeholder:text-[#78716C] focus-visible:ring-0 focus-visible:bg-white focus-visible:border-[#E2D9CF]"
             />
           </div>
 
           {/* Contact List */}
           <div className="max-h-60 overflow-y-auto scrollbar-thin">
             {filteredContacts.length === 0 ? (
-              <p className="text-center text-sm text-[#667781] py-4">No contacts found</p>
+              <p className="text-center text-sm text-[#78716C] py-4">No contacts found</p>
             ) : (
               filteredContacts.map((contact) => {
                 const isSelected = selectedIds.includes(contact.id)
@@ -160,22 +160,22 @@ export function CreateGroupDialog() {
                     key={contact.id}
                     onClick={() => toggleContact(contact.id)}
                     className={`w-full flex items-center gap-3 px-2 py-2 rounded-lg transition-colors ${
-                      isSelected ? 'bg-[#E7FCE3]' : 'hover:bg-[#F0F2F5]'
+                      isSelected ? 'bg-[#E7FCE3]' : 'hover:bg-[#F5F0EA]'
                     }`}
                   >
                     <Avatar className="w-9 h-9 shrink-0">
-                      <AvatarFallback className="bg-[#DFE5E7] text-[#111B21] text-xs font-semibold">
+                      <AvatarFallback className="bg-[#E2D9CF] text-[#1C1917] text-xs font-semibold">
                         {initials}
                       </AvatarFallback>
                     </Avatar>
                     <div className="flex-1 min-w-0 text-left">
-                      <p className="text-sm font-medium text-[#111B21] truncate">{contact.name}</p>
-                      <p className="text-xs text-[#667781]">
+                      <p className="text-sm font-medium text-[#1C1917] truncate">{contact.name}</p>
+                      <p className="text-xs text-[#78716C]">
                         {getLanguageFlag(contact.preferredLanguage)} {contact.preferredLanguage}
                       </p>
                     </div>
                     {isSelected && (
-                      <div className="w-5 h-5 bg-[#25D366] rounded-full flex items-center justify-center shrink-0">
+                      <div className="w-5 h-5 bg-[#C45B28] rounded-full flex items-center justify-center shrink-0">
                         <Check className="w-3 h-3 text-white" />
                       </div>
                     )}
@@ -193,7 +193,7 @@ export function CreateGroupDialog() {
           <button
             onClick={handleCreate}
             disabled={!groupName.trim() || selectedIds.length === 0 || creating}
-            className="px-6 py-2 bg-[#25D366] hover:bg-[#22C55E] text-white text-sm font-medium rounded-full transition-colors disabled:opacity-50 shadow-sm"
+            className="px-6 py-2 bg-[#C45B28] hover:bg-[#A04920] text-white text-sm font-medium rounded-full transition-colors disabled:opacity-50 shadow-sm"
           >
             {creating ? (
               <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin inline-block" />

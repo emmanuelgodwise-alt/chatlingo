@@ -150,12 +150,12 @@ export function Sidebar({ socket }: { socket: SocketType | null }) {
   const unreadTotal = conversations.reduce((sum, c) => sum + c.unreadCount, 0)
 
   return (
-    <div className="w-full md:w-80 lg:w-[420px] bg-white border-r border-[#E9EDEF] flex flex-col h-full relative">
+    <div className="w-full md:w-80 lg:w-[420px] bg-white border-r border-[#E2D9CF] flex flex-col h-full relative">
       {/* WhatsApp Header */}
-      <div className="bg-[#075E54] px-4 py-2.5 flex items-center justify-between wa-shadow-header shrink-0">
+      <div className="bg-[#0F4C5C] px-4 py-2.5 flex items-center justify-between wa-shadow-header shrink-0">
         <div className="flex items-center gap-3">
           <Avatar className="w-10 h-10">
-            <AvatarFallback className="bg-[#128C7E] text-white text-sm font-semibold">
+            <AvatarFallback className="bg-[#1A6B7A] text-white text-sm font-semibold">
               {userInitials}
             </AvatarFallback>
           </Avatar>
@@ -179,13 +179,13 @@ export function Sidebar({ socket }: { socket: SocketType | null }) {
       </div>
 
       {/* Tabs */}
-      <div className="flex bg-white border-b border-[#E9EDEF] shrink-0">
+      <div className="flex bg-white border-b border-[#E2D9CF] shrink-0">
         <button
           onClick={() => setActiveTab('chats')}
           className={`flex-1 flex items-center justify-center gap-1.5 py-3 text-sm font-medium transition-colors relative ${
             activeTab === 'chats'
-              ? 'text-[#075E54]'
-              : 'text-[#667781] hover:text-[#075E54]'
+              ? 'text-[#0F4C5C]'
+              : 'text-[#78716C] hover:text-[#0F4C5C]'
           }`}
         >
           <MessageCircle className="w-4 h-4" />
@@ -196,21 +196,21 @@ export function Sidebar({ socket }: { socket: SocketType | null }) {
             </span>
           )}
           {activeTab === 'chats' && (
-            <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[80px] h-[3px] bg-[#075E54] rounded-t-full" />
+            <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[80px] h-[3px] bg-[#0F4C5C] rounded-t-full" />
           )}
         </button>
         <button
           onClick={() => setActiveTab('contacts')}
           className={`flex-1 flex items-center justify-center gap-1.5 py-3 text-sm font-medium transition-colors relative ${
             activeTab === 'contacts'
-              ? 'text-[#075E54]'
-              : 'text-[#667781] hover:text-[#075E54]'
+              ? 'text-[#0F4C5C]'
+              : 'text-[#78716C] hover:text-[#0F4C5C]'
           }`}
         >
           <Users className="w-4 h-4" />
           Contacts
           {activeTab === 'contacts' && (
-            <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[80px] h-[3px] bg-[#075E54] rounded-t-full" />
+            <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[80px] h-[3px] bg-[#0F4C5C] rounded-t-full" />
           )}
         </button>
       </div>
@@ -218,14 +218,14 @@ export function Sidebar({ socket }: { socket: SocketType | null }) {
       {/* Search Bar */}
       <div className="px-3 py-2 bg-white shrink-0">
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#667781]" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#78716C]" />
           <Input
             placeholder={
               activeTab === 'chats' ? 'Search or start new chat' : 'Search contacts...'
             }
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10 h-9 bg-[#F0F2F5] border-none rounded-lg text-sm placeholder:text-[#667781] focus-visible:ring-0 focus-visible:bg-white focus-visible:border-[#E9EDEF]"
+            className="pl-10 h-9 bg-[#F5F0EA] border-none rounded-lg text-sm placeholder:text-[#78716C] focus-visible:ring-0 focus-visible:bg-white focus-visible:border-[#E2D9CF]"
           />
         </div>
       </div>
@@ -239,9 +239,9 @@ export function Sidebar({ socket }: { socket: SocketType | null }) {
           <div>
             {conversations.length === 0 ? (
               <div className="p-8 text-center">
-                <MessageCircle className="w-12 h-12 text-[#E9EDEF] mx-auto mb-3" />
-                <p className="text-sm text-[#667781]">No conversations yet</p>
-                <p className="text-xs text-[#8696A0] mt-1">
+                <MessageCircle className="w-12 h-12 text-[#E2D9CF] mx-auto mb-3" />
+                <p className="text-sm text-[#78716C]">No conversations yet</p>
+                <p className="text-xs text-[#9CA3AF] mt-1">
                   Add a contact to start chatting
                 </p>
               </div>
@@ -262,13 +262,13 @@ export function Sidebar({ socket }: { socket: SocketType | null }) {
           <div>
             {loadingContacts ? (
               <div className="p-8 text-center">
-                <span className="w-5 h-5 border-2 border-[#25D366]/30 border-t-[#25D366] rounded-full animate-spin inline-block" />
+                <span className="w-5 h-5 border-2 border-[#C45B28]/30 border-t-[#C45B28] rounded-full animate-spin inline-block" />
               </div>
             ) : contacts.length === 0 ? (
               <div className="p-8 text-center">
-                <Users className="w-12 h-12 text-[#E9EDEF] mx-auto mb-3" />
-                <p className="text-sm text-[#667781]">No contacts yet</p>
-                <p className="text-xs text-[#8696A0] mt-1">
+                <Users className="w-12 h-12 text-[#E2D9CF] mx-auto mb-3" />
+                <p className="text-sm text-[#78716C]">No contacts yet</p>
+                <p className="text-xs text-[#9CA3AF] mt-1">
                   Add contacts to start chatting
                 </p>
               </div>
@@ -292,48 +292,48 @@ export function Sidebar({ socket }: { socket: SocketType | null }) {
         <div className="fixed inset-0 z-40" onClick={() => setShowFABMenu(false)} />
       )}
       {showFABMenu && (
-        <div className="absolute bottom-24 right-5 bg-white rounded-xl shadow-lg py-2 z-50 w-52 border border-[#E9EDEF] animate-fadeIn">
+        <div className="absolute bottom-24 right-5 bg-white rounded-xl shadow-lg py-2 z-50 w-52 border border-[#E2D9CF] animate-fadeIn">
           <button
             onClick={() => { setShowAddContact(true); setShowFABMenu(false) }}
-            className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-[#111B21] hover:bg-[#F0F2F5] transition-colors"
+            className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-[#1C1917] hover:bg-[#F5F0EA] transition-colors"
           >
-            <div className="w-8 h-8 rounded-full bg-[#075E54] flex items-center justify-center">
+            <div className="w-8 h-8 rounded-full bg-[#0F4C5C] flex items-center justify-center">
               <UserPlus className="w-4 h-4 text-white" />
             </div>
             New Contact
           </button>
           <button
             onClick={() => { setShowCreateGroup(true); setShowFABMenu(false) }}
-            className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-[#111B21] hover:bg-[#F0F2F5] transition-colors"
+            className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-[#1C1917] hover:bg-[#F5F0EA] transition-colors"
           >
-            <div className="w-8 h-8 rounded-full bg-[#25D366] flex items-center justify-center">
+            <div className="w-8 h-8 rounded-full bg-[#C45B28] flex items-center justify-center">
               <UsersRound className="w-4 h-4 text-white" />
             </div>
             New Group
           </button>
           <button
             onClick={() => { setShowCreateChannel(true); setShowFABMenu(false) }}
-            className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-[#111B21] hover:bg-[#F0F2F5] transition-colors"
+            className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-[#1C1917] hover:bg-[#F5F0EA] transition-colors"
           >
-            <div className="w-8 h-8 rounded-full bg-[#128C7E] flex items-center justify-center">
+            <div className="w-8 h-8 rounded-full bg-[#1A6B7A] flex items-center justify-center">
               <Hash className="w-4 h-4 text-white" />
             </div>
             New Channel
           </button>
           <button
             onClick={() => { setShowBroadcast(true); setShowFABMenu(false) }}
-            className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-[#111B21] hover:bg-[#F0F2F5] transition-colors"
+            className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-[#1C1917] hover:bg-[#F5F0EA] transition-colors"
           >
-            <div className="w-8 h-8 rounded-full bg-[#53BDEB] flex items-center justify-center">
+            <div className="w-8 h-8 rounded-full bg-[#C45B28] flex items-center justify-center">
               <Megaphone className="w-4 h-4 text-white" />
             </div>
             Broadcast List
           </button>
           <button
             onClick={() => { setGlobalTab('learn'); setShowFABMenu(false) }}
-            className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-[#111B21] hover:bg-[#F0F2F5] transition-colors"
+            className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-[#1C1917] hover:bg-[#F5F0EA] transition-colors"
           >
-            <div className="w-8 h-8 rounded-full bg-[#FF6B35] flex items-center justify-center">
+            <div className="w-8 h-8 rounded-full bg-[#C45B28] flex items-center justify-center">
               <BookOpen className="w-4 h-4 text-white" />
             </div>
             Language Exchange
@@ -361,22 +361,22 @@ export function Sidebar({ socket }: { socket: SocketType | null }) {
       </button>
 
       {/* Current User Bar (bottom) */}
-      <div className="px-3 py-2 flex items-center gap-3 bg-white border-t border-[#E9EDEF] shrink-0">
+      <div className="px-3 py-2 flex items-center gap-3 bg-white border-t border-[#E2D9CF] shrink-0">
         <Avatar className="w-9 h-9">
-          <AvatarFallback className="bg-[#DFE5E7] text-[#111B21] text-xs font-semibold">
+          <AvatarFallback className="bg-[#E2D9CF] text-[#1C1917] text-xs font-semibold">
             {userInitials}
           </AvatarFallback>
         </Avatar>
         <div className="flex-1 min-w-0">
-          <p className="text-sm font-medium text-[#111B21] truncate">{user?.name}</p>
+          <p className="text-sm font-medium text-[#1C1917] truncate">{user?.name}</p>
           <div className="flex items-center gap-1">
-            <span className="text-xs text-[#667781]">{getLanguageFlag(user?.preferredLanguage || 'English')}</span>
-            <span className="text-xs text-[#8696A0] truncate">{user?.preferredLanguage}</span>
+            <span className="text-xs text-[#78716C]">{getLanguageFlag(user?.preferredLanguage || 'English')}</span>
+            <span className="text-xs text-[#9CA3AF] truncate">{user?.preferredLanguage}</span>
           </div>
         </div>
         <button
           onClick={logout}
-          className="p-2 text-[#667781] hover:text-red-500 rounded-full hover:bg-[#F0F2F5] transition-colors"
+          className="p-2 text-[#78716C] hover:text-red-500 rounded-full hover:bg-[#F5F0EA] transition-colors"
           title="Sign out"
         >
           <LogOut className="w-5 h-5" />

@@ -155,7 +155,7 @@ export function StatusViewer() {
   if (!currentStatus) return null
 
   const gradientMap: Record<string, string> = {
-    emerald: 'linear-gradient(135deg, #075E54 0%, #25D366 50%, #128C7E 100%)',
+    emerald: 'linear-gradient(135deg, #0F4C5C 0%, #C45B28 50%, #1A6B7A 100%)',
     blue: 'linear-gradient(135deg, #1E3A5F 0%, #3B82F6 50%, #1E40AF 100%)',
     red: 'linear-gradient(135deg, #7F1D1D 0%, #EF4444 50%, #B91C1C 100%)',
     purple: 'linear-gradient(135deg, #4C1D95 0%, #8B5CF6 50%, #6D28D9 100%)',
@@ -180,7 +180,7 @@ export function StatusViewer() {
       <div className="flex items-center justify-between px-3 py-2 z-10">
         <div className="flex items-center gap-2.5">
           <Avatar className="w-9 h-9">
-            <AvatarFallback className="bg-[#DFE5E7] text-[#111B21] text-xs font-semibold">
+            <AvatarFallback className="bg-[#E2D9CF] text-[#1C1917] text-xs font-semibold">
               {currentStatus.owner.name.split(' ').map((n) => n[0]).join('').toUpperCase().slice(0, 2)}
             </AvatarFallback>
           </Avatar>

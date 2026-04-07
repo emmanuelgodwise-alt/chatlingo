@@ -36,7 +36,7 @@ export function SpotlightCard() {
   }, [loadSpotlight])
 
   const gradients = [
-    'linear-gradient(135deg, #075E54 0%, #25D366 40%, #128C7E 70%, #0A6E5C 100%)',
+    'linear-gradient(135deg, #0F4C5C 0%, #C45B28 40%, #1A6B7A 70%, #0A6E5C 100%)',
     'linear-gradient(135deg, #1E3A5F 0%, #3B82F6 40%, #1E40AF 70%, #172554 100%)',
     'linear-gradient(135deg, #7F1D1D 0%, #EF4444 40%, #B91C1C 70%, #450A0A 100%)',
   ]
@@ -45,11 +45,11 @@ export function SpotlightCard() {
 
   if (loading) {
     return (
-      <div className="rounded-xl overflow-hidden h-48 bg-[#F0F2F5] animate-pulse">
+      <div className="rounded-xl overflow-hidden h-48 bg-[#F5F0EA] animate-pulse">
         <div className="p-4 space-y-3">
-          <div className="h-4 bg-[#E9EDEF] rounded w-1/2" />
-          <div className="h-3 bg-[#E9EDEF] rounded w-full" />
-          <div className="h-3 bg-[#E9EDEF] rounded w-3/4" />
+          <div className="h-4 bg-[#E2D9CF] rounded w-1/2" />
+          <div className="h-3 bg-[#E2D9CF] rounded w-full" />
+          <div className="h-3 bg-[#E2D9CF] rounded w-3/4" />
         </div>
       </div>
     )

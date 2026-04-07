@@ -93,9 +93,9 @@ export function RoomsTab() {
   )
 
   return (
-    <div className="flex-1 flex flex-col h-full bg-[#F0F2F5]">
+    <div className="flex-1 flex flex-col h-full bg-[#F5F0EA]">
       {/* Header */}
-      <div className="bg-[#075E54] px-4 py-3 flex items-center justify-between wa-shadow-header shrink-0">
+      <div className="bg-[#0F4C5C] px-4 py-3 flex items-center justify-between wa-shadow-header shrink-0">
         <div className="flex items-center gap-2">
           <Radio className="w-5 h-5 text-white" />
           <h2 className="text-white font-semibold text-base">Live Rooms</h2>
@@ -109,14 +109,14 @@ export function RoomsTab() {
       </div>
 
       {/* Search */}
-      <div className="px-3 py-2 bg-white border-b border-[#E9EDEF] shrink-0">
+      <div className="px-3 py-2 bg-white border-b border-[#E2D9CF] shrink-0">
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#667781]" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#78716C]" />
           <Input
             placeholder="Search rooms..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10 h-9 bg-[#F0F2F5] border-none rounded-lg text-sm placeholder:text-[#667781] focus-visible:ring-0"
+            className="pl-10 h-9 bg-[#F5F0EA] border-none rounded-lg text-sm placeholder:text-[#78716C] focus-visible:ring-0"
           />
         </div>
       </div>
@@ -125,13 +125,13 @@ export function RoomsTab() {
       <div className="flex-1 overflow-y-auto scrollbar-thin p-3 space-y-2">
         {loading ? (
           <div className="p-8 text-center">
-            <span className="w-6 h-6 border-2 border-[#25D366]/30 border-t-[#25D366] rounded-full animate-spin inline-block" />
+            <span className="w-6 h-6 border-2 border-[#C45B28]/30 border-t-[#C45B28] rounded-full animate-spin inline-block" />
           </div>
         ) : filteredRooms.length === 0 ? (
           <div className="text-center py-8">
-            <Radio className="w-12 h-12 text-[#E9EDEF] mx-auto mb-3" />
-            <p className="text-sm text-[#667781]">No live rooms</p>
-            <p className="text-xs text-[#8696A0] mt-1">Create a room to start talking!</p>
+            <Radio className="w-12 h-12 text-[#E2D9CF] mx-auto mb-3" />
+            <p className="text-sm text-[#78716C]">No live rooms</p>
+            <p className="text-xs text-[#9CA3AF] mt-1">Create a room to start talking!</p>
           </div>
         ) : (
           filteredRooms.map((room) => {
@@ -139,15 +139,15 @@ export function RoomsTab() {
             return (
               <div
                 key={room.id}
-                className="bg-white rounded-xl p-4 border border-[#E9EDEF] shadow-sm"
+                className="bg-white rounded-xl p-4 border border-[#E2D9CF] shadow-sm"
               >
                 <div className="flex items-center gap-3 mb-3">
-                  <div className="w-12 h-12 rounded-full bg-[#075E54] flex items-center justify-center shrink-0">
+                  <div className="w-12 h-12 rounded-full bg-[#0F4C5C] flex items-center justify-center shrink-0">
                     <Radio className="w-5 h-5 text-white" />
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
-                      <h3 className="text-sm font-semibold text-[#111B21] truncate">{room.name}</h3>
+                      <h3 className="text-sm font-semibold text-[#1C1917] truncate">{room.name}</h3>
                       {room.isLive && (
                         <span className="flex items-center gap-1 text-[10px] text-red-500 font-medium bg-red-50 px-1.5 py-0.5 rounded-full">
                           <span className="w-1.5 h-1.5 bg-red-500 rounded-full wa-live-dot" />
@@ -156,16 +156,16 @@ export function RoomsTab() {
                       )}
                     </div>
                     {room.description && (
-                      <p className="text-xs text-[#667781] truncate">{room.description}</p>
+                      <p className="text-xs text-[#78716C] truncate">{room.description}</p>
                     )}
-                    <p className="text-xs text-[#8696A0] mt-0.5">
+                    <p className="text-xs text-[#9CA3AF] mt-0.5">
                       {getLanguageFlag(room.language)} {room.language}
                     </p>
                   </div>
                 </div>
 
                 {/* Participants count */}
-                <div className="flex items-center gap-4 mb-3 text-xs text-[#667781]">
+                <div className="flex items-center gap-4 mb-3 text-xs text-[#78716C]">
                   <div className="flex items-center gap-1">
                     <Mic className="w-3.5 h-3.5" />
                     <span>{room.speakerCount} speakers</span>
@@ -176,7 +176,7 @@ export function RoomsTab() {
                   </div>
                   <div className="flex items-center gap-1 ml-auto">
                     <Avatar className="w-5 h-5">
-                      <AvatarFallback className="bg-[#DFE5E7] text-[8px]">
+                      <AvatarFallback className="bg-[#E2D9CF] text-[8px]">
                         {ownerInitials}
                       </AvatarFallback>
                     </Avatar>
@@ -188,14 +188,14 @@ export function RoomsTab() {
                 <div className="flex gap-2">
                   <button
                     onClick={() => handleJoinRoom(room.id, 'listener')}
-                    className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 bg-[#F0F2F5] hover:bg-[#E9EDEF] text-[#111B21] text-xs font-medium rounded-full transition-colors"
+                    className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 bg-[#F5F0EA] hover:bg-[#E2D9CF] text-[#1C1917] text-xs font-medium rounded-full transition-colors"
                   >
                     <Headphones className="w-3.5 h-3.5" />
                     Listen
                   </button>
                   <button
                     onClick={() => handleJoinRoom(room.id, 'speaker')}
-                    className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 bg-[#25D366] hover:bg-[#22C55E] text-white text-xs font-medium rounded-full transition-colors"
+                    className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 bg-[#C45B28] hover:bg-[#A04920] text-white text-xs font-medium rounded-full transition-colors"
                   >
                     <Mic className="w-3.5 h-3.5" />
                     Speak

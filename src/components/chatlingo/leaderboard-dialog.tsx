@@ -58,7 +58,7 @@ export function LeaderboardDialog() {
     <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center">
       <div className="bg-white rounded-xl shadow-xl max-w-md w-full mx-4 max-h-[80vh] overflow-y-auto">
         {/* Green Header */}
-        <div className="bg-[#075E54] px-6 py-5 rounded-t-xl flex items-start justify-between">
+        <div className="bg-[#0F4C5C] px-6 py-5 rounded-t-xl flex items-start justify-between">
           <div>
             <h2 className="flex items-center gap-2 text-white text-xl font-semibold">
               <span className="text-2xl">🏆</span>
@@ -77,13 +77,13 @@ export function LeaderboardDialog() {
         </div>
 
         {/* Tab Filter */}
-        <div className="flex border-b border-[#E9EDEF]">
+        <div className="flex border-b border-[#E2D9CF]">
           <button
             onClick={() => setTab('global')}
             className={`flex-1 py-3 text-sm font-medium transition-colors border-b-2 ${
               tab === 'global'
-                ? 'text-[#075E54] border-[#075E54]'
-                : 'text-[#667781] border-transparent hover:text-[#111B21]'
+                ? 'text-[#0F4C5C] border-[#0F4C5C]'
+                : 'text-[#78716C] border-transparent hover:text-[#1C1917]'
             }`}
           >
             🌍 Global
@@ -92,8 +92,8 @@ export function LeaderboardDialog() {
             onClick={() => setTab('friends')}
             className={`flex-1 py-3 text-sm font-medium transition-colors border-b-2 ${
               tab === 'friends'
-                ? 'text-[#075E54] border-[#075E54]'
-                : 'text-[#667781] border-transparent hover:text-[#111B21]'
+                ? 'text-[#0F4C5C] border-[#0F4C5C]'
+                : 'text-[#78716C] border-transparent hover:text-[#1C1917]'
             }`}
           >
             👥 Friends
@@ -104,17 +104,17 @@ export function LeaderboardDialog() {
         <div className="p-4">
           {loading ? (
             <div className="flex items-center justify-center py-12">
-              <Loader2 className="w-6 h-6 text-[#25D366] animate-spin" />
+              <Loader2 className="w-6 h-6 text-[#C45B28] animate-spin" />
             </div>
           ) : entries.length === 0 ? (
             <div className="py-12 text-center">
-              <div className="w-16 h-16 rounded-full bg-[#F0F2F5] flex items-center justify-center mx-auto mb-4">
-                <Trophy className="w-8 h-8 text-[#8696A0]" />
+              <div className="w-16 h-16 rounded-full bg-[#F5F0EA] flex items-center justify-center mx-auto mb-4">
+                <Trophy className="w-8 h-8 text-[#9CA3AF]" />
               </div>
-              <p className="text-sm font-medium text-[#111B21] mb-1">
+              <p className="text-sm font-medium text-[#1C1917] mb-1">
                 No learners yet
               </p>
-              <p className="text-xs text-[#667781]">
+              <p className="text-xs text-[#78716C]">
                 Be the first! Start learning to climb the leaderboard.
               </p>
             </div>
@@ -135,10 +135,10 @@ export function LeaderboardDialog() {
                     key={entry.userId}
                     className={`flex items-center gap-3 p-3 rounded-lg transition-colors ${
                       isCurrentUser
-                        ? 'bg-[#25D366]/10 border border-[#25D366]/20'
+                        ? 'bg-[#C45B28]/10 border border-[#C45B28]/20'
                         : entry.rank <= 3
-                        ? 'bg-[#F0F2F5]'
-                        : 'hover:bg-[#F0F2F5]'
+                        ? 'bg-[#F5F0EA]'
+                        : 'hover:bg-[#F5F0EA]'
                     }`}
                   >
                     {/* Rank */}
@@ -146,7 +146,7 @@ export function LeaderboardDialog() {
                       {medal ? (
                         <span className="text-lg">{medal}</span>
                       ) : (
-                        <span className="text-sm font-medium text-[#667781]">
+                        <span className="text-sm font-medium text-[#78716C]">
                           {entry.rank}
                         </span>
                       )}
@@ -161,7 +161,7 @@ export function LeaderboardDialog() {
                           ? 'bg-gray-100 text-gray-600 border-2 border-gray-300'
                           : entry.rank === 3
                           ? 'bg-orange-100 text-orange-700 border-2 border-orange-300'
-                          : 'bg-[#DFE5E7] text-[#111B21]'
+                          : 'bg-[#E2D9CF] text-[#1C1917]'
                       }`}
                     >
                       {entry.avatar ? (
@@ -179,23 +179,23 @@ export function LeaderboardDialog() {
                     <div className="flex-1 min-w-0">
                       <p
                         className={`text-sm font-medium truncate ${
-                          isCurrentUser ? 'text-[#075E54]' : 'text-[#111B21]'
+                          isCurrentUser ? 'text-[#0F4C5C]' : 'text-[#1C1917]'
                         }`}
                       >
                         {entry.name}
                         {isCurrentUser && (
-                          <span className="ml-1.5 text-xs text-[#25D366] font-normal">
+                          <span className="ml-1.5 text-xs text-[#C45B28] font-normal">
                             (You)
                           </span>
                         )}
                       </p>
                       <div className="flex items-center gap-2 mt-0.5">
-                        <span className="text-xs text-[#667781] flex items-center gap-0.5">
+                        <span className="text-xs text-[#78716C] flex items-center gap-0.5">
                           <Star className="w-3 h-3" />
                           Lvl {entry.level} {getLevelLabel(entry.level)}
                         </span>
                         {entry.currentStreak > 0 && (
-                          <span className="text-xs text-[#667781] flex items-center gap-0.5">
+                          <span className="text-xs text-[#78716C] flex items-center gap-0.5">
                             <Flame className="w-3 h-3 text-orange-500" />
                             {entry.currentStreak}d
                           </span>
@@ -207,12 +207,12 @@ export function LeaderboardDialog() {
                     <div className="text-right shrink-0">
                       <p
                         className={`text-sm font-semibold ${
-                          isCurrentUser ? 'text-[#075E54]' : 'text-[#111B21]'
+                          isCurrentUser ? 'text-[#0F4C5C]' : 'text-[#1C1917]'
                         }`}
                       >
                         {entry.totalXp.toLocaleString()}
                       </p>
-                      <p className="text-xs text-[#8696A0]">XP</p>
+                      <p className="text-xs text-[#9CA3AF]">XP</p>
                     </div>
                   </div>
                 )
@@ -222,10 +222,10 @@ export function LeaderboardDialog() {
         </div>
 
         {/* Footer */}
-        <div className="px-6 pb-5 pt-2 border-t border-[#E9EDEF] flex justify-end">
+        <div className="px-6 pb-5 pt-2 border-t border-[#E2D9CF] flex justify-end">
           <button
             onClick={() => setShowLeaderboard(false)}
-            className="text-sm text-[#667781] hover:text-[#111B21] transition-colors"
+            className="text-sm text-[#78716C] hover:text-[#1C1917] transition-colors"
           >
             Close
           </button>
