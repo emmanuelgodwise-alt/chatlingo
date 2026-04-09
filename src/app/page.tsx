@@ -11,6 +11,14 @@ export default function Home() {
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
+      // Clear session if ?logout or ?fresh parameter is present
+      const params = new URLSearchParams(window.location.search)
+      if (params.has('logout') || params.has('fresh')) {
+        localStorage.removeItem('chatlingo_token')
+        localStorage.removeItem('chatlingo_user')
+        window.history.replaceState({}, '', window.location.pathname)
+        return
+      }
       const savedToken = localStorage.getItem('chatlingo_token')
       const savedUser = localStorage.getItem('chatlingo_user')
       if (savedToken && savedUser) {
