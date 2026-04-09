@@ -1,5 +1,16 @@
 'use client'
 
+// Clear session IMMEDIATELY before any React code runs
+// This handles both ?fresh query param and #fresh hash (hash survives proxy rewrites)
+if (typeof window !== 'undefined') {
+  const url = window.location.href
+  if (url.includes('fresh') || url.includes('logout')) {
+    localStorage.removeItem('chatlingo_token')
+    localStorage.removeItem('chatlingo_user')
+    window.history.replaceState({}, '', window.location.pathname)
+  }
+}
+
 import { useChatLingoStore } from '@/lib/store'
 import { SignUpForm } from '@/components/chatlingo/sign-up-form'
 import { LoginForm } from '@/components/chatlingo/login-form'
@@ -11,14 +22,6 @@ export default function Home() {
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      // Clear session if ?logout or ?fresh parameter is present
-      const params = new URLSearchParams(window.location.search)
-      if (params.has('logout') || params.has('fresh')) {
-        localStorage.removeItem('chatlingo_token')
-        localStorage.removeItem('chatlingo_user')
-        window.history.replaceState({}, '', window.location.pathname)
-        return
-      }
       const savedToken = localStorage.getItem('chatlingo_token')
       const savedUser = localStorage.getItem('chatlingo_user')
       if (savedToken && savedUser) {
@@ -47,4 +50,3 @@ export default function Home() {
 
   return <LoginForm />
 }
-
