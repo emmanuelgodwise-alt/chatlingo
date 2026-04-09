@@ -6,6 +6,7 @@ export const LANGUAGES = [
   { code: 'Italian', label: 'Italiano (Italian)', flag: '🇮🇹' },
   { code: 'Portuguese', label: 'Português (Portuguese)', flag: '🇧🇷' },
   { code: 'Chinese', label: '中文 (Chinese)', flag: '🇨🇳' },
+  { code: 'Mandarin', label: '普通话 (Mandarin)', flag: '🇨🇳' },
   { code: 'Japanese', label: '日本語 (Japanese)', flag: '🇯🇵' },
   { code: 'Korean', label: '한국어 (Korean)', flag: '🇰🇷' },
   { code: 'Arabic', label: 'العربية (Arabic)', flag: '🇸🇦' },
@@ -23,6 +24,8 @@ export const LANGUAGES = [
   { code: 'Vietnamese', label: 'Tiếng Việt (Vietnamese)', flag: '🇻🇳' },
   { code: 'Polish', label: 'Polski (Polish)', flag: '🇵🇱' },
   { code: 'Greek', label: 'Ελληνικά (Greek)', flag: '🇬🇷' },
+  { code: 'Twi', label: 'Twi (Twi)', flag: '🇬🇭' },
+  { code: 'Mandarin', label: '中文 (Mandarin)', flag: '🇨🇳' },
 ] as const
 
 export type LanguageCode = (typeof LANGUAGES)[number]['code']

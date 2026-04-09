@@ -40,6 +40,7 @@ export function ChatInterface() {
     showLanguageSettings,
     conversations,
     setConversations,
+    setActiveConversation,
     addMessage,
     isInCall,
     callStatus,
@@ -68,18 +69,8 @@ export function ChatInterface() {
     lessonInProgress,
   } = useChatLingoStore()
 
-  // Contacts state (for the left sidebar)
-  const [contacts, setContacts] = useState<Array<{
-    id: string
-    name: string
-    email: string
-    phone?: string | null
-    preferredLanguage: string
-    avatar?: string | null
-    online: boolean
-  }>>([])
-  const [contactSearch, setContactSearch] = useState('')
-  const [loadingContacts, setLoadingContacts] = useState(false)
+  const [searchQuery, setSearchQuery] = useState('')
+  const [showFABMenu, setShowFABMenu] = useState(false)
 
   const socketRef = useRef<Socket | null>(null)
   const socketRefForChildren = socketRef
@@ -87,30 +78,7 @@ export function ChatInterface() {
   const webRTCInitializedRef = useRef(false)
   const recognitionActiveRef = useRef(false)
 
-  // Load contacts on mount
-  const loadContacts = useCallback(async () => {
-    if (!token) return
-    setLoadingContacts(true)
-    try {
-      const res = await fetch('/api/contacts', {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-      if (res.ok) {
-        const data = await res.json()
-        setContacts(data.contacts || [])
-      }
-    } catch {
-      // ignore
-    } finally {
-      setLoadingContacts(false)
-    }
-  }, [token])
-
-  useEffect(() => {
-    loadContacts()
-  }, [loadContacts])
-
-  // Start conversation with a contact
+  // Start conversation with a contact (from Add Contact dialog flow)
   const handleStartConversation = async (contactId: string, contactLanguage: string) => {
     if (!token) return
 
@@ -138,7 +106,6 @@ export function ChatInterface() {
             (c: { otherUser: { id: string } }) => c.otherUser.id === contactId
           )
           if (conv) {
-            const { setActiveConversation } = useChatLingoStore.getState()
             setActiveConversation(conv)
           }
         }
@@ -148,13 +115,11 @@ export function ChatInterface() {
     }
   }
 
-  // FAB Menu state
-  const [showFABMenu, setShowFABMenu] = useState(false)
-
-  // Filter contacts by search (name or language)
-  const filteredContacts = contacts.filter((c) =>
-    c.name.toLowerCase().includes(contactSearch.toLowerCase()) ||
-    c.preferredLanguage.toLowerCase().includes(contactSearch.toLowerCase())
+  // Filter conversations by search
+  const filteredConversations = conversations.filter((c) =>
+    c.otherUser.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    c.otherUser.preferredLanguage.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    (c.lastMessage && c.lastMessage.toLowerCase().includes(searchQuery.toLowerCase()))
   )
 
   // Load conversations on mount
@@ -501,7 +466,7 @@ export function ChatInterface() {
     }
   }, [isInCall, cleanupCall])
 
-  // Determine what to show in the main content area
+  // Determine what to show in the main content area (non-chat tabs)
   const renderMainContent = () => {
     if (activeTab === 'status') {
       return <EmptyStatusTab />
@@ -525,24 +490,28 @@ export function ChatInterface() {
     ? user.name.split(' ').map((n) => n[0]).join('').toUpperCase().slice(0, 2)
     : '??'
 
+  const totalUnread = conversations.reduce((sum, c) => sum + c.unreadCount, 0)
+
   return (
-    <div className="h-screen flex bg-white">
-      {/* ============ CONTACTS SIDEBAR (LEFT) ============ */}
-      {/* On desktop: always visible as a narrow panel */}
-      {/* On mobile: visible when no conversation is active */}
+    <div className="h-screen flex bg-white overflow-hidden">
+      {/* ============ LEFT SIDEBAR — CONTACTS (Desktop) ============ */}
       <div className={`
-        ${activeTab === 'chats' ? '' : 'hidden'}
-        ${!activeConversation && activeTab === 'chats' ? 'w-full' : 'hidden md:flex'}
-        ${!activeConversation && activeTab !== 'chats' ? 'hidden' : 'hidden md:block'}
-        w-[300px] shrink-0 bg-white border-r border-[#E2E8F0] flex flex-col h-full
+        ${activeTab === 'chats' ? 'flex' : 'hidden'}
+        hidden md:flex
+        w-[300px] lg:w-[320px] shrink-0 bg-white border-r border-[#E2E8F0] flex-col h-full
       `}>
-        {/* Contacts Header */}
+        {/* Sidebar Header */}
         <div className="bg-[#0F4C5C] px-3 py-2.5 flex items-center justify-between shrink-0">
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 rounded-full bg-[#84CC16] flex items-center justify-center">
               <Globe className="w-4 h-4 text-white" />
             </div>
-            <h2 className="text-white font-semibold text-sm">Contacts</h2>
+            <h2 className="text-white font-semibold text-sm">Chats</h2>
+            {totalUnread > 0 && (
+              <span className="w-5 h-5 rounded-full bg-[#84CC16] text-white text-[10px] font-bold flex items-center justify-center">
+                {totalUnread}
+              </span>
+            )}
           </div>
           <div className="flex items-center gap-1">
             <button
@@ -630,9 +599,9 @@ export function ChatInterface() {
           <div className="relative">
             <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#A3A3A3]" />
             <Input
-              placeholder="Search contacts..."
-              value={contactSearch}
-              onChange={(e) => setContactSearch(e.target.value)}
+              placeholder="Search chats..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
               className="pl-8 h-8 bg-[#F1F5F9] border-none rounded-lg text-xs placeholder:text-[#A3A3A3] focus-visible:ring-1 focus-visible:ring-[#84CC16]/20"
             />
           </div>
@@ -641,28 +610,34 @@ export function ChatInterface() {
         {/* Status Bar */}
         <StatusBar />
 
-        {/* Contact List */}
+        {/* Contact Cards (Conversations) */}
         <div className="flex-1 overflow-y-auto scrollbar-thin px-2 pb-2">
-          {loadingContacts ? (
+          {filteredConversations.length === 0 ? (
             <div className="p-8 text-center">
-              <span className="w-5 h-5 border-2 border-[#84CC16]/30 border-t-[#84CC16] rounded-full animate-spin inline-block" />
-            </div>
-          ) : filteredContacts.length === 0 ? (
-            <div className="p-6 text-center">
+              <MessageCircle className="w-12 h-12 text-[#E2E8F0] mx-auto mb-3" />
               <p className="text-sm text-[#525252]">
-                {contactSearch ? 'No contacts found' : 'No contacts yet'}
+                {searchQuery ? 'No chats found' : 'No chats yet'}
               </p>
               <p className="text-xs text-[#A3A3A3] mt-1">
-                {contactSearch ? 'Try a different search' : 'Add contacts to start chatting'}
+                {searchQuery ? 'Try a different search' : 'Add contacts to start chatting'}
               </p>
             </div>
           ) : (
-            filteredContacts.map((contact) => (
+            filteredConversations.map((conv) => (
               <ContactItem
-                key={contact.id}
-                contact={contact}
-                isActive={activeConversation?.otherUser?.id === contact.id}
-                onClick={() => handleStartConversation(contact.id, contact.preferredLanguage)}
+                key={conv.id}
+                contact={{
+                  id: conv.otherUser.id,
+                  name: conv.otherUser.name,
+                  email: '',
+                  preferredLanguage: conv.otherUser.preferredLanguage,
+                  avatar: conv.otherUser.avatar,
+                  online: conv.otherUser.online,
+                }}
+                isActive={activeConversation?.id === conv.id}
+                onClick={() => setActiveConversation(conv)}
+                lastMessage={conv.lastMessage}
+                unreadCount={conv.unreadCount}
               />
             ))
           )}
@@ -686,21 +661,22 @@ export function ChatInterface() {
 
       {/* ============ MAIN CONTENT AREA ============ */}
       <div className="flex-1 flex flex-col min-w-0 relative">
-        {/* On mobile: show contacts when no conversation active */}
+        {/* Mobile: Show contacts list when no conversation is active (chats tab) */}
         {activeTab === 'chats' && !activeConversation && (
-          <div className="md:hidden w-full">
-            <ContactsMobileView
-              contacts={filteredContacts}
-              loading={loadingContacts}
-              onContactClick={(contact) => handleStartConversation(contact.id, contact.preferredLanguage)}
-              onAddContact={() => setShowAddContact(true)}
-              user={user}
-              userInitials={userInitials}
-            />
-          </div>
+          <MobileContactsView
+            conversations={filteredConversations}
+            totalConversations={conversations.length}
+            searchQuery={searchQuery}
+            onSearchChange={setSearchQuery}
+            onConversationClick={(conv) => setActiveConversation(conv)}
+            onAddContact={() => setShowAddContact(true)}
+            user={user}
+            userInitials={userInitials}
+            totalUnread={totalUnread}
+          />
         )}
 
-        {/* Desktop: always show content, mobile: show when chat is active or non-chats tab */}
+        {/* Desktop: always show content; Mobile: show when chat active or non-chats tab */}
         <div className={`flex-1 flex flex-col min-w-0 ${
           activeTab === 'chats' && !activeConversation ? 'hidden md:flex' : ''
         } ${activeTab !== 'chats' ? 'hidden md:flex' : ''}`}>
@@ -712,21 +688,6 @@ export function ChatInterface() {
             renderMainContent()
           )}
         </div>
-
-        {/* Mobile: back button overlay on chat */}
-        {activeTab === 'chats' && activeConversation && (
-          <button
-            onClick={() => {
-              const { setActiveConversation } = useChatLingoStore.getState()
-              setActiveConversation(null)
-            }}
-            className="md:hidden absolute top-3 left-3 z-10 p-2 bg-[#0F4C5C]/90 backdrop-blur-sm text-white rounded-full hover:bg-[#0F4C5C] transition-colors shadow-lg"
-          >
-            <ArrowLeft className="w-5 h-5" />
-          </button>
-        )}
-
-
       </div>
 
       {/* ============ DIALOGS ============ */}
@@ -792,7 +753,7 @@ export function ChatInterface() {
           className={`wa-bottom-nav-item ${activeTab === 'calls' ? 'active' : 'inactive'}`}
         >
           <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.11 0.45 772a2 2 0 0 1 22 16.92z"/>
+            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/>
           </svg>
           <span className="text-[11px]">Calls</span>
         </button>
@@ -802,7 +763,7 @@ export function ChatInterface() {
         >
           <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2">
             <circle cx="12" cy="12" r="10"/>
-            <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10A15.3 15.3 0 0 1 4 10 0 15.3 0 0 1 4-10"/>
+            <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10A15.3 15.3 0 0 1 12 2z"/>
           </svg>
           <span className="text-[11px]">Explore</span>
         </button>
@@ -811,38 +772,38 @@ export function ChatInterface() {
   )
 }
 
-// Mobile contacts full-screen view
-function ContactsMobileView({
-  contacts,
-  loading,
-  onContactClick,
+// ============ MOBILE CONTACTS VIEW ============
+function MobileContactsView({
+  conversations,
+  totalConversations,
+  searchQuery,
+  onSearchChange,
+  onConversationClick,
   onAddContact,
   user,
   userInitials,
+  totalUnread,
 }: {
-  contacts: Array<{
+  conversations: Array<{
     id: string
-    name: string
-    email: string
-    phone?: string | null
-    preferredLanguage: string
-    avatar?: string | null
-    online: boolean
+    otherUser: { id: string; name: string; avatar?: string | null; online: boolean; preferredLanguage: string }
+    myLanguage: string
+    theirLanguage: string
+    lastMessage?: string | null
+    lastMessageAt?: string | null
+    unreadCount: number
   }>
-  loading: boolean
-  onContactClick: (contact: { id: string; preferredLanguage: string }) => void
+  totalConversations: number
+  searchQuery: string
+  onSearchChange: (v: string) => void
+  onConversationClick: (conv: typeof conversations[0]) => void
   onAddContact: () => void
   user: { id: string; name: string; preferredLanguage: string; avatar?: string | null } | null
   userInitials: string
+  totalUnread: number
 }) {
-  const [search, setSearch] = useState('')
-
-  const filtered = contacts.filter((c) =>
-    c.name.toLowerCase().includes(search.toLowerCase())
-  )
-
   return (
-    <div className="flex flex-col h-full bg-white">
+    <div className="flex flex-col h-full bg-white md:hidden">
       {/* Header */}
       <div className="bg-[#0F4C5C] px-4 py-3 flex items-center justify-between shrink-0">
         <div className="flex items-center gap-2.5">
@@ -852,8 +813,15 @@ function ContactsMobileView({
             </AvatarFallback>
           </Avatar>
           <div>
-            <h2 className="text-white font-semibold text-base">ChatLingo</h2>
-            <p className="text-white/60 text-xs">{contacts.length} contacts</p>
+            <div className="flex items-center gap-2">
+              <h2 className="text-white font-semibold text-base">Chats</h2>
+              {totalUnread > 0 && (
+                <span className="w-5 h-5 rounded-full bg-[#84CC16] text-white text-[10px] font-bold flex items-center justify-center">
+                  {totalUnread}
+                </span>
+              )}
+            </div>
+            <p className="text-white/60 text-xs">{totalConversations} conversations</p>
           </div>
         </div>
         <button
@@ -870,9 +838,9 @@ function ContactsMobileView({
         <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#A3A3A3]" />
           <Input
-            placeholder="Search contacts..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search chats..."
+            value={searchQuery}
+            onChange={(e) => onSearchChange(e.target.value)}
             className="pl-10 h-10 bg-[#F1F5F9] border-none rounded-xl text-sm placeholder:text-[#A3A3A3] focus-visible:ring-1 focus-visible:ring-[#84CC16]/20"
           />
         </div>
@@ -881,28 +849,33 @@ function ContactsMobileView({
       {/* Status Bar */}
       <StatusBar />
 
-      {/* Contact List */}
-      <div className="flex-1 overflow-y-auto scrollbar-thin px-1">
-        {loading ? (
-          <div className="p-8 text-center">
-            <span className="w-6 h-6 border-2 border-[#84CC16]/30 border-t-[#84CC16] rounded-full animate-spin inline-block" />
-          </div>
-        ) : filtered.length === 0 ? (
+      {/* Contact Cards */}
+      <div className="flex-1 overflow-y-auto scrollbar-thin px-2 pb-2">
+        {conversations.length === 0 ? (
           <div className="p-8 text-center">
             <MessageCircle className="w-12 h-12 text-[#E2E8F0] mx-auto mb-3" />
             <p className="text-sm text-[#525252]">
-              {search ? 'No contacts found' : 'No contacts yet'}
+              {searchQuery ? 'No chats found' : 'No chats yet'}
             </p>
             <p className="text-xs text-[#A3A3A3] mt-1">
-              {search ? 'Try a different search' : 'Add contacts to start chatting'}
+              {searchQuery ? 'Try a different search' : 'Add contacts to start chatting'}
             </p>
           </div>
         ) : (
-          filtered.map((contact) => (
+          conversations.map((conv) => (
             <ContactItem
-              key={contact.id}
-              contact={contact}
-              onClick={() => onContactClick({ id: contact.id, preferredLanguage: contact.preferredLanguage })}
+              key={conv.id}
+              contact={{
+                id: conv.otherUser.id,
+                name: conv.otherUser.name,
+                email: '',
+                preferredLanguage: conv.otherUser.preferredLanguage,
+                avatar: conv.otherUser.avatar,
+                online: conv.otherUser.online,
+              }}
+              onClick={() => onConversationClick(conv)}
+              lastMessage={conv.lastMessage}
+              unreadCount={conv.unreadCount}
             />
           ))
         )}

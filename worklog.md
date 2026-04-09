@@ -840,3 +840,100 @@ Stage Summary:
 - All navigation paths functional — no dead-end pages
 - All tabs, buttons, cards, and dialogs are responsive
 - Build passes with zero errors
+
+---
+## Task ID: 1+2 (Seed Demo Contacts + Redesign Chatroom Layout)
+### Work Task
+Seed the database with 15 demo contacts from different countries, create conversations with sample messages, and redesign the chat interface with a split layout featuring colorful gradient contact cards.
+
+### Work Summary
+
+**PART 1: Seed Database (`prisma/seed-contacts.ts`)**
+
+Created a comprehensive seed script that populates the database with 15 international demo users linked to the test user (`test@test.com`):
+
+1. **Sakura Yamamoto** 🇯🇵 Japanese — online, 4 messages (cherry blossoms conversation)
+2. **Pierre Dubois** 🇫🇷 French — online, 3 messages (Paris visit conversation)
+3. **Maria García** 🇪🇸 Spanish — online, 4 messages (language practice conversation)
+4. **Hans Mueller** 🇩🇪 German — offline, 3 messages (Munich conversation)
+5. **Yuki Tanaka** 🇰🇷 Korean — online, 2 messages (greeting exchange)
+6. **Mei Lin Chen** 🇨🇳 Chinese — offline, 5 messages (food/dumplings conversation)
+7. **Ahmed Hassan** 🇪🇬 Arabic — online, 3 messages (Cairo conversation)
+8. **Priya Sharma** 🇮🇳 Hindi — offline, 4 messages (India weather conversation)
+9. **Sofia Rossi** 🇮🇹 Italian — online, 3 messages (Rome/pizza conversation)
+10. **Carlos Silva** 🇧🇷 Portuguese — online, 3 messages (Rio/football conversation)
+11. **Olga Petrov** 🇷🇺 Russian — offline, 3 messages (Moscow spring conversation)
+12. **Fatima Al-Rashid** 🇸🇦 Arabic — online, 2 messages (Saudi Arabia conversation)
+13. **Kofi Mensah** 🇬🇭 Twi — offline, 3 messages (Ghana culture conversation)
+14. **Anna Kowalski** 🇵🇱 Polish — online, 4 messages (Krakow visit conversation)
+15. **Liam O'Brien** 🇮🇪 English — offline, 5 messages (Spanish learning conversation)
+
+For each demo user:
+- Created User record with realistic bio (e.g., "Learning English to connect with the world 🌍")
+- Created 2 bidirectional Contact records (test user ↔ demo user)
+- Created Conversation with proper language pair settings
+- Created 2-5 sample messages with original text in contact's language and English translations
+- Set 8 users as online, 7 as offline
+- Used same bcrypt password hash as test user
+- Script is idempotent (cleans existing demo data before seeding)
+
+**Results:** 15 contacts, 15 conversations, 51 messages created.
+
+**PART 2: Redesign Chat Interface**
+
+**1. `src/components/chatlingo/contact-item.tsx` — Complete rewrite with colorful gradient cards:**
+- 10 distinct pastel gradient backgrounds (cyan, green, orange, purple, pink, teal, amber, indigo, brown, lime)
+- Matching active-state gradients (brighter versions of each color)
+- Matching avatar circle colors per contact
+- Color assignment via hash of contact name (deterministic, consistent)
+- Each card shows:
+  - Colored avatar circle with initials
+  - Green online indicator dot with glow shadow
+  - Contact name (bold, 13px)
+  - Language flag emoji
+  - Language label + online/offline status text
+  - Last message preview (truncated, gray text)
+  - Unread count badge (dark teal circle with white text)
+- Active state: brighter gradient + shadow + subtle scale(1.02)
+- Hover state: subtle shadow + scale(1.01)
+- Smooth 200ms transition animations
+- 1.5px rounded corners (rounded-xl)
+- Also exports `ContactItemCompact` variant for narrow sidebars
+
+**2. `src/components/chatlingo/chat-interface.tsx` — Redesigned split layout:**
+- **Desktop layout**: Left sidebar (300-320px) + right content area
+- **Left sidebar** (contacts list):
+  - Dark teal header (#0F4C5C) with "Chats" title + total unread badge
+  - Add contact + more options buttons
+  - FAB dropdown menu (New Contact, New Group, New Channel, Start Room, Broadcast, Language Exchange)
+  - Search bar (filters by name, language, or message content)
+  - StatusBar component (stories row)
+  - Scrollable list of colorful ContactItem cards (using conversation data for last message + unread)
+  - User info bar at bottom (avatar, name, language)
+- **Right panel**: Shows ChatArea when conversation active, EmptyChatState when no selection
+- **Mobile layout**:
+  - Contacts view (full screen) when no conversation active
+  - Chat view when conversation active (with back button in ChatArea header)
+  - Bottom navigation with 5 tabs: Learn, Chats, Status, Calls, Explore
+- Uses conversations data instead of separate contacts loading (includes lastMessage, unreadCount)
+- All existing functionality preserved: WebSocket, call management, typing indicators, dialog overlays
+
+**Files Modified:**
+- `prisma/seed-contacts.ts` — Created (new file)
+- `src/components/chatlingo/contact-item.tsx` — Complete rewrite
+- `src/components/chatlingo/chat-interface.tsx` — Redesigned layout
+
+**Files NOT changed:**
+- `src/lib/store.ts` — Zustand store unchanged
+- `src/app/api/contacts/route.ts` — Contacts API unchanged
+- `src/app/api/conversations/route.ts` — Conversations API unchanged
+- `src/components/chatlingo/chat-area.tsx` — Chat area unchanged
+- `prisma/schema.prisma` — Schema unchanged
+- All other components, API routes, and services unchanged
+
+**Verification:**
+- `bun run lint` — zero errors, zero warnings
+- Dev server responds with HTTP 200 on GET /
+- `/api/contacts` returns 15 contacts with correct online/language info
+- `/api/conversations` returns 15 conversations with lastMessage and unreadCount
+- `/api/auth/login` successfully authenticates test user

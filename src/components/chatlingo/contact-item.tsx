@@ -1,9 +1,71 @@
 'use client'
 
-import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { getLanguageFlag } from '@/lib/languages'
 
-interface Contact {
+// Color palette for contact card gradients
+const CARD_GRADIENTS = [
+  'linear-gradient(135deg, #E0F7FA, #B2EBF2)', // light cyan
+  'linear-gradient(135deg, #E8F5E9, #C8E6C9)', // light green
+  'linear-gradient(135deg, #FFF3E0, #FFE0B2)', // light orange
+  'linear-gradient(135deg, #F3E5F5, #E1BEE7)', // light purple
+  'linear-gradient(135deg, #FCE4EC, #F8BBD0)', // light pink
+  'linear-gradient(135deg, #E0F2F1, #B2DFDB)', // light teal
+  'linear-gradient(135deg, #FFF8E1, #FFECB3)', // light amber
+  'linear-gradient(135deg, #E8EAF6, #C5CAE9)', // light indigo
+  'linear-gradient(135deg, #EFEBE9, #D7CCC8)', // light brown
+  'linear-gradient(135deg, #F1F8E9, #DCEDC8)', // light lime
+]
+
+// Active state gradient overlay
+const ACTIVE_GRADIENTS = [
+  'linear-gradient(135deg, #B2EBF2, #80DEEA)', // cyan active
+  'linear-gradient(135deg, #C8E6C9, #A5D6A7)', // green active
+  'linear-gradient(135deg, #FFE0B2, #FFCC80)', // orange active
+  'linear-gradient(135deg, #E1BEE7, #CE93D8)', // purple active
+  'linear-gradient(135deg, #F8BBD0, #F48FB1)', // pink active
+  'linear-gradient(135deg, #B2DFDB, #80CBC4)', // teal active
+  'linear-gradient(135deg, #FFECB3, #FFD54F)', // amber active
+  'linear-gradient(135deg, #C5CAE9, #9FA8DA)', // indigo active
+  'linear-gradient(135deg, #D7CCC8, #BCAAA4)', // brown active
+  'linear-gradient(135deg, #DCEDC8, #C5E1A5)', // lime active
+]
+
+// Avatar colors for the circle
+const AVATAR_BG_COLORS = [
+  'bg-cyan-400',
+  'bg-emerald-400',
+  'bg-orange-400',
+  'bg-purple-400',
+  'bg-pink-400',
+  'bg-teal-400',
+  'bg-amber-400',
+  'bg-indigo-400',
+  'bg-stone-400',
+  'bg-lime-400',
+]
+
+const AVATAR_TEXT_COLORS = [
+  'text-cyan-900',
+  'text-emerald-900',
+  'text-orange-900',
+  'text-purple-900',
+  'text-pink-900',
+  'text-teal-900',
+  'text-amber-900',
+  'text-indigo-900',
+  'text-stone-900',
+  'text-lime-900',
+]
+
+function getHashIndex(name: string): number {
+  let hash = 0
+  for (let i = 0; i < name.length; i++) {
+    hash = name.charCodeAt(i) + ((hash << 5) - hash)
+  }
+  return Math.abs(hash) % CARD_GRADIENTS.length
+}
+
+interface ConversationContact {
   id: string
   name: string
   email: string
@@ -13,68 +75,21 @@ interface Contact {
   online: boolean
 }
 
-const BORDER_COLORS = [
-  'border-l-emerald-400',
-  'border-l-sky-400',
-  'border-l-violet-400',
-  'border-l-amber-400',
-  'border-l-rose-400',
-  'border-l-teal-400',
-  'border-l-orange-400',
-  'border-l-cyan-400',
-  'border-l-fuchsia-400',
-  'border-l-lime-400',
-  'border-l-pink-400',
-  'border-l-yellow-400',
-]
-
-const BG_COLORS = [
-  'bg-emerald-50',
-  'bg-sky-50',
-  'bg-violet-50',
-  'bg-amber-50',
-  'bg-rose-50',
-  'bg-teal-50',
-  'bg-orange-50',
-  'bg-cyan-50',
-  'bg-fuchsia-50',
-  'bg-lime-50',
-  'bg-pink-50',
-  'bg-yellow-50',
-]
-
-const AVATAR_COLORS = [
-  'bg-emerald-500',
-  'bg-sky-500',
-  'bg-violet-500',
-  'bg-amber-500',
-  'bg-rose-500',
-  'bg-teal-500',
-  'bg-orange-500',
-  'bg-cyan-500',
-  'bg-fuchsia-500',
-  'bg-lime-500',
-  'bg-pink-500',
-  'bg-yellow-500',
-]
-
-function getHashColor(name: string, palette: string[]): string {
-  let hash = 0
-  for (let i = 0; i < name.length; i++) {
-    hash = name.charCodeAt(i) + ((hash << 5) - hash)
-  }
-  return palette[Math.abs(hash) % palette.length]
+interface ContactItemProps {
+  contact: ConversationContact
+  onClick: () => void
+  isActive?: boolean
+  lastMessage?: string | null
+  unreadCount?: number
 }
 
 export function ContactItem({
   contact,
   onClick,
   isActive,
-}: {
-  contact: Contact
-  onClick: () => void
-  isActive?: boolean
-}) {
+  lastMessage,
+  unreadCount,
+}: ContactItemProps) {
   const initials = contact.name
     .split(' ')
     .map((n) => n[0])
@@ -82,65 +97,92 @@ export function ContactItem({
     .toUpperCase()
     .slice(0, 2)
 
-  const borderColor = getHashColor(contact.name, BORDER_COLORS)
-  const bgColor = getHashColor(contact.name, BG_COLORS)
-  const avatarColor = getHashColor(contact.name, AVATAR_COLORS)
+  const colorIndex = getHashIndex(contact.name)
+  const flag = getLanguageFlag(contact.preferredLanguage)
 
   return (
     <button
       onClick={onClick}
-      className={`w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg transition-all duration-150 text-left group border-l-[3px] border-l-transparent hover:border-l-transparent mb-0.5 ${
+      className={`w-full rounded-xl p-2.5 transition-all duration-200 text-left group mb-1.5 ${
         isActive
-          ? 'bg-[#ECFCCB] border-l-[#84CC16] shadow-sm'
-          : `hover:bg-[#F8FAFC] ${borderColor}`
+          ? 'shadow-md ring-1 ring-black/10 scale-[1.02]'
+          : 'shadow-sm hover:shadow-md hover:scale-[1.01]'
       }`}
+      style={{
+        background: isActive ? ACTIVE_GRADIENTS[colorIndex] : CARD_GRADIENTS[colorIndex],
+      }}
     >
-      {/* Avatar with online indicator */}
-      <div className="relative shrink-0">
-        <Avatar className="w-10 h-10">
-          <AvatarFallback className={`${avatarColor} text-white text-xs font-semibold`}>
-            {initials}
-          </AvatarFallback>
-        </Avatar>
-        <span className={`absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full border-2 border-white ${
-          contact.online ? 'bg-[#84CC16]' : 'bg-[#A3A3A3]'
-        }`} />
-      </div>
-
-      {/* Content */}
-      <div className="flex-1 min-w-0">
-        <div className="flex items-center gap-1.5">
-          <span className="text-[13px] leading-tight font-semibold text-[#0A0A0A] truncate">{contact.name}</span>
-          <span className="text-base shrink-0">{getLanguageFlag(contact.preferredLanguage)}</span>
+      <div className="flex items-start gap-2.5">
+        {/* Flag emoji + Avatar area */}
+        <div className="relative shrink-0">
+          <div className={`w-11 h-11 rounded-full flex items-center justify-center ${AVATAR_BG_COLORS[colorIndex]}`}>
+            <span className="text-[10px] font-bold uppercase text-white leading-none">
+              {initials}
+            </span>
+          </div>
+          {/* Online indicator */}
+          <span
+            className={`absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full border-[2.5px] ${
+              isActive ? 'border-white/90' : 'border-white'
+            } ${
+              contact.online
+                ? 'bg-green-500 shadow-[0_0_4px_rgba(34,197,94,0.6)]'
+                : 'bg-gray-300'
+            }`}
+          />
         </div>
-        <div className="flex items-center gap-1 mt-0.5">
-          <span className="text-[11px] text-[#525252] truncate">{contact.preferredLanguage}</span>
-          {contact.online ? (
-            <span className="text-[10px] text-[#84CC16] font-medium shrink-0">online</span>
+
+        {/* Content */}
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center justify-between gap-1">
+            <div className="flex items-center gap-1.5 min-w-0">
+              <span className="text-sm font-semibold text-gray-800 truncate leading-tight">
+                {contact.name}
+              </span>
+              <span className="text-base shrink-0 leading-none">{flag}</span>
+            </div>
+            {/* Unread badge */}
+            {unreadCount && unreadCount > 0 ? (
+              <span className="shrink-0 w-5 h-5 rounded-full bg-[#0F4C5C] text-white text-[10px] font-bold flex items-center justify-center">
+                {unreadCount}
+              </span>
+            ) : null}
+          </div>
+
+          {/* Language label */}
+          <div className="flex items-center gap-1 mt-0.5">
+            <span className="text-[11px] text-gray-500 leading-tight">
+              {contact.preferredLanguage}
+            </span>
+            {contact.online ? (
+              <span className="text-[10px] text-green-600 font-medium">• online</span>
+            ) : null}
+          </div>
+
+          {/* Last message preview */}
+          {lastMessage ? (
+            <p className="text-[11px] text-gray-500 truncate mt-1 leading-tight">
+              {lastMessage}
+            </p>
           ) : (
-            <span className="text-[10px] text-[#A3A3A3] font-medium shrink-0">offline</span>
+            <p className="text-[11px] text-gray-400 truncate mt-1 italic leading-tight">
+              No messages yet
+            </p>
           )}
         </div>
       </div>
-
-      {/* Active indicator */}
-      {isActive && (
-        <div className="w-2 h-8 bg-[#84CC16] rounded-full shrink-0 opacity-60" />
-      )}
     </button>
   )
 }
 
-// Compact variant for sidebar
+// Compact variant for narrow sidebar (optional, can be used on very small screens)
 export function ContactItemCompact({
   contact,
   onClick,
   isActive,
-}: {
-  contact: Contact
-  onClick: () => void
-  isActive?: boolean
-}) {
+  lastMessage,
+  unreadCount,
+}: ContactItemProps) {
   const initials = contact.name
     .split(' ')
     .map((n) => n[0])
@@ -148,33 +190,48 @@ export function ContactItemCompact({
     .toUpperCase()
     .slice(0, 2)
 
+  const colorIndex = getHashIndex(contact.name)
+  const flag = getLanguageFlag(contact.preferredLanguage)
+
   return (
     <button
       onClick={onClick}
-      className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg transition-all duration-100 text-left border ${
-        isActive
-          ? 'bg-[#ECFCCB] border-[#84CC16]/30'
-          : 'hover:bg-[#F1F5F9] border-transparent'
+      className={`w-full flex items-center gap-2 px-2 py-1.5 rounded-lg transition-all duration-150 text-left ${
+        isActive ? 'bg-[#ECFCCB] shadow-sm' : 'hover:bg-gray-50'
       }`}
     >
       <div className="relative shrink-0">
-        <Avatar className="w-9 h-9">
-          <AvatarFallback className="bg-[#E2E8F0] text-[#0A0A0A] text-xs font-semibold">
+        <div className={`w-9 h-9 rounded-full flex items-center justify-center ${AVATAR_BG_COLORS[colorIndex]}`}>
+          <span className="text-[9px] font-bold uppercase text-white leading-none">
             {initials}
-          </AvatarFallback>
-        </Avatar>
-        <span className={`absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full border-2 border-white ${
-          contact.online ? 'bg-[#84CC16]' : 'bg-[#A3A3A3]'
-        }`} />
+          </span>
+        </div>
+        <span
+          className={`absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full border-2 border-white ${
+            contact.online ? 'bg-green-500' : 'bg-gray-300'
+          }`}
+        />
       </div>
 
       <div className="flex-1 min-w-0">
-        <p className="text-[13px] font-medium text-[#0A0A0A] truncate leading-tight">{contact.name}</p>
-        <div className="flex items-center gap-1 mt-0.5">
-          <span className="text-[11px]">{getLanguageFlag(contact.preferredLanguage)}</span>
-          <span className="text-[11px] text-[#525252] truncate">{contact.preferredLanguage}</span>
+        <div className="flex items-center gap-1">
+          <p className="text-[12px] font-medium text-gray-800 truncate leading-tight">
+            {contact.name}
+          </p>
+          <span className="text-sm shrink-0">{flag}</span>
         </div>
+        {lastMessage ? (
+          <p className="text-[10px] text-gray-400 truncate mt-0.5 leading-tight">
+            {lastMessage}
+          </p>
+        ) : null}
       </div>
+
+      {unreadCount && unreadCount > 0 ? (
+        <span className="shrink-0 w-4 h-4 rounded-full bg-[#0F4C5C] text-white text-[9px] font-bold flex items-center justify-center">
+          {unreadCount}
+        </span>
+      ) : null}
     </button>
   )
 }
