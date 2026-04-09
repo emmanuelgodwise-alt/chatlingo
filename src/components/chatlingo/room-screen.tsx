@@ -103,7 +103,7 @@ export function RoomScreen() {
 
       {/* Language pair indicator */}
       <div className="mx-4 mb-3 px-3 py-1.5 bg-white/5 rounded-lg flex items-center justify-center gap-2">
-        <Globe className="w-3.5 h-3.5 text-[#C45B28]" />
+        <Globe className="w-3.5 h-3.5 text-[#84CC16]" />
         <span className="text-xs text-white/60">
           {getLanguageFlag(user?.preferredLanguage || 'English')} {getLanguageLabel(user?.preferredLanguage || 'English')}
           <span className="mx-2 text-white/30">↔</span>
@@ -115,7 +115,7 @@ export function RoomScreen() {
       {isConnecting && (
         <div className="absolute inset-0 z-50 bg-[#1F2C34]/90 flex items-center justify-center">
           <div className="text-center">
-            <span className="w-8 h-8 border-2 border-[#C45B28]/30 border-t-[#C45B28] rounded-full animate-spin inline-block mb-3" />
+            <span className="w-8 h-8 border-2 border-[#84CC16]/30 border-t-[#84CC16] rounded-full animate-spin inline-block mb-3" />
             <p className="text-white/60 text-sm">Joining room...</p>
           </div>
         </div>
@@ -133,9 +133,9 @@ export function RoomScreen() {
             {roomRole === 'speaker' && (
               <div className="flex flex-col items-center gap-1.5">
                 <div className="relative">
-                  <div className="w-16 h-16 rounded-full bg-[#C45B28]/20 border-2 border-[#C45B28] flex items-center justify-center wa-speaking-ring">
+                  <div className="w-16 h-16 rounded-full bg-[#84CC16]/20 border-2 border-[#84CC16] flex items-center justify-center wa-speaking-ring">
                     <Avatar className="w-14 h-14">
-                      <AvatarFallback className="bg-[#1A6B7A] text-white text-lg font-semibold">
+                      <AvatarFallback className="bg-[#134E5E] text-white text-lg font-semibold">
                         {user?.name?.split(' ').map((n) => n[0]).join('').toUpperCase().slice(0, 2) || '??'}
                       </AvatarFallback>
                     </Avatar>
@@ -156,7 +156,7 @@ export function RoomScreen() {
                         <div key={i} className="bar" style={{ width: '2px', height: '8px' }} />
                       ))}
                     </div>
-                    <span className="text-[10px] text-[#C45B28]">Speaking</span>
+                    <span className="text-[10px] text-[#84CC16]">Speaking</span>
                   </div>
                 )}
               </div>
@@ -221,7 +221,7 @@ export function RoomScreen() {
                 onClick={handleToggleMic}
                 className={`w-14 h-14 rounded-full flex items-center justify-center transition-colors ${
                   isMicOn
-                    ? 'bg-[#C45B28] hover:bg-[#A04920]'
+                    ? 'bg-[#84CC16] hover:bg-[#65A30D]'
                     : 'bg-red-500 hover:bg-red-600'
                 }`}
               >
@@ -251,7 +251,7 @@ export function RoomScreen() {
                 className={`flex items-center gap-2 px-5 py-3 rounded-full font-medium text-sm transition-colors ${
                   isHandRaised
                     ? 'bg-yellow-500 hover:bg-yellow-600 text-white'
-                    : 'bg-[#C45B28] hover:bg-[#A04920] text-white'
+                    : 'bg-[#84CC16] hover:bg-[#65A30D] text-white'
                 }`}
               >
                 <Hand className="w-4 h-4" />

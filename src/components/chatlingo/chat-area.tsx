@@ -372,12 +372,12 @@ export function ChatArea({ socket }: { socket: SocketType | null }) {
 
         <div className="relative cursor-pointer">
           <Avatar className="w-10 h-10">
-            <AvatarFallback className="bg-[#1A6B7A] text-white text-sm font-semibold">
+            <AvatarFallback className="bg-[#134E5E] text-white text-sm font-semibold">
               {otherUserInitials}
             </AvatarFallback>
           </Avatar>
           {otherUser.online && (
-            <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-[#C45B28] border-2 border-[#0F4C5C] rounded-full" />
+            <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-[#84CC16] border-2 border-[#0F4C5C] rounded-full" />
           )}
         </div>
 
@@ -451,19 +451,19 @@ export function ChatArea({ socket }: { socket: SocketType | null }) {
             {showHeaderMenu && (
               <>
                 <div className="fixed inset-0 z-40" onClick={() => setShowHeaderMenu(false)} />
-                <div className="absolute right-0 top-full mt-1 w-48 bg-white rounded-md shadow-lg py-1 z-50 border border-[#E2D9CF]">
+                <div className="absolute right-0 top-full mt-1 w-48 bg-white rounded-md shadow-lg py-1 z-50 border border-[#E2E8F0]">
                   <button
                     onClick={() => { setShowLanguageSettings(true); setShowHeaderMenu(false) }}
-                    className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-[#1C1917] hover:bg-[#F5F0EA] transition-colors"
+                    className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-[#0A0A0A] hover:bg-[#F1F5F9] transition-colors"
                   >
-                    <Globe className="w-4 h-4 text-[#78716C]" />
+                    <Globe className="w-4 h-4 text-[#525252]" />
                     Language settings
                   </button>
                   <button
                     onClick={() => setShowHeaderMenu(false)}
-                    className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-[#1C1917] hover:bg-[#F5F0EA] transition-colors"
+                    className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-[#0A0A0A] hover:bg-[#F1F5F9] transition-colors"
                   >
-                    <Search className="w-4 h-4 text-[#78716C]" />
+                    <Search className="w-4 h-4 text-[#525252]" />
                     Search
                   </button>
                 </div>
@@ -482,14 +482,14 @@ export function ChatArea({ socket }: { socket: SocketType | null }) {
         <div className="max-w-3xl mx-auto">
           {/* Encryption Notice */}
           <div className="flex justify-center mb-4 mt-2">
-            <div className="bg-[#FFEEBA]/80 backdrop-blur-sm rounded-lg px-4 py-2 max-w-sm text-center">
+            <div className="bg-[#ECFCCB]/80 backdrop-blur-sm rounded-lg px-4 py-2 max-w-sm text-center">
               <div className="flex items-center justify-center gap-1 mb-1">
-                <Lock className="w-3 h-3 text-[#78716C]" />
-                <span className="text-[11px] text-[#78716C] font-medium">
+                <Lock className="w-3 h-3 text-[#525252]" />
+                <span className="text-[11px] text-[#525252] font-medium">
                   Messages are auto-translated
                 </span>
               </div>
-              <p className="text-[11px] text-[#9CA3AF]">
+              <p className="text-[11px] text-[#A3A3A3]">
                 {getLanguageFlag(myLanguage)} {getLanguageLabel(myLanguage)} ↔ {getLanguageFlag(theirLanguage)} {getLanguageLabel(theirLanguage)}
               </p>
             </div>
@@ -523,7 +523,7 @@ export function ChatArea({ socket }: { socket: SocketType | null }) {
                   }`}
                 >
                   {!isMine && isFirst && (
-                    <p className="text-[12px] text-[#C45B28] font-medium mb-0.5 ml-3">
+                    <p className="text-[12px] text-[#84CC16] font-medium mb-0.5 ml-3">
                       {message.sender?.name || 'Unknown'}
                     </p>
                   )}
@@ -532,7 +532,7 @@ export function ChatArea({ socket }: { socket: SocketType | null }) {
                   <div
                     className={`relative px-2.5 pt-1.5 pb-1 shadow-sm ${
                       isMine
-                        ? `bg-[#E8DDD3] ${isFirst ? 'wa-bubble-tail-right rounded-tr-none' : 'rounded-tr-md'} rounded-tl-lg rounded-bl-lg rounded-br-lg`
+                        ? `bg-[#ECFCCB] ${isFirst ? 'wa-bubble-tail-right rounded-tr-none' : 'rounded-tr-md'} rounded-tl-lg rounded-bl-lg rounded-br-lg`
                         : `bg-white ${isFirst ? 'wa-bubble-tail-left rounded-tl-none' : 'rounded-tl-md'} rounded-tr-lg rounded-bl-lg rounded-br-lg`
                     }`}
                     style={{ minWidth: isVoiceMessage ? '200px' : '80px' }}
@@ -557,19 +557,19 @@ export function ChatArea({ socket }: { socket: SocketType | null }) {
                             ))}
                           </div>
                         </div>
-                        <span className="text-[11px] text-[#78716C] shrink-0">0:12</span>
+                        <span className="text-[11px] text-[#525252] shrink-0">0:12</span>
                       </div>
                     ) : (
                       /* Text Message */
-                      <p className="text-[14.2px] text-[#1C1917] whitespace-pre-wrap break-words leading-[19px] pr-12">
+                      <p className="text-[14.2px] text-[#0A0A0A] whitespace-pre-wrap break-words leading-[19px] pr-12">
                         {displayText}
                       </p>
                     )}
 
                     {/* Original text (tap to reveal) */}
                     {!isMine && hasTranslation && hasOriginal && (
-                      <div className="mt-1.5 pt-1.5 border-t border-[#E2D9CF]">
-                        <p className="text-[12px] text-[#9CA3AF] italic whitespace-pre-wrap break-words leading-[16px]">
+                      <div className="mt-1.5 pt-1.5 border-t border-[#E2E8F0]">
+                        <p className="text-[12px] text-[#A3A3A3] italic whitespace-pre-wrap break-words leading-[16px]">
                           {originalText}
                         </p>
                       </div>
@@ -578,7 +578,7 @@ export function ChatArea({ socket }: { socket: SocketType | null }) {
                     {!isMine && hasTranslation && !hasOriginal && (
                       <button
                         onClick={() => toggleOriginal(message.id)}
-                        className="flex items-center gap-1 mt-1 text-[#C45B28] hover:text-[#1A6B7A] transition-colors"
+                        className="flex items-center gap-1 mt-1 text-[#84CC16] hover:text-[#134E5E] transition-colors"
                       >
                         <Globe className="w-3 h-3" />
                         <span className="text-[11px]">View original</span>
@@ -587,11 +587,11 @@ export function ChatArea({ socket }: { socket: SocketType | null }) {
 
                     {/* Time + ticks */}
                     <div className="flex items-center gap-0.5 justify-end -mt-1">
-                      <span className={`text-[11px] ${isMine ? 'text-black/45' : 'text-[#78716C]'}`}>
+                      <span className={`text-[11px] ${isMine ? 'text-black/45' : 'text-[#525252]'}`}>
                         {formatMessageTime(message.createdAt)}
                       </span>
                       {isMine && (
-                        <CheckCheck className="w-4 h-4 text-[#C45B28]" />
+                        <CheckCheck className="w-4 h-4 text-[#84CC16]" />
                       )}
                     </div>
                   </div>
@@ -617,9 +617,9 @@ export function ChatArea({ socket }: { socket: SocketType | null }) {
 
       {/* Recording UI */}
       {isRecording && (
-        <div className="bg-[#F5F0EA] px-4 py-3 flex items-center gap-3 border-t border-[#E2D9CF] shrink-0">
+        <div className="bg-[#F1F5F9] px-4 py-3 flex items-center gap-3 border-t border-[#E2E8F0] shrink-0">
           <div className="w-3 h-3 rounded-full bg-red-500 wa-recording-pulse" />
-          <span className="text-sm font-medium text-[#1C1917]">{formatRecordingTime(recordingTime)}</span>
+          <span className="text-sm font-medium text-[#0A0A0A]">{formatRecordingTime(recordingTime)}</span>
           <div className="flex-1" />
           <button
             onClick={stopRecording}
@@ -632,11 +632,11 @@ export function ChatArea({ socket }: { socket: SocketType | null }) {
 
       {/* Input Bar */}
       {!isRecording && (
-        <div className="bg-[#F5F0EA] px-2 sm:px-4 py-2 flex items-center gap-1 sm:gap-2 shrink-0">
-          <button className="p-2 text-[#78716C] hover:text-[#1C1917] rounded-full hover:bg-[#E2D9CF] transition-colors shrink-0">
+        <div className="bg-[#F1F5F9] px-2 sm:px-4 py-2 flex items-center gap-1 sm:gap-2 shrink-0">
+          <button className="p-2 text-[#525252] hover:text-[#0A0A0A] rounded-full hover:bg-[#E2E8F0] transition-colors shrink-0">
             <Smile className="w-6 h-6" />
           </button>
-          <button className="p-2 text-[#78716C] hover:text-[#1C1917] rounded-full hover:bg-[#E2D9CF] transition-colors shrink-0">
+          <button className="p-2 text-[#525252] hover:text-[#0A0A0A] rounded-full hover:bg-[#E2E8F0] transition-colors shrink-0">
             <Paperclip className="w-5 h-5 rotate-45" />
           </button>
           <div className="flex-1 relative">
@@ -649,10 +649,10 @@ export function ChatArea({ socket }: { socket: SocketType | null }) {
               }}
               onKeyDown={handleKeyDown}
               placeholder="Type a message"
-              className="w-full h-11 px-4 bg-white rounded-full border-none text-[15px] text-[#1C1917] placeholder:text-[#78716C] focus:outline-none focus:ring-0 shadow-sm"
+              className="w-full h-11 px-4 bg-white rounded-full border-none text-[15px] text-[#0A0A0A] placeholder:text-[#525252] focus:outline-none focus:ring-0 shadow-sm"
               disabled={sending}
             />
-            <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] text-xs pointer-events-none">
+            <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[#A3A3A3] text-xs pointer-events-none">
               {getLanguageFlag(myLanguage)}
             </span>
           </div>
@@ -660,7 +660,7 @@ export function ChatArea({ socket }: { socket: SocketType | null }) {
             <button
               onClick={handleSend}
               disabled={sending}
-              className="p-2.5 bg-[#0F4C5C] hover:bg-[#064E46] text-white rounded-full transition-colors shrink-0 shadow-sm"
+              className="p-2.5 bg-[#0F4C5C] hover:bg-[#134E5E] text-white rounded-full transition-colors shrink-0 shadow-sm"
             >
               <SendHorizonal className="w-5 h-5" />
             </button>
@@ -671,7 +671,7 @@ export function ChatArea({ socket }: { socket: SocketType | null }) {
               onMouseLeave={handleMicUp}
               onTouchStart={handleMicDown}
               onTouchEnd={handleMicUp}
-              className="p-2.5 text-[#78716C] hover:text-[#1C1917] rounded-full hover:bg-[#E2D9CF] transition-colors shrink-0 select-none"
+              className="p-2.5 text-[#525252] hover:text-[#0A0A0A] rounded-full hover:bg-[#E2E8F0] transition-colors shrink-0 select-none"
             >
               <Mic className="w-6 h-6" />
             </button>

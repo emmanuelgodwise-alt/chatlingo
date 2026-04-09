@@ -183,13 +183,13 @@ export function LearnTab() {
   // ---- Loading state ----
   if (loading) {
     return (
-      <div className="flex-1 flex flex-col h-full bg-[#F5F0EA]">
+      <div className="flex-1 flex flex-col h-full bg-[#F1F5F9]">
         <div className="bg-[#0F4C5C] px-4 py-3 flex items-center gap-2 wa-shadow-header shrink-0">
           <BookOpen className="w-5 h-5 text-white" />
           <h2 className="text-white font-semibold text-base">Language Exchange</h2>
         </div>
         <div className="flex-1 flex items-center justify-center">
-          <Loader2 className="w-8 h-8 text-[#C45B28] animate-spin" />
+          <Loader2 className="w-8 h-8 text-[#84CC16] animate-spin" />
         </div>
       </div>
     )
@@ -198,7 +198,7 @@ export function LearnTab() {
   // ---- No profile: Welcome screen ----
   if (!learningProfile) {
     return (
-      <div className="flex-1 flex flex-col h-full bg-[#F5F0EA]">
+      <div className="flex-1 flex flex-col h-full bg-[#F1F5F9]">
         {/* Header */}
         <div className="bg-[#0F4C5C] px-4 py-3 flex items-center justify-between wa-shadow-header shrink-0">
           <div className="flex items-center gap-2">
@@ -218,8 +218,8 @@ export function LearnTab() {
           <div className="max-w-sm w-full text-center">
             {/* Illustration */}
             <div className="relative mx-auto mb-6 w-40 h-40">
-              <div className="absolute inset-0 rounded-full bg-gradient-to-br from-[#C45B28]/20 to-[#0F4C5C]/20 animate-pulse" />
-              <div className="relative w-full h-full rounded-full bg-gradient-to-br from-[#E7FCE3] to-[#E8DDD3] flex items-center justify-center shadow-lg">
+              <div className="absolute inset-0 rounded-full bg-gradient-to-br from-[#84CC16]/20 to-[#0F4C5C]/20 animate-pulse" />
+              <div className="relative w-full h-full rounded-full bg-gradient-to-br from-[#ECFCCB] to-[#ECFCCB] flex items-center justify-center shadow-lg">
                 <div className="text-6xl">🌍</div>
               </div>
               {/* Floating emojis */}
@@ -234,14 +234,14 @@ export function LearnTab() {
               </div>
             </div>
 
-            <h2 className="text-xl font-bold text-[#1C1917] mb-2">Start Your Language Journey</h2>
-            <p className="text-sm text-[#78716C] mb-6 leading-relaxed">
+            <h2 className="text-xl font-bold text-[#0A0A0A] mb-2">Start Your Language Journey</h2>
+            <p className="text-sm text-[#525252] mb-6 leading-relaxed">
               Learn a new language by practicing with native-speaking friends. Set your learning language to get started!
             </p>
 
             <button
               onClick={() => setShowLearnSetup(true)}
-              className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-[#C45B28] hover:bg-[#A04920] text-white font-semibold rounded-xl transition-all shadow-md hover:shadow-lg active:scale-[0.98]"
+              className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-[#84CC16] hover:bg-[#65A30D] text-white font-semibold rounded-xl transition-all shadow-md hover:shadow-lg active:scale-[0.98]"
             >
               <GraduationCap className="w-5 h-5" />
               Get Started
@@ -249,7 +249,7 @@ export function LearnTab() {
 
             <button
               onClick={() => setShowLearnPairDialog(true)}
-              className="mt-4 text-sm text-[#0F4C5C] hover:text-[#064E46] font-medium transition-colors"
+              className="mt-4 text-sm text-[#0F4C5C] hover:text-[#134E5E] font-medium transition-colors"
             >
               Already set up? <span className="underline">Learn with a friend</span>
             </button>
@@ -263,7 +263,7 @@ export function LearnTab() {
   const { next, progress } = getNextLevelThreshold(learningProfile.totalXp)
 
   return (
-    <div className="flex-1 flex flex-col h-full bg-[#F5F0EA]">
+    <div className="flex-1 flex flex-col h-full bg-[#F1F5F9]">
       {/* Header */}
       <div className="bg-[#0F4C5C] px-4 py-3 flex items-center justify-between wa-shadow-header shrink-0">
         <div className="flex items-center gap-2">
@@ -289,49 +289,49 @@ export function LearnTab() {
       {/* Scrollable content */}
       <div className="flex-1 overflow-y-auto scrollbar-thin">
         {/* Profile Stats Card */}
-        <div className="mx-3 mt-3 bg-white rounded-xl border border-[#E2D9CF] overflow-hidden shadow-sm">
+        <div className="mx-3 mt-3 bg-white rounded-xl border border-[#E2E8F0] overflow-hidden shadow-sm">
           {/* Stats Row */}
-          <div className="grid grid-cols-4 divide-x divide-[#E2D9CF]">
+          <div className="grid grid-cols-4 divide-x divide-[#E2E8F0]">
             <div className="px-3 py-3 text-center">
               <div className="text-lg mb-0.5">🔥</div>
-              <p className="text-base font-bold text-[#1C1917]">{learningProfile.currentStreak}</p>
-              <p className="text-[10px] text-[#9CA3AF] mt-0.5">Day Streak</p>
+              <p className="text-base font-bold text-[#0A0A0A]">{learningProfile.currentStreak}</p>
+              <p className="text-[10px] text-[#A3A3A3] mt-0.5">Day Streak</p>
             </div>
             <div className="px-3 py-3 text-center">
               <div className="text-lg mb-0.5">⭐</div>
-              <p className="text-base font-bold text-[#1C1917]">{learningProfile.totalXp}</p>
-              <p className="text-[10px] text-[#9CA3AF] mt-0.5">Total XP</p>
+              <p className="text-base font-bold text-[#0A0A0A]">{learningProfile.totalXp}</p>
+              <p className="text-[10px] text-[#A3A3A3] mt-0.5">Total XP</p>
             </div>
             <div className="px-3 py-3 text-center">
               <div className="text-lg mb-0.5">📚</div>
-              <p className="text-base font-bold text-[#1C1917]">{learningProfile.lessonsCompleted}</p>
-              <p className="text-[10px] text-[#9CA3AF] mt-0.5">Completed</p>
+              <p className="text-base font-bold text-[#0A0A0A]">{learningProfile.lessonsCompleted}</p>
+              <p className="text-[10px] text-[#A3A3A3] mt-0.5">Completed</p>
             </div>
             <div className="px-3 py-3 text-center">
               <div className="text-lg mb-0.5">🏆</div>
-              <p className="text-base font-bold text-[#1C1917]">{learningProfile.longestStreak}</p>
-              <p className="text-[10px] text-[#9CA3AF] mt-0.5">Best Streak</p>
+              <p className="text-base font-bold text-[#0A0A0A]">{learningProfile.longestStreak}</p>
+              <p className="text-[10px] text-[#A3A3A3] mt-0.5">Best Streak</p>
             </div>
           </div>
 
           {/* Level + Progress bar */}
-          <div className="px-4 py-3 bg-[#F8F9FA] border-t border-[#E2D9CF]">
+          <div className="px-4 py-3 bg-[#F8F9FA] border-t border-[#E2E8F0]">
             <div className="flex items-center justify-between mb-1.5">
               <div className="flex items-center gap-2">
                 <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wide bg-[#0F4C5C] text-white">
                   {getLevelLabel(learningProfile.level)}
                 </span>
-                <span className="text-xs text-[#78716C]">
+                <span className="text-xs text-[#525252]">
                   {getLanguageFlag(learningProfile.targetLanguage)} Learning {learningProfile.targetLanguage}
                 </span>
               </div>
-              <span className="text-[10px] text-[#9CA3AF]">
+              <span className="text-[10px] text-[#A3A3A3]">
                 {learningProfile.totalXp} / {next} XP
               </span>
             </div>
-            <div className="w-full h-2 bg-[#E2D9CF] rounded-full overflow-hidden">
+            <div className="w-full h-2 bg-[#E2E8F0] rounded-full overflow-hidden">
               <div
-                className="h-full bg-gradient-to-r from-[#C45B28] to-[#0F4C5C] rounded-full transition-all duration-500 ease-out"
+                className="h-full bg-gradient-to-r from-[#84CC16] to-[#0F4C5C] rounded-full transition-all duration-500 ease-out"
                 style={{ width: `${progress}%` }}
               />
             </div>
@@ -342,13 +342,13 @@ export function LearnTab() {
         {learningPairs.length > 0 && (
           <div className="mx-3 mt-3">
             <div className="flex items-center justify-between mb-2">
-              <h3 className="text-sm font-bold text-[#1C1917] flex items-center gap-1.5">
+              <h3 className="text-sm font-bold text-[#0A0A0A] flex items-center gap-1.5">
                 <Users className="w-4 h-4 text-[#0F4C5C]" />
                 Learning Partners
               </h3>
               <button
                 onClick={() => setShowLearnPairDialog(true)}
-                className="text-xs text-[#0F4C5C] font-semibold hover:text-[#064E46] transition-colors flex items-center gap-0.5"
+                className="text-xs text-[#0F4C5C] font-semibold hover:text-[#134E5E] transition-colors flex items-center gap-0.5"
               >
                 <UserPlus className="w-3.5 h-3.5" />
                 Add Partner
@@ -365,26 +365,26 @@ export function LearnTab() {
                 return (
                   <div
                     key={pair.id}
-                    className="bg-white rounded-xl p-3 flex items-center gap-3 border border-[#E2D9CF] shadow-sm"
+                    className="bg-white rounded-xl p-3 flex items-center gap-3 border border-[#E2E8F0] shadow-sm"
                   >
                     <Avatar className="w-10 h-10 shrink-0">
-                      <AvatarFallback className="bg-[#E2D9CF] text-[#1C1917] text-xs font-semibold">
+                      <AvatarFallback className="bg-[#E2E8F0] text-[#0A0A0A] text-xs font-semibold">
                         {initials}
                       </AvatarFallback>
                     </Avatar>
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-[#1C1917] truncate">{pair.partner.name}</p>
-                      <div className="flex items-center gap-2 text-[11px] text-[#78716C]">
+                      <p className="text-sm font-medium text-[#0A0A0A] truncate">{pair.partner.name}</p>
+                      <div className="flex items-center gap-2 text-[11px] text-[#525252]">
                         <span className="flex items-center gap-0.5">
                           I learn: {getLanguageFlag(pair.iLearn)} {pair.iLearn}
                         </span>
-                        <span className="text-[#E2D9CF]">|</span>
+                        <span className="text-[#E2E8F0]">|</span>
                         <span className="flex items-center gap-0.5">
                           I teach: {getLanguageFlag(pair.iTeach)} {pair.iTeach}
                         </span>
                       </div>
                     </div>
-                    <button className="flex items-center gap-1 text-xs font-medium text-[#0F4C5C] bg-[#E7FCE3] hover:bg-[#E8DDD3] px-3 py-1.5 rounded-full transition-colors shrink-0">
+                    <button className="flex items-center gap-1 text-xs font-medium text-[#0F4C5C] bg-[#ECFCCB] hover:bg-[#ECFCCB] px-3 py-1.5 rounded-full transition-colors shrink-0">
                       <MessageCircle className="w-3.5 h-3.5" />
                       Chat
                     </button>
@@ -398,19 +398,19 @@ export function LearnTab() {
         {/* Need a Partner? Prompt (no pairs) */}
         {learningPairs.length === 0 && (
           <div className="mx-3 mt-3">
-            <div className="bg-gradient-to-br from-[#E7FCE3] to-[#E8DDD3] rounded-xl p-4 border border-[#C45B28]/20 shadow-sm">
+            <div className="bg-gradient-to-br from-[#ECFCCB] to-[#ECFCCB] rounded-xl p-4 border border-[#84CC16]/20 shadow-sm">
               <div className="flex items-start gap-3">
                 <div className="w-10 h-10 rounded-full bg-white/80 flex items-center justify-center shrink-0 shadow-sm">
                   <Users className="w-5 h-5 text-[#0F4C5C]" />
                 </div>
                 <div className="flex-1">
-                  <h3 className="text-sm font-bold text-[#1C1917] mb-0.5">Need a Partner?</h3>
-                  <p className="text-xs text-[#78716C] mb-2.5 leading-relaxed">
+                  <h3 className="text-sm font-bold text-[#0A0A0A] mb-0.5">Need a Partner?</h3>
+                  <p className="text-xs text-[#525252] mb-2.5 leading-relaxed">
                     Learning is better together! Find a language exchange partner to practice with and help each other improve.
                   </p>
                   <button
                     onClick={() => setShowLearnPairDialog(true)}
-                    className="inline-flex items-center gap-1.5 px-4 py-2 bg-[#C45B28] hover:bg-[#A04920] text-white text-xs font-semibold rounded-full transition-all shadow-sm hover:shadow active:scale-[0.98]"
+                    className="inline-flex items-center gap-1.5 px-4 py-2 bg-[#84CC16] hover:bg-[#65A30D] text-white text-xs font-semibold rounded-full transition-all shadow-sm hover:shadow active:scale-[0.98]"
                   >
                     <UserPlus className="w-3.5 h-3.5" />
                     Find a Partner
@@ -423,8 +423,8 @@ export function LearnTab() {
 
         {/* Lesson Categories */}
         <div className="mx-3 mt-4 mb-3">
-          <h3 className="text-sm font-bold text-[#1C1917] mb-2 flex items-center gap-1.5">
-            <Sparkles className="w-4 h-4 text-[#C45B28]" />
+          <h3 className="text-sm font-bold text-[#0A0A0A] mb-2 flex items-center gap-1.5">
+            <Sparkles className="w-4 h-4 text-[#84CC16]" />
             Lessons
           </h3>
 
@@ -437,7 +437,7 @@ export function LearnTab() {
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-colors shrink-0 ${
                   activeCategory === cat
                     ? 'bg-[#0F4C5C] text-white'
-                    : 'bg-white text-[#78716C] hover:bg-[#E2D9CF] border border-[#E2D9CF]'
+                    : 'bg-white text-[#525252] hover:bg-[#E2E8F0] border border-[#E2E8F0]'
                 }`}
               >
                 {cat !== 'all' && CATEGORY_META[cat]?.icon}
@@ -449,14 +449,14 @@ export function LearnTab() {
           {/* Lesson Grid */}
           {loadingLessons ? (
             <div className="p-8 text-center">
-              <Loader2 className="w-6 h-6 text-[#C45B28] animate-spin mx-auto" />
-              <p className="text-xs text-[#9CA3AF] mt-2">Loading lessons...</p>
+              <Loader2 className="w-6 h-6 text-[#84CC16] animate-spin mx-auto" />
+              <p className="text-xs text-[#A3A3A3] mt-2">Loading lessons...</p>
             </div>
           ) : filteredLessons.length === 0 ? (
             <div className="text-center py-8">
-              <BookOpen className="w-10 h-10 text-[#E2D9CF] mx-auto mb-2" />
-              <p className="text-sm text-[#78716C]">No lessons available yet</p>
-              <p className="text-xs text-[#9CA3AF] mt-1">Lessons for {learningProfile.targetLanguage} will appear here</p>
+              <BookOpen className="w-10 h-10 text-[#E2E8F0] mx-auto mb-2" />
+              <p className="text-sm text-[#525252]">No lessons available yet</p>
+              <p className="text-xs text-[#A3A3A3] mt-1">Lessons for {learningProfile.targetLanguage} will appear here</p>
             </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-[500px] overflow-y-auto scrollbar-thin pr-1">
@@ -467,7 +467,7 @@ export function LearnTab() {
                   <button
                     key={lesson.id}
                     onClick={() => handleStartLesson(lesson)}
-                    className="bg-white rounded-xl p-3.5 border border-[#E2D9CF] shadow-sm hover:shadow-md hover:border-[#C45B28]/30 transition-all text-left active:scale-[0.99] group"
+                    className="bg-white rounded-xl p-3.5 border border-[#E2E8F0] shadow-sm hover:shadow-md hover:border-[#84CC16]/30 transition-all text-left active:scale-[0.99] group"
                   >
                     <div className="flex items-start gap-3">
                       {/* Category icon */}
@@ -482,13 +482,13 @@ export function LearnTab() {
                       {/* Content */}
                       <div className="flex-1 min-w-0">
                         <div className="flex items-start justify-between gap-2">
-                          <h4 className="text-sm font-semibold text-[#1C1917] leading-tight group-hover:text-[#0F4C5C] transition-colors line-clamp-2">
+                          <h4 className="text-sm font-semibold text-[#0A0A0A] leading-tight group-hover:text-[#0F4C5C] transition-colors line-clamp-2">
                             {lesson.title}
                           </h4>
                           {lesson.progress?.completed ? (
-                            <CheckCircle2 className="w-5 h-5 text-[#C45B28] shrink-0" />
+                            <CheckCircle2 className="w-5 h-5 text-[#84CC16] shrink-0" />
                           ) : (
-                            <ChevronRight className="w-4 h-4 text-[#9CA3AF] shrink-0 mt-0.5 group-hover:text-[#0F4C5C] transition-colors" />
+                            <ChevronRight className="w-4 h-4 text-[#A3A3A3] shrink-0 mt-0.5 group-hover:text-[#0F4C5C] transition-colors" />
                           )}
                         </div>
 
@@ -506,17 +506,17 @@ export function LearnTab() {
                               <span
                                 key={dot}
                                 className={`w-1.5 h-1.5 rounded-full ${
-                                  dot <= lesson.level ? levelInfo.dot : 'bg-[#E2D9CF]'
+                                  dot <= lesson.level ? levelInfo.dot : 'bg-[#E2E8F0]'
                                 }`}
                               />
                             ))}
                           </div>
 
-                          <span className="text-[10px] text-[#9CA3AF] flex items-center gap-0.5">
+                          <span className="text-[10px] text-[#A3A3A3] flex items-center gap-0.5">
                             <Star className="w-3 h-3 text-yellow-500" />
                             {lesson.xpReward} XP
                           </span>
-                          <span className="text-[10px] text-[#9CA3AF]">
+                          <span className="text-[10px] text-[#A3A3A3]">
                             {lesson.exercisesCount} exercises
                           </span>
                         </div>
@@ -525,14 +525,14 @@ export function LearnTab() {
                         {lesson.progress && !lesson.progress.completed && (
                           <div className="mt-2">
                             <div className="flex items-center justify-between mb-0.5">
-                              <span className="text-[10px] text-[#78716C]">Best: {lesson.progress.bestScore}%</span>
-                              <span className="text-[10px] text-[#78716C]">{lesson.progress.attempts} attempt{lesson.progress.attempts !== 1 ? 's' : ''}</span>
+                              <span className="text-[10px] text-[#525252]">Best: {lesson.progress.bestScore}%</span>
+                              <span className="text-[10px] text-[#525252]">{lesson.progress.attempts} attempt{lesson.progress.attempts !== 1 ? 's' : ''}</span>
                             </div>
-                            <div className="w-full h-1.5 bg-[#E2D9CF] rounded-full overflow-hidden">
+                            <div className="w-full h-1.5 bg-[#E2E8F0] rounded-full overflow-hidden">
                               <div
                                 className={`h-full rounded-full transition-all duration-300 ${
                                   lesson.progress.bestScore >= 80
-                                    ? 'bg-[#C45B28]'
+                                    ? 'bg-[#84CC16]'
                                     : lesson.progress.bestScore >= 50
                                     ? 'bg-yellow-500'
                                     : 'bg-red-400'
@@ -546,8 +546,8 @@ export function LearnTab() {
                         {/* Completed label */}
                         {lesson.progress?.completed && (
                           <div className="mt-1.5 flex items-center gap-1">
-                            <span className="text-[10px] font-semibold text-[#C45B28]">Completed</span>
-                            <span className="text-[10px] text-[#9CA3AF]">
+                            <span className="text-[10px] font-semibold text-[#84CC16]">Completed</span>
+                            <span className="text-[10px] text-[#A3A3A3]">
                               Score: {lesson.progress.bestScore}%
                             </span>
                           </div>
@@ -555,7 +555,7 @@ export function LearnTab() {
 
                         {/* Description */}
                         {lesson.description && (
-                          <p className="text-[11px] text-[#9CA3AF] mt-1 line-clamp-1">{lesson.description}</p>
+                          <p className="text-[11px] text-[#A3A3A3] mt-1 line-clamp-1">{lesson.description}</p>
                         )}
                       </div>
                     </div>

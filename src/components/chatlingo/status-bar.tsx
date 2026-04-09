@@ -78,7 +78,7 @@ export function StatusBar() {
     : '??'
 
   return (
-    <div className="px-3 py-2 bg-white border-b border-[#E2D9CF]">
+    <div className="px-3 py-2 bg-white border-b border-[#E2E8F0]">
       <div className="flex gap-4 overflow-x-auto scrollbar-thin pb-1">
         {/* My Status */}
         <button
@@ -87,15 +87,15 @@ export function StatusBar() {
         >
           <div className="relative">
             <Avatar className="w-12 h-12">
-              <AvatarFallback className="bg-[#E2D9CF] text-[#1C1917] text-sm font-semibold">
+              <AvatarFallback className="bg-[#E2E8F0] text-[#0A0A0A] text-sm font-semibold">
                 {userInitials}
               </AvatarFallback>
             </Avatar>
-            <div className="absolute -bottom-0.5 -right-0.5 w-5 h-5 bg-[#C45B28] rounded-full flex items-center justify-center border-2 border-white">
+            <div className="absolute -bottom-0.5 -right-0.5 w-5 h-5 bg-[#84CC16] rounded-full flex items-center justify-center border-2 border-white">
               <Plus className="w-3 h-3 text-white" />
             </div>
           </div>
-          <span className="text-[11px] text-[#78716C] w-[56px] text-center truncate">My Status</span>
+          <span className="text-[11px] text-[#525252] w-[56px] text-center truncate">My Status</span>
         </button>
 
         {/* Contact statuses */}
@@ -109,16 +109,16 @@ export function StatusBar() {
               <div className={`w-[52px] h-[52px] rounded-full p-[3px] ${
                 owner.allViewed
                   ? 'bg-[#C5C5C5]'
-                  : 'bg-gradient-to-tr from-[#C45B28] via-[#1A6B7A] to-[#0F4C5C]'
+                  : 'bg-gradient-to-tr from-[#84CC16] via-[#134E5E] to-[#0F4C5C]'
               }`}>
                 <Avatar className="w-full h-full border-2 border-white">
-                  <AvatarFallback className="bg-[#E2D9CF] text-[#1C1917] text-sm font-semibold">
+                  <AvatarFallback className="bg-[#E2E8F0] text-[#0A0A0A] text-sm font-semibold">
                     {owner.name.split(' ').map((n) => n[0]).join('').toUpperCase().slice(0, 2)}
                   </AvatarFallback>
                 </Avatar>
               </div>
             </div>
-            <span className="text-[11px] text-[#1C1917] w-[56px] text-center truncate">{owner.name}</span>
+            <span className="text-[11px] text-[#0A0A0A] w-[56px] text-center truncate">{owner.name}</span>
           </button>
         ))}
 
@@ -127,10 +127,10 @@ export function StatusBar() {
           onClick={() => setShowCreateStatus(true)}
           className="flex flex-col items-center gap-1 shrink-0"
         >
-          <div className="w-12 h-12 rounded-full bg-[#F5F0EA] flex items-center justify-center">
-            <Pencil className="w-5 h-5 text-[#78716C]" />
+          <div className="w-12 h-12 rounded-full bg-[#F1F5F9] flex items-center justify-center">
+            <Pencil className="w-5 h-5 text-[#525252]" />
           </div>
-          <span className="text-[11px] text-[#78716C]">Add</span>
+          <span className="text-[11px] text-[#525252]">Add</span>
         </button>
       </div>
     </div>

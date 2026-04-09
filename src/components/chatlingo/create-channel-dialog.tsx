@@ -44,8 +44,8 @@ export function CreateChannelDialog() {
   }
 
   return (
-    <div className="fixed inset-0 z-[90] flex items-center justify-center bg-black/50">
-      <div className="bg-white rounded-xl w-full max-w-md mx-4 overflow-hidden shadow-xl animate-fadeIn">
+    <div className="fixed inset-0 z-[90] flex items-center justify-center bg-black/50" onClick={() => setShowCreateChannel(false)}>
+      <div className="bg-white rounded-xl w-full max-w-md mx-4 overflow-hidden shadow-xl animate-fadeIn" onClick={(e) => e.stopPropagation()}>
         {/* Header */}
         <div className="bg-[#0F4C5C] px-4 py-3 flex items-center justify-between">
           <button
@@ -64,39 +64,39 @@ export function CreateChannelDialog() {
         <div className="p-4 space-y-4">
           {/* Name */}
           <div>
-            <label className="text-xs text-[#78716C] font-medium mb-1 block">Channel Name</label>
+            <label className="text-xs text-[#525252] font-medium mb-1 block">Channel Name</label>
             <input
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="e.g., French Learners"
               maxLength={50}
-              className="w-full px-3 py-2.5 bg-[#F5F0EA] rounded-lg text-sm text-[#1C1917] placeholder:text-[#78716C] focus:outline-none focus:ring-2 focus:ring-[#C45B28] border-none"
+              className="w-full px-3 py-2.5 bg-[#F1F5F9] rounded-lg text-sm text-[#0A0A0A] placeholder:text-[#525252] focus:outline-none focus:ring-2 focus:ring-[#84CC16] border-none"
             />
           </div>
 
           {/* Description */}
           <div>
-            <label className="text-xs text-[#78716C] font-medium mb-1 block">Description</label>
+            <label className="text-xs text-[#525252] font-medium mb-1 block">Description</label>
             <textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="What is this channel about?"
               maxLength={200}
               rows={3}
-              className="w-full px-3 py-2.5 bg-[#F5F0EA] rounded-lg text-sm text-[#1C1917] placeholder:text-[#78716C] focus:outline-none focus:ring-2 focus:ring-[#C45B28] border-none resize-none"
+              className="w-full px-3 py-2.5 bg-[#F1F5F9] rounded-lg text-sm text-[#0A0A0A] placeholder:text-[#525252] focus:outline-none focus:ring-2 focus:ring-[#84CC16] border-none resize-none"
             />
           </div>
 
           {/* Public/Private Toggle */}
           <div>
-            <label className="text-xs text-[#78716C] font-medium mb-2 block">Visibility</label>
+            <label className="text-xs text-[#525252] font-medium mb-2 block">Visibility</label>
             <div className="flex gap-2">
               <button
                 onClick={() => setIsPublic(true)}
                 className={`flex-1 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
                   isPublic
-                    ? 'bg-[#E7FCE3] text-[#0F4C5C] border-2 border-[#C45B28]'
-                    : 'bg-[#F5F0EA] text-[#78716C] border-2 border-transparent hover:border-[#E2D9CF]'
+                    ? 'bg-[#ECFCCB] text-[#0F4C5C] border-2 border-[#84CC16]'
+                    : 'bg-[#F1F5F9] text-[#525252] border-2 border-transparent hover:border-[#E2E8F0]'
                 }`}
               >
                 🌍 Public
@@ -105,8 +105,8 @@ export function CreateChannelDialog() {
                 onClick={() => setIsPublic(false)}
                 className={`flex-1 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
                   !isPublic
-                    ? 'bg-[#E7FCE3] text-[#0F4C5C] border-2 border-[#C45B28]'
-                    : 'bg-[#F5F0EA] text-[#78716C] border-2 border-transparent hover:border-[#E2D9CF]'
+                    ? 'bg-[#ECFCCB] text-[#0F4C5C] border-2 border-[#84CC16]'
+                    : 'bg-[#F1F5F9] text-[#525252] border-2 border-transparent hover:border-[#E2E8F0]'
                 }`}
               >
                 🔒 Private
@@ -122,7 +122,7 @@ export function CreateChannelDialog() {
           <button
             onClick={handleCreate}
             disabled={!name.trim() || creating}
-            className="px-6 py-2 bg-[#C45B28] hover:bg-[#A04920] text-white text-sm font-medium rounded-full transition-colors disabled:opacity-50 shadow-sm"
+            className="px-6 py-2 bg-[#84CC16] hover:bg-[#65A30D] text-white text-sm font-medium rounded-full transition-colors disabled:opacity-50 shadow-sm"
           >
             {creating ? (
               <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin inline-block" />

@@ -1,7 +1,6 @@
 'use client'
 
 import { useChatLingoStore } from '@/lib/store'
-import { ContactItem } from '@/components/chatlingo/contact-item'
 import { ConversationItem } from '@/components/chatlingo/conversation-item'
 import { StatusBar } from '@/components/chatlingo/status-bar'
 import { Input } from '@/components/ui/input'
@@ -11,7 +10,6 @@ import {
   Search,
   LogOut,
   MessageCircle,
-  Users,
   MoreVertical,
   UserPlus,
   UsersRound,
@@ -20,6 +18,7 @@ import {
   Megaphone,
   X,
   BookOpen,
+  Plus,
 } from 'lucide-react'
 import { useState, useCallback, useEffect } from 'react'
 
@@ -39,51 +38,24 @@ export function Sidebar({ socket }: { socket: SocketType | null }) {
     setActiveConversation,
     setShowCreateGroup,
     setShowCreateChannel,
+    setShowCreateRoom,
     setShowBroadcast,
     setActiveTab: setGlobalTab,
   } = useChatLingoStore()
 
-  const [activeTab, setActiveTab] = useState<'chats' | 'contacts'>('chats')
   const [searchQuery, setSearchQuery] = useState('')
   const [showFABMenu, setShowFABMenu] = useState(false)
-  const [contacts, setContacts] = useState<
-    Array<{
-      id: string
-      name: string
-      email: string
-      phone?: string | null
-      preferredLanguage: string
-      avatar?: string | null
-      online: boolean
-    }>
-  >([])
-  const [loadingContacts, setLoadingContacts] = useState(false)
 
-  const loadContacts = useCallback(async () => {
-    if (!token || activeTab !== 'contacts') return
-    setLoadingContacts(true)
-    try {
-      const res = await fetch(
-        `/api/contacts${searchQuery ? `?q=${encodeURIComponent(searchQuery)}` : ''}`,
-        { headers: { Authorization: `Bearer ${token}` } }
-      )
-      if (res.ok) {
-        const data = await res.json()
-        setContacts(data.contacts || [])
-      }
-    } catch {
-      // ignore
-    } finally {
-      setLoadingContacts(false)
-    }
-  }, [token, activeTab, searchQuery])
+  const filteredConversations = conversations.filter((c) =>
+    c.otherUser.name.toLowerCase().includes(searchQuery.toLowerCase())
+  )
 
   // Listen for real-time online status
   useEffect(() => {
     if (!socket) return
 
-    const handleUserOnline = () => loadContacts()
-    const handleUserOffline = () => loadContacts()
+    const handleUserOnline = () => {}
+    const handleUserOffline = () => {}
 
     socket.on('user-online', handleUserOnline)
     socket.on('user-offline', handleUserOffline)
@@ -92,51 +64,7 @@ export function Sidebar({ socket }: { socket: SocketType | null }) {
       socket.off('user-online', handleUserOnline)
       socket.off('user-offline', handleUserOffline)
     }
-  }, [socket, loadContacts])
-
-  useEffect(() => {
-    if (activeTab === 'contacts') {
-      loadContacts()
-    }
-  }, [activeTab, loadContacts])
-
-  const handleStartConversation = async (contactId: string, contactLanguage: string) => {
-    if (!token) return
-
-    try {
-      const res = await fetch('/api/conversations', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          participant2Id: contactId,
-          participant2Lang: contactLanguage,
-        }),
-      })
-
-      if (res.ok) {
-        setActiveTab('chats')
-        const convRes = await fetch('/api/conversations', {
-          headers: { Authorization: `Bearer ${token}` },
-        })
-        if (convRes.ok) {
-          const data = await convRes.json()
-          const { setConversations, setActiveConversation } = useChatLingoStore.getState()
-          setConversations(data.conversations)
-          const conv = data.conversations.find(
-            (c: { otherUser: { id: string } }) => c.otherUser.id === contactId
-          )
-          if (conv) {
-            setActiveConversation(conv)
-          }
-        }
-      }
-    } catch {
-      // ignore
-    }
-  }
+  }, [socket])
 
   const userInitials = user?.name
     ? user.name
@@ -150,12 +78,12 @@ export function Sidebar({ socket }: { socket: SocketType | null }) {
   const unreadTotal = conversations.reduce((sum, c) => sum + c.unreadCount, 0)
 
   return (
-    <div className="w-full md:w-80 lg:w-[420px] bg-white border-r border-[#E2D9CF] flex flex-col h-full relative">
-      {/* WhatsApp Header */}
+    <div className="w-full md:w-80 lg:w-[420px] bg-white border-r border-[#E2E8F0] flex flex-col h-full relative">
+      {/* Header */}
       <div className="bg-[#0F4C5C] px-4 py-2.5 flex items-center justify-between wa-shadow-header shrink-0">
         <div className="flex items-center gap-3">
           <Avatar className="w-10 h-10">
-            <AvatarFallback className="bg-[#1A6B7A] text-white text-sm font-semibold">
+            <AvatarFallback className="bg-[#134E5E] text-white text-sm font-semibold">
               {userInitials}
             </AvatarFallback>
           </Avatar>
@@ -167,135 +95,69 @@ export function Sidebar({ socket }: { socket: SocketType | null }) {
             title="New chat"
             onClick={() => setShowAddContact(true)}
           >
-            <Search className="w-5 h-5" />
+            <Plus className="w-5 h-5" />
           </button>
           <button
             className="p-2 text-white/80 hover:text-white rounded-full hover:bg-white/10 transition-colors"
             title="More options"
+            onClick={() => setShowFABMenu(!showFABMenu)}
           >
-            <MoreVertical className="w-5 h-5" />
+            {showFABMenu ? <X className="w-5 h-5" /> : <MoreVertical className="w-5 h-5" />}
           </button>
         </div>
       </div>
 
-      {/* Tabs */}
-      <div className="flex bg-white border-b border-[#E2D9CF] shrink-0">
-        <button
-          onClick={() => setActiveTab('chats')}
-          className={`flex-1 flex items-center justify-center gap-1.5 py-3 text-sm font-medium transition-colors relative ${
-            activeTab === 'chats'
-              ? 'text-[#0F4C5C]'
-              : 'text-[#78716C] hover:text-[#0F4C5C]'
-          }`}
-        >
-          <MessageCircle className="w-4 h-4" />
-          Chats
-          {unreadTotal > 0 && (
-            <span className="ml-1 wa-unread-badge text-[10px] min-w-[18px] h-[18px] px-1">
-              {unreadTotal}
-            </span>
-          )}
-          {activeTab === 'chats' && (
-            <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[80px] h-[3px] bg-[#0F4C5C] rounded-t-full" />
-          )}
-        </button>
-        <button
-          onClick={() => setActiveTab('contacts')}
-          className={`flex-1 flex items-center justify-center gap-1.5 py-3 text-sm font-medium transition-colors relative ${
-            activeTab === 'contacts'
-              ? 'text-[#0F4C5C]'
-              : 'text-[#78716C] hover:text-[#0F4C5C]'
-          }`}
-        >
-          <Users className="w-4 h-4" />
-          Contacts
-          {activeTab === 'contacts' && (
-            <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[80px] h-[3px] bg-[#0F4C5C] rounded-t-full" />
-          )}
-        </button>
-      </div>
-
-      {/* Search Bar */}
+      {/* Search Bar - actually filters conversations */}
       <div className="px-3 py-2 bg-white shrink-0">
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#78716C]" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#A3A3A3]" />
           <Input
-            placeholder={
-              activeTab === 'chats' ? 'Search or start new chat' : 'Search contacts...'
-            }
+            placeholder="Search conversations..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10 h-9 bg-[#F5F0EA] border-none rounded-lg text-sm placeholder:text-[#78716C] focus-visible:ring-0 focus-visible:bg-white focus-visible:border-[#E2D9CF]"
+            className="pl-10 h-9 bg-[#F1F5F9] border-none rounded-lg text-sm placeholder:text-[#A3A3A3] focus-visible:ring-0 focus-visible:bg-white focus-visible:border-[#E2E8F0]"
           />
         </div>
       </div>
 
-      {/* Status Bar (below search on chats tab) */}
-      {activeTab === 'chats' && <StatusBar />}
+      {/* Status Bar (below search) */}
+      <StatusBar />
 
-      {/* List */}
+      {/* Conversation List */}
       <div className="flex-1 overflow-y-auto scrollbar-thin">
-        {activeTab === 'chats' ? (
-          <div>
-            {conversations.length === 0 ? (
-              <div className="p-8 text-center">
-                <MessageCircle className="w-12 h-12 text-[#E2D9CF] mx-auto mb-3" />
-                <p className="text-sm text-[#78716C]">No conversations yet</p>
-                <p className="text-xs text-[#9CA3AF] mt-1">
-                  Add a contact to start chatting
-                </p>
-              </div>
-            ) : (
-              conversations.map((conv) => (
-                <ConversationItem
-                  key={conv.id}
-                  conversation={conv}
-                  isActive={
-                    useChatLingoStore.getState().activeConversation?.id === conv.id
-                  }
-                  onClick={() => setActiveConversation(conv)}
-                />
-              ))
-            )}
+        {filteredConversations.length === 0 ? (
+          <div className="p-8 text-center">
+            <MessageCircle className="w-12 h-12 text-[#E2E8F0] mx-auto mb-3" />
+            <p className="text-sm text-[#525252]">
+              {searchQuery ? 'No conversations found' : 'No conversations yet'}
+            </p>
+            <p className="text-xs text-[#A3A3A3] mt-1">
+              {searchQuery ? 'Try a different search' : 'Tap + to find and add people'}
+            </p>
           </div>
         ) : (
-          <div>
-            {loadingContacts ? (
-              <div className="p-8 text-center">
-                <span className="w-5 h-5 border-2 border-[#C45B28]/30 border-t-[#C45B28] rounded-full animate-spin inline-block" />
-              </div>
-            ) : contacts.length === 0 ? (
-              <div className="p-8 text-center">
-                <Users className="w-12 h-12 text-[#E2D9CF] mx-auto mb-3" />
-                <p className="text-sm text-[#78716C]">No contacts yet</p>
-                <p className="text-xs text-[#9CA3AF] mt-1">
-                  Add contacts to start chatting
-                </p>
-              </div>
-            ) : (
-              contacts.map((contact) => (
-                <ContactItem
-                  key={contact.id}
-                  contact={contact}
-                  onClick={() =>
-                    handleStartConversation(contact.id, contact.preferredLanguage)
-                  }
-                />
-              ))
-            )}
-          </div>
+          filteredConversations.map((conv) => (
+            <ConversationItem
+              key={conv.id}
+              conversation={conv}
+              isActive={
+                useChatLingoStore.getState().activeConversation?.id === conv.id
+              }
+              onClick={() => setActiveConversation(conv)}
+            />
+          ))
         )}
       </div>
 
-      {/* FAB with menu */}
+      {/* FAB Menu Overlay */}
       {showFABMenu && (
         <div className="fixed inset-0 z-40" onClick={() => setShowFABMenu(false)} />
       )}
       {showFABMenu && (
-        <div className="absolute bottom-24 right-5 bg-white rounded-xl shadow-lg py-2 z-50 w-52 border border-[#E2D9CF] animate-fadeIn">
+        <div className="absolute bottom-24 right-5 bg-white rounded-xl shadow-lg py-2 z-50 w-52 border border-[#E2E8F0] animate-fadeIn">
           <button
             onClick={() => { setShowAddContact(true); setShowFABMenu(false) }}
-            className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-[#1C1917] hover:bg-[#F5F0EA] transition-colors"
+            className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-[#0A0A0A] hover:bg-[#F1F5F9] transition-colors"
           >
             <div className="w-8 h-8 rounded-full bg-[#0F4C5C] flex items-center justify-center">
               <UserPlus className="w-4 h-4 text-white" />
@@ -304,51 +166,51 @@ export function Sidebar({ socket }: { socket: SocketType | null }) {
           </button>
           <button
             onClick={() => { setShowCreateGroup(true); setShowFABMenu(false) }}
-            className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-[#1C1917] hover:bg-[#F5F0EA] transition-colors"
+            className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-[#0A0A0A] hover:bg-[#F1F5F9] transition-colors"
           >
-            <div className="w-8 h-8 rounded-full bg-[#C45B28] flex items-center justify-center">
+            <div className="w-8 h-8 rounded-full bg-[#84CC16] flex items-center justify-center">
               <UsersRound className="w-4 h-4 text-white" />
             </div>
             New Group
           </button>
           <button
             onClick={() => { setShowCreateChannel(true); setShowFABMenu(false) }}
-            className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-[#1C1917] hover:bg-[#F5F0EA] transition-colors"
+            className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-[#0A0A0A] hover:bg-[#F1F5F9] transition-colors"
           >
-            <div className="w-8 h-8 rounded-full bg-[#1A6B7A] flex items-center justify-center">
+            <div className="w-8 h-8 rounded-full bg-[#134E5E] flex items-center justify-center">
               <Hash className="w-4 h-4 text-white" />
             </div>
             New Channel
           </button>
           <button
-            onClick={() => { setShowBroadcast(true); setShowFABMenu(false) }}
-            className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-[#1C1917] hover:bg-[#F5F0EA] transition-colors"
+            onClick={() => { setShowCreateRoom(true); setShowFABMenu(false) }}
+            className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-[#0A0A0A] hover:bg-[#F1F5F9] transition-colors"
           >
-            <div className="w-8 h-8 rounded-full bg-[#C45B28] flex items-center justify-center">
+            <div className="w-8 h-8 rounded-full bg-[#84CC16] flex items-center justify-center">
+              <Radio className="w-4 h-4 text-white" />
+            </div>
+            Start Room
+          </button>
+          <button
+            onClick={() => { setShowBroadcast(true); setShowFABMenu(false) }}
+            className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-[#0A0A0A] hover:bg-[#F1F5F9] transition-colors"
+          >
+            <div className="w-8 h-8 rounded-full bg-[#84CC16] flex items-center justify-center">
               <Megaphone className="w-4 h-4 text-white" />
             </div>
-            Broadcast List
+            Broadcast
           </button>
           <button
             onClick={() => { setGlobalTab('learn'); setShowFABMenu(false) }}
-            className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-[#1C1917] hover:bg-[#F5F0EA] transition-colors"
+            className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-[#0A0A0A] hover:bg-[#F1F5F9] transition-colors"
           >
-            <div className="w-8 h-8 rounded-full bg-[#C45B28] flex items-center justify-center">
+            <div className="w-8 h-8 rounded-full bg-[#0F4C5C] flex items-center justify-center">
               <BookOpen className="w-4 h-4 text-white" />
             </div>
             Language Exchange
           </button>
         </div>
       )}
-
-      {/* FAB - New Chat / Actions */}
-      <button
-        className="wa-fab md:hidden"
-        onClick={() => setShowFABMenu(!showFABMenu)}
-        title="Actions"
-      >
-        {showFABMenu ? <X className="w-6 h-6" /> : <MessageCircle className="w-6 h-6" />}
-      </button>
 
       {/* Desktop FAB */}
       <button
@@ -361,22 +223,22 @@ export function Sidebar({ socket }: { socket: SocketType | null }) {
       </button>
 
       {/* Current User Bar (bottom) */}
-      <div className="px-3 py-2 flex items-center gap-3 bg-white border-t border-[#E2D9CF] shrink-0">
+      <div className="px-3 py-2 flex items-center gap-3 bg-white border-t border-[#E2E8F0] shrink-0">
         <Avatar className="w-9 h-9">
-          <AvatarFallback className="bg-[#E2D9CF] text-[#1C1917] text-xs font-semibold">
+          <AvatarFallback className="bg-[#E2E8F0] text-[#0A0A0A] text-xs font-semibold">
             {userInitials}
           </AvatarFallback>
         </Avatar>
         <div className="flex-1 min-w-0">
-          <p className="text-sm font-medium text-[#1C1917] truncate">{user?.name}</p>
+          <p className="text-sm font-medium text-[#0A0A0A] truncate">{user?.name}</p>
           <div className="flex items-center gap-1">
-            <span className="text-xs text-[#78716C]">{getLanguageFlag(user?.preferredLanguage || 'English')}</span>
-            <span className="text-xs text-[#9CA3AF] truncate">{user?.preferredLanguage}</span>
+            <span className="text-xs text-[#525252]">{getLanguageFlag(user?.preferredLanguage || 'English')}</span>
+            <span className="text-xs text-[#A3A3A3] truncate">{user?.preferredLanguage}</span>
           </div>
         </div>
         <button
           onClick={logout}
-          className="p-2 text-[#78716C] hover:text-red-500 rounded-full hover:bg-[#F5F0EA] transition-colors"
+          className="p-2 text-[#525252] hover:text-red-500 rounded-full hover:bg-[#F1F5F9] transition-colors"
           title="Sign out"
         >
           <LogOut className="w-5 h-5" />

@@ -95,19 +95,19 @@ export function LearnSetupDialog() {
           {/* Language Pair Visual */}
           <div className="flex items-center justify-center gap-4 py-4">
             <div className="flex flex-col items-center gap-1.5">
-              <div className="w-16 h-16 rounded-full bg-[#F5F0EA] flex items-center justify-center text-3xl">
+              <div className="w-16 h-16 rounded-full bg-[#F1F5F9] flex items-center justify-center text-3xl">
                 {nativeFlag}
               </div>
-              <span className="text-xs text-[#78716C] font-medium">
+              <span className="text-xs text-[#525252] font-medium">
                 I speak
               </span>
             </div>
-            <ArrowRight className="w-5 h-5 text-[#C45B28]" />
+            <ArrowRight className="w-5 h-5 text-[#84CC16]" />
             <div className="flex flex-col items-center gap-1.5">
-              <div className="w-16 h-16 rounded-full bg-[#F5F0EA] flex items-center justify-center text-3xl">
+              <div className="w-16 h-16 rounded-full bg-[#F1F5F9] flex items-center justify-center text-3xl">
                 {targetFlag || '🌐'}
               </div>
-              <span className="text-xs text-[#78716C] font-medium">
+              <span className="text-xs text-[#525252] font-medium">
                 I learn
               </span>
             </div>
@@ -115,7 +115,7 @@ export function LearnSetupDialog() {
 
           {/* Native Language Dropdown */}
           <div className="space-y-1.5" ref={dropdownRef}>
-            <label className="text-sm font-medium text-[#1C1917]">
+            <label className="text-sm font-medium text-[#0A0A0A]">
               Your native language
             </label>
             <button
@@ -123,20 +123,20 @@ export function LearnSetupDialog() {
                 setShowNativeDropdown(!showNativeDropdown)
                 setShowTargetDropdown(false)
               }}
-              className="w-full flex items-center justify-between px-4 py-2.5 rounded-lg border border-[#E2D9CF] bg-[#F5F0EA] hover:bg-[#E2D9CF] transition-colors text-sm text-[#1C1917]"
+              className="w-full flex items-center justify-between px-4 py-2.5 rounded-lg border border-[#E2E8F0] bg-[#F1F5F9] hover:bg-[#E2E8F0] transition-colors text-sm text-[#0A0A0A]"
             >
               <span className="flex items-center gap-2">
                 <span>{nativeFlag}</span>
                 <span>{nativeLabel}</span>
               </span>
               <ChevronDown
-                className={`w-4 h-4 text-[#78716C] transition-transform ${
+                className={`w-4 h-4 text-[#525252] transition-transform ${
                   showNativeDropdown ? 'rotate-180' : ''
                 }`}
               />
             </button>
             {showNativeDropdown && (
-              <div className="absolute z-50 mt-1 w-[calc(100%-3rem)] max-h-48 overflow-y-auto bg-white rounded-lg border border-[#E2D9CF] shadow-lg scrollbar-thin">
+              <div className="absolute z-50 mt-1 w-[calc(100%-3rem)] max-h-48 overflow-y-auto bg-white rounded-lg border border-[#E2E8F0] shadow-lg scrollbar-thin">
                 {LANGUAGES.map((lang) => (
                   <button
                     key={lang.code}
@@ -145,16 +145,16 @@ export function LearnSetupDialog() {
                       setShowNativeDropdown(false)
                       if (targetLanguage === lang.code) setTargetLanguage('')
                     }}
-                    className={`w-full text-left px-4 py-2.5 text-sm hover:bg-[#F5F0EA] transition-colors flex items-center gap-2 ${
+                    className={`w-full text-left px-4 py-2.5 text-sm hover:bg-[#F1F5F9] transition-colors flex items-center gap-2 ${
                       lang.code === nativeLanguage
-                        ? 'bg-[#C45B28]/10 text-[#0F4C5C] font-medium'
-                        : 'text-[#1C1917]'
+                        ? 'bg-[#84CC16]/10 text-[#0F4C5C] font-medium'
+                        : 'text-[#0A0A0A]'
                     }`}
                   >
                     <span>{lang.flag}</span>
                     <span>{lang.label}</span>
                     {lang.code === nativeLanguage && (
-                      <span className="ml-auto text-[#C45B28]">✓</span>
+                      <span className="ml-auto text-[#84CC16]">✓</span>
                     )}
                   </button>
                 ))}
@@ -164,7 +164,7 @@ export function LearnSetupDialog() {
 
           {/* Target Language Dropdown */}
           <div className="space-y-1.5">
-            <label className="text-sm font-medium text-[#1C1917]">
+            <label className="text-sm font-medium text-[#0A0A0A]">
               Language you want to learn
             </label>
             <button
@@ -172,22 +172,22 @@ export function LearnSetupDialog() {
                 setShowTargetDropdown(!showTargetDropdown)
                 setShowNativeDropdown(false)
               }}
-              className="w-full flex items-center justify-between px-4 py-2.5 rounded-lg border border-[#E2D9CF] bg-[#F5F0EA] hover:bg-[#E2D9CF] transition-colors text-sm text-[#1C1917]"
+              className="w-full flex items-center justify-between px-4 py-2.5 rounded-lg border border-[#E2E8F0] bg-[#F1F5F9] hover:bg-[#E2E8F0] transition-colors text-sm text-[#0A0A0A]"
             >
               <span className="flex items-center gap-2">
                 <span>{targetFlag || '🌐'}</span>
-                <span className={targetLanguage ? '' : 'text-[#9CA3AF]'}>
+                <span className={targetLanguage ? '' : 'text-[#A3A3A3]'}>
                   {targetLabel || 'Select a language...'}
                 </span>
               </span>
               <ChevronDown
-                className={`w-4 h-4 text-[#78716C] transition-transform ${
+                className={`w-4 h-4 text-[#525252] transition-transform ${
                   showTargetDropdown ? 'rotate-180' : ''
                 }`}
               />
             </button>
             {showTargetDropdown && (
-              <div className="absolute z-50 mt-1 w-[calc(100%-3rem)] max-h-48 overflow-y-auto bg-white rounded-lg border border-[#E2D9CF] shadow-lg scrollbar-thin">
+              <div className="absolute z-50 mt-1 w-[calc(100%-3rem)] max-h-48 overflow-y-auto bg-white rounded-lg border border-[#E2E8F0] shadow-lg scrollbar-thin">
                 {availableTargetLanguages.map((lang) => (
                   <button
                     key={lang.code}
@@ -195,16 +195,16 @@ export function LearnSetupDialog() {
                       setTargetLanguage(lang.code)
                       setShowTargetDropdown(false)
                     }}
-                    className={`w-full text-left px-4 py-2.5 text-sm hover:bg-[#F5F0EA] transition-colors flex items-center gap-2 ${
+                    className={`w-full text-left px-4 py-2.5 text-sm hover:bg-[#F1F5F9] transition-colors flex items-center gap-2 ${
                       lang.code === targetLanguage
-                        ? 'bg-[#C45B28]/10 text-[#0F4C5C] font-medium'
-                        : 'text-[#1C1917]'
+                        ? 'bg-[#84CC16]/10 text-[#0F4C5C] font-medium'
+                        : 'text-[#0A0A0A]'
                     }`}
                   >
                     <span>{lang.flag}</span>
                     <span>{lang.label}</span>
                     {lang.code === targetLanguage && (
-                      <span className="ml-auto text-[#C45B28]">✓</span>
+                      <span className="ml-auto text-[#84CC16]">✓</span>
                     )}
                   </button>
                 ))}
@@ -213,10 +213,10 @@ export function LearnSetupDialog() {
           </div>
 
           {/* Info Box */}
-          <div className="bg-[#F5F0EA] rounded-lg p-3">
+          <div className="bg-[#F1F5F9] rounded-lg p-3">
             <div className="flex items-start gap-2">
               <GraduationCap className="w-4 h-4 text-[#0F4C5C] mt-0.5 shrink-0" />
-              <div className="text-xs text-[#78716C] space-y-1">
+              <div className="text-xs text-[#525252] space-y-1">
                 <p>
                   You&apos;ll get personalized lessons, exercises, and vocabulary
                   tailored to your language pair.
@@ -231,11 +231,11 @@ export function LearnSetupDialog() {
         </div>
 
         {/* Footer */}
-        <div className="px-6 pb-5 pt-2 border-t border-[#E2D9CF] flex justify-end">
+        <div className="px-6 pb-5 pt-2 border-t border-[#E2E8F0] flex justify-end">
           <button
             onClick={handleSubmit}
             disabled={!targetLanguage || submitting}
-            className="bg-[#0F4C5C] hover:bg-[#1A6B7A] text-white rounded-lg px-6 py-2.5 text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="bg-[#0F4C5C] hover:bg-[#134E5E] text-white rounded-lg px-6 py-2.5 text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {submitting ? 'Setting up...' : 'Begin Learning'}
           </button>

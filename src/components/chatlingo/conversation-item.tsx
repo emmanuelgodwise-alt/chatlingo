@@ -50,31 +50,31 @@ export function ConversationItem({
   return (
     <button
       onClick={onClick}
-      className={`w-full flex items-center gap-3 px-3 py-3 hover:bg-[#F5F0EA] transition-colors text-left ${
-        isActive ? 'bg-[#F5F0EA]' : ''
+      className={`w-full flex items-center gap-3 px-3 py-3 hover:bg-[#F1F5F9] transition-colors text-left ${
+        isActive ? 'bg-[#F1F5F9]' : ''
       }`}
     >
       {/* Avatar with online indicator */}
       <div className="relative shrink-0">
         <Avatar className="w-[49px] h-[49px]">
           <AvatarFallback
-            className={`text-sm font-semibold bg-[#E2D9CF] text-[#1C1917]`}
+            className={`text-sm font-semibold bg-[#E2E8F0] text-[#0A0A0A]`}
           >
             {initials}
           </AvatarFallback>
         </Avatar>
         {otherUser.online && (
-          <span className="absolute bottom-0 right-0 w-3 h-3 bg-[#C45B28] border-2 border-white rounded-full" />
+          <span className="absolute bottom-0 right-0 w-3 h-3 bg-[#84CC16] border-2 border-white rounded-full" />
         )}
       </div>
 
       {/* Content */}
-      <div className="flex-1 min-w-0 border-b border-[#E2D9CF] pb-3">
+      <div className="flex-1 min-w-0 border-b border-[#E2E8F0] pb-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-1 min-w-0">
             <h3
               className={`text-base truncate ${
-                unreadCount > 0 ? 'text-[#1C1917] font-bold' : 'text-[#1C1917]'
+                unreadCount > 0 ? 'text-[#0A0A0A] font-bold' : 'text-[#0A0A0A]'
               }`}
             >
               {otherUser.name}
@@ -83,7 +83,7 @@ export function ConversationItem({
             <span className="text-[11px] opacity-60 shrink-0">{getLanguageFlag(theirLanguage)}</span>
           </div>
           <span className={`text-xs shrink-0 ml-2 ${
-            unreadCount > 0 ? 'text-[#C45B28]' : 'text-[#78716C]'
+            unreadCount > 0 ? 'text-[#84CC16]' : 'text-[#525252]'
           }`}>
             {timeStr}
           </span>
@@ -91,7 +91,7 @@ export function ConversationItem({
 
         <div className="flex items-center justify-between mt-0.5">
           <p className={`text-sm truncate pr-2 ${
-            unreadCount > 0 ? 'text-[#1C1917]' : 'text-[#78716C]'
+            unreadCount > 0 ? 'text-[#0A0A0A]' : 'text-[#525252]'
           }`}>
             {lastMessage || 'No messages yet'}
           </p>

@@ -1,12 +1,11 @@
 'use client'
 
-import { useEffect, useRef, useCallback } from 'react'
+import { useEffect, useRef, useCallback, useState } from 'react'
 import { useChatLingoStore } from '@/lib/store'
-import { Sidebar } from '@/components/chatlingo/sidebar'
 import { ChatArea } from '@/components/chatlingo/chat-area'
 import { AddContactDialog } from '@/components/chatlingo/add-contact-dialog'
 import { LanguageSettingsDialog } from '@/components/chatlingo/language-settings-dialog'
-import { EmptyChatState } from '@/components/chatlingo/empty-chat-state'
+import { EmptyChatState, EmptyStatusTab, EmptyCallsTab } from '@/components/chatlingo/empty-chat-state'
 import { CallScreen } from '@/components/chatlingo/call-screen'
 import { StatusViewer } from '@/components/chatlingo/status-viewer'
 import { CreateStatusDialog } from '@/components/chatlingo/create-status-dialog'
@@ -22,6 +21,12 @@ import { LessonScreen } from '@/components/chatlingo/lesson-screen'
 import { LearnSetupDialog } from '@/components/chatlingo/learn-setup-dialog'
 import { LearnPairDialog } from '@/components/chatlingo/learn-pair-dialog'
 import { LeaderboardDialog } from '@/components/chatlingo/leaderboard-dialog'
+import { StatusBar } from '@/components/chatlingo/status-bar'
+import { ContactItem } from '@/components/chatlingo/contact-item'
+import { Input } from '@/components/ui/input'
+import { Avatar, AvatarFallback } from '@/components/ui/avatar'
+import { getLanguageFlag } from '@/lib/languages'
+import { Search, Plus, ArrowLeft, Globe, MessageCircle, MoreVertical, X, UserPlus, UsersRound, Hash, Radio, Megaphone, BookOpen } from 'lucide-react'
 import type { Socket } from 'socket.io-client'
 
 export function ChatInterface() {
@@ -63,11 +68,94 @@ export function ChatInterface() {
     lessonInProgress,
   } = useChatLingoStore()
 
+  // Contacts state (for the left sidebar)
+  const [contacts, setContacts] = useState<Array<{
+    id: string
+    name: string
+    email: string
+    phone?: string | null
+    preferredLanguage: string
+    avatar?: string | null
+    online: boolean
+  }>>([])
+  const [contactSearch, setContactSearch] = useState('')
+  const [loadingContacts, setLoadingContacts] = useState(false)
+
   const socketRef = useRef<Socket | null>(null)
   const socketRefForChildren = socketRef
   const callTimerRef = useRef<ReturnType<typeof setInterval> | null>(null)
   const webRTCInitializedRef = useRef(false)
   const recognitionActiveRef = useRef(false)
+
+  // Load contacts on mount
+  const loadContacts = useCallback(async () => {
+    if (!token) return
+    setLoadingContacts(true)
+    try {
+      const res = await fetch('/api/contacts', {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      if (res.ok) {
+        const data = await res.json()
+        setContacts(data.contacts || [])
+      }
+    } catch {
+      // ignore
+    } finally {
+      setLoadingContacts(false)
+    }
+  }, [token])
+
+  useEffect(() => {
+    loadContacts()
+  }, [loadContacts])
+
+  // Start conversation with a contact
+  const handleStartConversation = async (contactId: string, contactLanguage: string) => {
+    if (!token) return
+
+    try {
+      const res = await fetch('/api/conversations', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          participant2Id: contactId,
+          participant2Lang: contactLanguage,
+        }),
+      })
+
+      if (res.ok) {
+        const convRes = await fetch('/api/conversations', {
+          headers: { Authorization: `Bearer ${token}` },
+        })
+        if (convRes.ok) {
+          const data = await convRes.json()
+          setConversations(data.conversations)
+          const conv = data.conversations.find(
+            (c: { otherUser: { id: string } }) => c.otherUser.id === contactId
+          )
+          if (conv) {
+            const { setActiveConversation } = useChatLingoStore.getState()
+            setActiveConversation(conv)
+          }
+        }
+      }
+    } catch {
+      // ignore
+    }
+  }
+
+  // FAB Menu state
+  const [showFABMenu, setShowFABMenu] = useState(false)
+
+  // Filter contacts by search (name or language)
+  const filteredContacts = contacts.filter((c) =>
+    c.name.toLowerCase().includes(contactSearch.toLowerCase()) ||
+    c.preferredLanguage.toLowerCase().includes(contactSearch.toLowerCase())
+  )
 
   // Load conversations on mount
   useEffect(() => {
@@ -370,7 +458,7 @@ export function ChatInterface() {
 
           recognitionActiveRef.current = true
 
-          startRecognition(callMyLanguage, (text, isFinal) => {
+          startRec(callMyLanguage, (text, isFinal) => {
             if (!isFinal || !recognitionActiveRef.current) return
             if (!socketRef.current || !user || !callPartner) return
 
@@ -416,21 +504,13 @@ export function ChatInterface() {
   // Determine what to show in the main content area
   const renderMainContent = () => {
     if (activeTab === 'status') {
-      return (
-        <div className="flex-1 flex flex-col h-full">
-          <EmptyChatState showWelcome={false} />
-        </div>
-      )
+      return <EmptyStatusTab />
+    }
+    if (activeTab === 'calls') {
+      return <EmptyCallsTab />
     }
     if (activeTab === 'channels') {
       return <ChannelsTab />
-    }
-    if (activeTab === 'calls') {
-      return (
-        <div className="flex-1 flex flex-col h-full">
-          <EmptyChatState showWelcome={false} />
-        </div>
-      )
     }
     if (activeTab === 'explore') {
       return <ExploreTab />
@@ -438,44 +518,218 @@ export function ChatInterface() {
     if (activeTab === 'learn') {
       return <LearnTab />
     }
-    // Default: chats
     return null
   }
 
+  const userInitials = user?.name
+    ? user.name.split(' ').map((n) => n[0]).join('').toUpperCase().slice(0, 2)
+    : '??'
+
   return (
     <div className="h-screen flex bg-white">
-      {/* Sidebar — visible on desktop always, on mobile only when no chat or on explore/channels/status tabs */}
-      <div className={`hidden md:flex`}>
-        <Sidebar socket={socketRefForChildren.current} />
-      </div>
-
-      {/* Mobile sidebar */}
-      {(!activeConversation || activeTab !== 'chats') && (
-        <div className="md:hidden w-full">
-          <Sidebar socket={socketRefForChildren.current} />
+      {/* ============ CONTACTS SIDEBAR (LEFT) ============ */}
+      {/* On desktop: always visible as a narrow panel */}
+      {/* On mobile: visible when no conversation is active */}
+      <div className={`
+        ${activeTab === 'chats' ? '' : 'hidden'}
+        ${!activeConversation && activeTab === 'chats' ? 'w-full' : 'hidden md:flex'}
+        ${!activeConversation && activeTab !== 'chats' ? 'hidden' : 'hidden md:block'}
+        w-[300px] shrink-0 bg-white border-r border-[#E2E8F0] flex flex-col h-full
+      `}>
+        {/* Contacts Header */}
+        <div className="bg-[#0F4C5C] px-3 py-2.5 flex items-center justify-between shrink-0">
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 rounded-full bg-[#84CC16] flex items-center justify-center">
+              <Globe className="w-4 h-4 text-white" />
+            </div>
+            <h2 className="text-white font-semibold text-sm">Contacts</h2>
+          </div>
+          <div className="flex items-center gap-1">
+            <button
+              onClick={() => setShowAddContact(true)}
+              className="p-1.5 text-white/80 hover:text-white rounded-full hover:bg-white/10 transition-colors"
+              title="Add Contact"
+            >
+              <Plus className="w-5 h-5" />
+            </button>
+            <button
+              onClick={() => setShowFABMenu(!showFABMenu)}
+              className="p-1.5 text-white/80 hover:text-white rounded-full hover:bg-white/10 transition-colors"
+              title="More options"
+            >
+              {showFABMenu ? <X className="w-5 h-5" /> : <MoreVertical className="w-5 h-5" />}
+            </button>
+          </div>
         </div>
-      )}
 
-      {/* Main Content Area */}
-      {activeTab === 'chats' && (
-        <div className={`flex-1 flex flex-col min-w-0 ${!activeConversation ? 'hidden md:flex' : ''}`}>
-          {activeConversation ? (
-            <ChatArea socket={socketRefForChildren.current} />
-          ) : conversations.length === 0 ? (
-            <EmptyChatState showWelcome />
+        {/* FAB Menu Overlay */}
+        {showFABMenu && (
+          <div className="fixed inset-0 z-40" onClick={() => setShowFABMenu(false)} />
+        )}
+        {showFABMenu && (
+          <div className="absolute top-12 right-2 bg-white rounded-xl shadow-lg py-2 z-50 w-52 border border-[#E2E8F0] animate-fadeIn">
+            <button
+              onClick={() => { setShowAddContact(true); setShowFABMenu(false) }}
+              className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-[#0A0A0A] hover:bg-[#F1F5F9] transition-colors"
+            >
+              <div className="w-8 h-8 rounded-full bg-[#0F4C5C] flex items-center justify-center">
+                <UserPlus className="w-4 h-4 text-white" />
+              </div>
+              New Contact
+            </button>
+            <button
+              onClick={() => { useChatLingoStore.getState().setShowCreateGroup(true); setShowFABMenu(false) }}
+              className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-[#0A0A0A] hover:bg-[#F1F5F9] transition-colors"
+            >
+              <div className="w-8 h-8 rounded-full bg-[#84CC16] flex items-center justify-center">
+                <UsersRound className="w-4 h-4 text-white" />
+              </div>
+              New Group
+            </button>
+            <button
+              onClick={() => { useChatLingoStore.getState().setShowCreateChannel(true); setShowFABMenu(false) }}
+              className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-[#0A0A0A] hover:bg-[#F1F5F9] transition-colors"
+            >
+              <div className="w-8 h-8 rounded-full bg-[#134E5E] flex items-center justify-center">
+                <Hash className="w-4 h-4 text-white" />
+              </div>
+              New Channel
+            </button>
+            <button
+              onClick={() => { useChatLingoStore.getState().setShowCreateRoom(true); setShowFABMenu(false) }}
+              className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-[#0A0A0A] hover:bg-[#F1F5F9] transition-colors"
+            >
+              <div className="w-8 h-8 rounded-full bg-[#84CC16] flex items-center justify-center">
+                <Radio className="w-4 h-4 text-white" />
+              </div>
+              Start Room
+            </button>
+            <button
+              onClick={() => { useChatLingoStore.getState().setShowBroadcast(true); setShowFABMenu(false) }}
+              className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-[#0A0A0A] hover:bg-[#F1F5F9] transition-colors"
+            >
+              <div className="w-8 h-8 rounded-full bg-[#84CC16] flex items-center justify-center">
+                <Megaphone className="w-4 h-4 text-white" />
+              </div>
+              Broadcast
+            </button>
+            <button
+              onClick={() => { setActiveTab('learn'); setShowFABMenu(false) }}
+              className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-[#0A0A0A] hover:bg-[#F1F5F9] transition-colors"
+            >
+              <div className="w-8 h-8 rounded-full bg-[#0F4C5C] flex items-center justify-center">
+                <BookOpen className="w-4 h-4 text-white" />
+              </div>
+              Language Exchange
+            </button>
+          </div>
+        )}
+
+        {/* Search Bar */}
+        <div className="px-2.5 py-2 bg-white shrink-0">
+          <div className="relative">
+            <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#A3A3A3]" />
+            <Input
+              placeholder="Search contacts..."
+              value={contactSearch}
+              onChange={(e) => setContactSearch(e.target.value)}
+              className="pl-8 h-8 bg-[#F1F5F9] border-none rounded-lg text-xs placeholder:text-[#A3A3A3] focus-visible:ring-1 focus-visible:ring-[#84CC16]/20"
+            />
+          </div>
+        </div>
+
+        {/* Status Bar */}
+        <StatusBar />
+
+        {/* Contact List */}
+        <div className="flex-1 overflow-y-auto scrollbar-thin px-2 pb-2">
+          {loadingContacts ? (
+            <div className="p-8 text-center">
+              <span className="w-5 h-5 border-2 border-[#84CC16]/30 border-t-[#84CC16] rounded-full animate-spin inline-block" />
+            </div>
+          ) : filteredContacts.length === 0 ? (
+            <div className="p-6 text-center">
+              <p className="text-sm text-[#525252]">
+                {contactSearch ? 'No contacts found' : 'No contacts yet'}
+              </p>
+              <p className="text-xs text-[#A3A3A3] mt-1">
+                {contactSearch ? 'Try a different search' : 'Add contacts to start chatting'}
+              </p>
+            </div>
           ) : (
-            <EmptyChatState showWelcome={false} />
+            filteredContacts.map((contact) => (
+              <ContactItem
+                key={contact.id}
+                contact={contact}
+                isActive={activeConversation?.otherUser?.id === contact.id}
+                onClick={() => handleStartConversation(contact.id, contact.preferredLanguage)}
+              />
+            ))
           )}
         </div>
-      )}
 
-      {activeTab !== 'chats' && (
-        <div className={`flex-1 flex flex-col min-w-0 ${!activeConversation ? '' : 'hidden md:flex'}`}>
-          {renderMainContent()}
+        {/* User bar at bottom */}
+        <div className="px-2.5 py-2 flex items-center gap-2 bg-white border-t border-[#E2E8F0] shrink-0">
+          <Avatar className="w-7 h-7">
+            <AvatarFallback className="bg-[#ECFCCB] text-[#0F4C5C] text-[10px] font-bold">
+              {userInitials}
+            </AvatarFallback>
+          </Avatar>
+          <div className="flex-1 min-w-0">
+            <p className="text-xs font-medium text-[#0A0A0A] truncate">{user?.name}</p>
+            <span className="text-[10px] text-[#A3A3A3]">
+              {getLanguageFlag(user?.preferredLanguage || 'English')} {user?.preferredLanguage}
+            </span>
+          </div>
         </div>
-      )}
+      </div>
 
-      {/* Dialogs */}
+      {/* ============ MAIN CONTENT AREA ============ */}
+      <div className="flex-1 flex flex-col min-w-0 relative">
+        {/* On mobile: show contacts when no conversation active */}
+        {activeTab === 'chats' && !activeConversation && (
+          <div className="md:hidden w-full">
+            <ContactsMobileView
+              contacts={filteredContacts}
+              loading={loadingContacts}
+              onContactClick={(contact) => handleStartConversation(contact.id, contact.preferredLanguage)}
+              onAddContact={() => setShowAddContact(true)}
+              user={user}
+              userInitials={userInitials}
+            />
+          </div>
+        )}
+
+        {/* Desktop: always show content, mobile: show when chat is active or non-chats tab */}
+        <div className={`flex-1 flex flex-col min-w-0 ${
+          activeTab === 'chats' && !activeConversation ? 'hidden md:flex' : ''
+        } ${activeTab !== 'chats' ? 'hidden md:flex' : ''}`}>
+          {activeTab === 'chats' && activeConversation ? (
+            <ChatArea socket={socketRefForChildren.current} />
+          ) : activeTab === 'chats' ? (
+            <EmptyChatState showWelcome={conversations.length === 0} />
+          ) : (
+            renderMainContent()
+          )}
+        </div>
+
+        {/* Mobile: back button overlay on chat */}
+        {activeTab === 'chats' && activeConversation && (
+          <button
+            onClick={() => {
+              const { setActiveConversation } = useChatLingoStore.getState()
+              setActiveConversation(null)
+            }}
+            className="md:hidden absolute top-3 left-3 z-10 p-2 bg-[#0F4C5C]/90 backdrop-blur-sm text-white rounded-full hover:bg-[#0F4C5C] transition-colors shadow-lg"
+          >
+            <ArrowLeft className="w-5 h-5" />
+          </button>
+        )}
+
+
+      </div>
+
+      {/* ============ DIALOGS ============ */}
       {showAddContact && <AddContactDialog />}
       {showLanguageSettings && <LanguageSettingsDialog />}
       {showCreateStatus && <CreateStatusDialog />}
@@ -515,7 +769,7 @@ export function ChatInterface() {
           className={`wa-bottom-nav-item ${activeTab === 'chats' ? 'active' : 'inactive'}`}
         >
           <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
-            <path d="M19.07 4.93C17.22 3 14.66 1.88 12 1.88S6.78 3 4.93 4.93C3 6.78 1.88 9.34 1.88 12S3 17.22 4.93 19.07C6.78 21 9.34 22.12 12 22.12S17.22 21 19.07 19.07C21 17.22 22.12 14.66 22.12 12S21 6.78 19.07 4.93zM12 20.12c-2.24 0-4.3-.86-5.83-2.27L12 12l5.83 5.85C16.3 19.26 14.24 20.12 12 20.12z"/>
+            <path d="M19.07 4.93C17.22 3 14.66 1.88 12 1.88S6.78 3 4.93 4.93C3 6.78 1.88 9.34 1.88 12S3 17.22 4.93 19.07C21 17.22 22.12 14.66 22.12 12S21 6.78 19.07 4.93zM12 20.12c-2.24 0-4.3-.86-5.83-2.27L12 12l5.83 5.85C16.3 19.26 14.24 20.12 12 20.12z"/>
           </svg>
           <span className="text-[11px]">Chats</span>
         </button>
@@ -538,7 +792,7 @@ export function ChatInterface() {
           className={`wa-bottom-nav-item ${activeTab === 'calls' ? 'active' : 'inactive'}`}
         >
           <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.11 0.45 772a2 2 0 0 1 22 16.92z"/>
           </svg>
           <span className="text-[11px]">Calls</span>
         </button>
@@ -548,10 +802,110 @@ export function ChatInterface() {
         >
           <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2">
             <circle cx="12" cy="12" r="10"/>
-            <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+            <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10A15.3 15.3 0 0 1 4 10 0 15.3 0 0 1 4-10"/>
           </svg>
           <span className="text-[11px]">Explore</span>
         </button>
+      </div>
+    </div>
+  )
+}
+
+// Mobile contacts full-screen view
+function ContactsMobileView({
+  contacts,
+  loading,
+  onContactClick,
+  onAddContact,
+  user,
+  userInitials,
+}: {
+  contacts: Array<{
+    id: string
+    name: string
+    email: string
+    phone?: string | null
+    preferredLanguage: string
+    avatar?: string | null
+    online: boolean
+  }>
+  loading: boolean
+  onContactClick: (contact: { id: string; preferredLanguage: string }) => void
+  onAddContact: () => void
+  user: { id: string; name: string; preferredLanguage: string; avatar?: string | null } | null
+  userInitials: string
+}) {
+  const [search, setSearch] = useState('')
+
+  const filtered = contacts.filter((c) =>
+    c.name.toLowerCase().includes(search.toLowerCase())
+  )
+
+  return (
+    <div className="flex flex-col h-full bg-white">
+      {/* Header */}
+      <div className="bg-[#0F4C5C] px-4 py-3 flex items-center justify-between shrink-0">
+        <div className="flex items-center gap-2.5">
+          <Avatar className="w-10 h-10">
+            <AvatarFallback className="bg-[#134E5E] text-white text-sm font-semibold">
+              {userInitials}
+            </AvatarFallback>
+          </Avatar>
+          <div>
+            <h2 className="text-white font-semibold text-base">ChatLingo</h2>
+            <p className="text-white/60 text-xs">{contacts.length} contacts</p>
+          </div>
+        </div>
+        <button
+          onClick={onAddContact}
+          className="p-2 text-white/80 hover:text-white rounded-full hover:bg-white/10 transition-colors"
+          title="Add Contact"
+        >
+          <Plus className="w-6 h-6" />
+        </button>
+      </div>
+
+      {/* Search */}
+      <div className="px-3 py-2 bg-white shrink-0 border-b border-[#E2E8F0]">
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#A3A3A3]" />
+          <Input
+            placeholder="Search contacts..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="pl-10 h-10 bg-[#F1F5F9] border-none rounded-xl text-sm placeholder:text-[#A3A3A3] focus-visible:ring-1 focus-visible:ring-[#84CC16]/20"
+          />
+        </div>
+      </div>
+
+      {/* Status Bar */}
+      <StatusBar />
+
+      {/* Contact List */}
+      <div className="flex-1 overflow-y-auto scrollbar-thin px-1">
+        {loading ? (
+          <div className="p-8 text-center">
+            <span className="w-6 h-6 border-2 border-[#84CC16]/30 border-t-[#84CC16] rounded-full animate-spin inline-block" />
+          </div>
+        ) : filtered.length === 0 ? (
+          <div className="p-8 text-center">
+            <MessageCircle className="w-12 h-12 text-[#E2E8F0] mx-auto mb-3" />
+            <p className="text-sm text-[#525252]">
+              {search ? 'No contacts found' : 'No contacts yet'}
+            </p>
+            <p className="text-xs text-[#A3A3A3] mt-1">
+              {search ? 'Try a different search' : 'Add contacts to start chatting'}
+            </p>
+          </div>
+        ) : (
+          filtered.map((contact) => (
+            <ContactItem
+              key={contact.id}
+              contact={contact}
+              onClick={() => onContactClick({ id: contact.id, preferredLanguage: contact.preferredLanguage })}
+            />
+          ))
+        )}
       </div>
     </div>
   )

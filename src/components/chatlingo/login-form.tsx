@@ -71,11 +71,11 @@ export function LoginForm() {
 
         <Card className="shadow-xl border-0 rounded-lg overflow-hidden">
           <CardHeader className="text-center pb-2 pt-6 px-6">
-            <CardTitle className="text-xl text-[#1C1917] flex items-center justify-center gap-2">
+            <CardTitle className="text-xl text-[#0A0A0A] flex items-center justify-center gap-2">
               <LogIn className="w-5 h-5 text-[#0F4C5C]" />
               Welcome Back
             </CardTitle>
-            <CardDescription className="text-[#78716C]">
+            <CardDescription className="text-[#525252]">
               Sign in to continue chatting across languages
             </CardDescription>
           </CardHeader>
@@ -88,7 +88,7 @@ export function LoginForm() {
               )}
 
               <div className="space-y-1.5">
-                <Label htmlFor="email" className="text-[#1C1917] text-sm font-medium">Email Address</Label>
+                <Label htmlFor="email" className="text-[#0A0A0A] text-sm font-medium">Email Address</Label>
                 <Input
                   id="email"
                   type="email"
@@ -96,12 +96,12 @@ export function LoginForm() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  className="h-11 rounded-md border-[#E2D9CF] focus:border-[#C45B28] focus:ring-[#C45B28]/20"
+                  className="h-11 rounded-md border-[#E2E8F0] focus:border-[#84CC16] focus:ring-[#84CC16]/20"
                 />
               </div>
 
               <div className="space-y-1.5">
-                <Label htmlFor="password" className="text-[#1C1917] text-sm font-medium">Password</Label>
+                <Label htmlFor="password" className="text-[#0A0A0A] text-sm font-medium">Password</Label>
                 <Input
                   id="password"
                   type="password"
@@ -109,14 +109,14 @@ export function LoginForm() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  className="h-11 rounded-md border-[#E2D9CF] focus:border-[#C45B28] focus:ring-[#C45B28]/20"
+                  className="h-11 rounded-md border-[#E2E8F0] focus:border-[#84CC16] focus:ring-[#84CC16]/20"
                 />
               </div>
             </CardContent>
             <CardFooter className="flex flex-col gap-4 pt-2 pb-6 px-6">
               <Button
                 type="submit"
-                className="w-full h-11 bg-[#C45B28] hover:bg-[#A04920] text-white font-semibold rounded-md shadow-sm"
+                className="w-full h-11 bg-[#84CC16] hover:bg-[#65A30D] text-white font-semibold rounded-md shadow-sm"
                 disabled={loading}
               >
                 {loading ? (
@@ -128,12 +128,12 @@ export function LoginForm() {
                   'Login'
                 )}
               </Button>
-              <p className="text-sm text-[#78716C]">
+              <p className="text-sm text-[#525252]">
                 Don&apos;t have an account?{' '}
                 <button
                   type="button"
                   onClick={() => setView('signup')}
-                  className="text-[#0F4C5C] hover:text-[#1A6B7A] font-semibold"
+                  className="text-[#0F4C5C] hover:text-[#134E5E] font-semibold"
                 >
                   Create one
                 </button>

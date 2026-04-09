@@ -160,13 +160,13 @@ export function ChannelsTab() {
       </div>
 
       {/* Tabs */}
-      <div className="flex border-b border-[#E2D9CF] shrink-0">
+      <div className="flex border-b border-[#E2E8F0] shrink-0">
         <button
           onClick={() => setActiveSection('joined')}
           className={`flex-1 py-3 text-sm font-medium transition-colors relative ${
             activeSection === 'joined'
               ? 'text-[#0F4C5C]'
-              : 'text-[#78716C] hover:text-[#0F4C5C]'
+              : 'text-[#525252] hover:text-[#0F4C5C]'
           }`}
         >
           My Channels
@@ -179,7 +179,7 @@ export function ChannelsTab() {
           className={`flex-1 py-3 text-sm font-medium transition-colors relative ${
             activeSection === 'discover'
               ? 'text-[#0F4C5C]'
-              : 'text-[#78716C] hover:text-[#0F4C5C]'
+              : 'text-[#525252] hover:text-[#0F4C5C]'
           }`}
         >
           Discover
@@ -193,12 +193,12 @@ export function ChannelsTab() {
       {activeSection === 'discover' && (
         <div className="px-3 py-2 shrink-0">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#78716C]" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#525252]" />
             <Input
               placeholder="Search channels..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10 h-9 bg-[#F5F0EA] border-none rounded-lg text-sm placeholder:text-[#78716C] focus-visible:ring-0"
+              className="pl-10 h-9 bg-[#F1F5F9] border-none rounded-lg text-sm placeholder:text-[#525252] focus-visible:ring-0"
             />
           </div>
         </div>
@@ -208,15 +208,15 @@ export function ChannelsTab() {
       <div className="flex-1 overflow-y-auto scrollbar-thin">
         {loading ? (
           <div className="p-8 text-center">
-            <span className="w-6 h-6 border-2 border-[#C45B28]/30 border-t-[#C45B28] rounded-full animate-spin inline-block" />
+            <span className="w-6 h-6 border-2 border-[#84CC16]/30 border-t-[#84CC16] rounded-full animate-spin inline-block" />
           </div>
         ) : allChannels.length === 0 ? (
           <div className="p-8 text-center">
-            <Hash className="w-12 h-12 text-[#E2D9CF] mx-auto mb-3" />
-            <p className="text-sm text-[#78716C]">
+            <Hash className="w-12 h-12 text-[#E2E8F0] mx-auto mb-3" />
+            <p className="text-sm text-[#525252]">
               {activeSection === 'joined' ? 'No channels yet' : 'No channels found'}
             </p>
-            <p className="text-xs text-[#9CA3AF] mt-1">
+            <p className="text-xs text-[#A3A3A3] mt-1">
               {activeSection === 'joined'
                 ? 'Join a channel to start following'
                 : 'Try a different search'}
@@ -226,7 +226,7 @@ export function ChannelsTab() {
           /* Channel Posts View */
           <div>
             {/* Channel header */}
-            <div className="px-4 py-3 bg-[#F5F0EA] border-b border-[#E2D9CF]">
+            <div className="px-4 py-3 bg-[#F1F5F9] border-b border-[#E2E8F0]">
               <button
                 onClick={() => setActiveChannelId(null)}
                 className="text-[#0F4C5C] text-sm font-medium mb-2"
@@ -234,14 +234,14 @@ export function ChannelsTab() {
                 ← Back to channels
               </button>
               <div className="flex items-center gap-2">
-                <div className="w-10 h-10 rounded-full bg-[#C45B28] flex items-center justify-center">
+                <div className="w-10 h-10 rounded-full bg-[#84CC16] flex items-center justify-center">
                   <Hash className="w-5 h-5 text-white" />
                 </div>
                 <div>
-                  <h3 className="text-base font-medium text-[#1C1917]">
+                  <h3 className="text-base font-medium text-[#0A0A0A]">
                     {allChannels.find((c) => c.id === activeChannelId)?.name}
                   </h3>
-                  <p className="text-xs text-[#78716C]">
+                  <p className="text-xs text-[#525252]">
                     {allChannels.find((c) => c.id === activeChannelId)?.memberCount} members
                   </p>
                 </div>
@@ -249,34 +249,34 @@ export function ChannelsTab() {
             </div>
 
             {/* Posts */}
-            <div className="divide-y divide-[#E2D9CF]">
+            <div className="divide-y divide-[#E2E8F0]">
               {(posts[activeChannelId] || []).map((post) => {
                 const initials = post.author.name.split(' ').map((n) => n[0]).join('').toUpperCase().slice(0, 2)
                 return (
                   <div key={post.id} className="p-4">
                     <div className="flex items-center gap-2 mb-2">
                       <Avatar className="w-8 h-8">
-                        <AvatarFallback className="bg-[#E2D9CF] text-[#1C1917] text-xs">
+                        <AvatarFallback className="bg-[#E2E8F0] text-[#0A0A0A] text-xs">
                           {initials}
                         </AvatarFallback>
                       </Avatar>
-                      <span className="text-sm font-medium text-[#1C1917]">{post.author.name}</span>
-                      <span className="text-xs text-[#9CA3AF]">
+                      <span className="text-sm font-medium text-[#0A0A0A]">{post.author.name}</span>
+                      <span className="text-xs text-[#A3A3A3]">
                         {new Date(post.createdAt).toLocaleDateString()}
                       </span>
                     </div>
-                    <p className="text-sm text-[#1C1917] whitespace-pre-wrap break-words mb-2">
+                    <p className="text-sm text-[#0A0A0A] whitespace-pre-wrap break-words mb-2">
                       {post.translatedContent || post.content}
                     </p>
                     {post.translatedContent && post.translatedContent !== post.content && (
-                      <p className="text-xs text-[#9CA3AF] italic mb-2">
+                      <p className="text-xs text-[#A3A3A3] italic mb-2">
                         Original: {post.content}
                       </p>
                     )}
                     <button
                       onClick={() => handleLikePost(activeChannelId, post.id)}
                       className={`flex items-center gap-1 text-xs transition-colors ${
-                        post.liked ? 'text-red-500' : 'text-[#78716C] hover:text-red-400'
+                        post.liked ? 'text-red-500' : 'text-[#525252] hover:text-red-400'
                       }`}
                     >
                       <Heart className={`w-4 h-4 ${post.liked ? 'fill-current' : ''}`} />
@@ -287,8 +287,8 @@ export function ChannelsTab() {
               })}
               {(!posts[activeChannelId] || posts[activeChannelId].length === 0) && (
                 <div className="p-8 text-center">
-                  <MessageCircle className="w-10 h-10 text-[#E2D9CF] mx-auto mb-2" />
-                  <p className="text-sm text-[#78716C]">No posts yet</p>
+                  <MessageCircle className="w-10 h-10 text-[#E2E8F0] mx-auto mb-2" />
+                  <p className="text-sm text-[#525252]">No posts yet</p>
                 </div>
               )}
             </div>
@@ -301,17 +301,17 @@ export function ChannelsTab() {
               <button
                 key={channel.id}
                 onClick={() => handleSelectChannel(channel.id)}
-                className="w-full flex items-center gap-3 px-4 py-3 hover:bg-[#F5F0EA] transition-colors border-b border-[#E2D9CF]"
+                className="w-full flex items-center gap-3 px-4 py-3 hover:bg-[#F1F5F9] transition-colors border-b border-[#E2E8F0]"
               >
-                <div className="w-12 h-12 rounded-full bg-[#C45B28] flex items-center justify-center shrink-0">
+                <div className="w-12 h-12 rounded-full bg-[#84CC16] flex items-center justify-center shrink-0">
                   <Hash className="w-6 h-6 text-white" />
                 </div>
                 <div className="flex-1 min-w-0 text-left">
-                  <p className="text-sm font-medium text-[#1C1917] truncate">{channel.name}</p>
+                  <p className="text-sm font-medium text-[#0A0A0A] truncate">{channel.name}</p>
                   {channel.description && (
-                    <p className="text-xs text-[#78716C] truncate">{channel.description}</p>
+                    <p className="text-xs text-[#525252] truncate">{channel.description}</p>
                   )}
-                  <p className="text-xs text-[#9CA3AF]">
+                  <p className="text-xs text-[#A3A3A3]">
                     <Users className="w-3 h-3 inline mr-1" />
                     {channel.memberCount} members
                     {channel.language && (
@@ -327,7 +327,7 @@ export function ChannelsTab() {
                       e.stopPropagation()
                       handleJoinChannel(channel.id)
                     }}
-                    className="text-[#0F4C5C] text-xs font-medium px-3 py-1 bg-[#E7FCE3] rounded-full hover:bg-[#E8DDD3] transition-colors"
+                    className="text-[#0F4C5C] text-xs font-medium px-3 py-1 bg-[#ECFCCB] rounded-full hover:bg-[#ECFCCB] transition-colors"
                   >
                     Follow
                   </span>

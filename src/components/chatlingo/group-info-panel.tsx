@@ -64,7 +64,7 @@ export function GroupInfoPanel() {
   const isAdmin = group?.ownerId === user?.id
 
   return (
-    <div className="w-full md:w-80 lg:w-[360px] bg-white border-l border-[#E2D9CF] flex flex-col h-full wa-slide-panel">
+    <div className="w-full md:w-80 lg:w-[360px] bg-white border-l border-[#E2E8F0] flex flex-col h-full wa-slide-panel">
       {/* Header */}
       <div className="bg-[#0F4C5C] px-4 py-3 flex items-center justify-between shrink-0">
         <button
@@ -80,34 +80,34 @@ export function GroupInfoPanel() {
       <div className="flex-1 overflow-y-auto scrollbar-thin">
         {loading ? (
           <div className="p-8 text-center">
-            <span className="w-6 h-6 border-2 border-[#C45B28]/30 border-t-[#C45B28] rounded-full animate-spin inline-block" />
+            <span className="w-6 h-6 border-2 border-[#84CC16]/30 border-t-[#84CC16] rounded-full animate-spin inline-block" />
           </div>
         ) : (
           <div>
             {/* Group Avatar & Name */}
             <div className="flex flex-col items-center py-6 px-4">
-              <div className="w-20 h-20 rounded-full bg-[#C45B28] flex items-center justify-center mb-3">
+              <div className="w-20 h-20 rounded-full bg-[#84CC16] flex items-center justify-center mb-3">
                 <Users className="w-10 h-10 text-white" />
               </div>
-              <h2 className="text-lg font-semibold text-[#1C1917]">
+              <h2 className="text-lg font-semibold text-[#0A0A0A]">
                 {group?.name || activeConversation.otherUser.name}
               </h2>
               {group?.description && (
-                <p className="text-sm text-[#78716C] text-center mt-1">{group.description}</p>
+                <p className="text-sm text-[#525252] text-center mt-1">{group.description}</p>
               )}
-              <p className="text-xs text-[#9CA3AF] mt-2">Group · {members.length} members</p>
+              <p className="text-xs text-[#A3A3A3] mt-2">Group · {members.length} members</p>
             </div>
 
             {/* Language Pair */}
-            <div className="mx-4 p-3 bg-[#F5F0EA] rounded-lg mb-4">
+            <div className="mx-4 p-3 bg-[#F1F5F9] rounded-lg mb-4">
               <div className="flex items-center justify-center gap-2">
                 <span className="text-lg">{getLanguageFlag(activeConversation.myLanguage)}</span>
-                <Globe className="w-4 h-4 text-[#C45B28]" />
-                <span className="text-sm text-[#78716C]">
+                <Globe className="w-4 h-4 text-[#84CC16]" />
+                <span className="text-sm text-[#525252]">
                   {getLanguageLabel(activeConversation.myLanguage)}
                 </span>
-                <span className="text-[#9CA3AF]">↔</span>
-                <span className="text-sm text-[#78716C]">
+                <span className="text-[#A3A3A3]">↔</span>
+                <span className="text-sm text-[#525252]">
                   {getLanguageLabel(activeConversation.theirLanguage)}
                 </span>
                 <span className="text-lg">{getLanguageFlag(activeConversation.theirLanguage)}</span>
@@ -118,9 +118,9 @@ export function GroupInfoPanel() {
             <div className="px-4 mb-4">
               <button
                 onClick={handleAddParticipant}
-                className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-[#F5F0EA] transition-colors"
+                className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-[#F1F5F9] transition-colors"
               >
-                <div className="w-9 h-9 rounded-full bg-[#C45B28] flex items-center justify-center">
+                <div className="w-9 h-9 rounded-full bg-[#84CC16] flex items-center justify-center">
                   <UserPlus className="w-4 h-4 text-white" />
                 </div>
                 <span className="text-sm text-[#0F4C5C] font-medium">Add participant</span>
@@ -129,7 +129,7 @@ export function GroupInfoPanel() {
 
             {/* Members List */}
             <div className="px-4">
-              <p className="text-xs text-[#78716C] font-medium uppercase mb-2 px-2">
+              <p className="text-xs text-[#525252] font-medium uppercase mb-2 px-2">
                 {members.length} members
               </p>
               {members.map((member) => {
@@ -138,28 +138,28 @@ export function GroupInfoPanel() {
                 return (
                   <div
                     key={member.id}
-                    className="flex items-center gap-3 px-2 py-2.5 rounded-lg hover:bg-[#F5F0EA] transition-colors"
+                    className="flex items-center gap-3 px-2 py-2.5 rounded-lg hover:bg-[#F1F5F9] transition-colors"
                   >
                     <Avatar className="w-9 h-9">
-                      <AvatarFallback className="bg-[#E2D9CF] text-[#1C1917] text-xs font-semibold">
+                      <AvatarFallback className="bg-[#E2E8F0] text-[#0A0A0A] text-xs font-semibold">
                         {initials}
                       </AvatarFallback>
                     </Avatar>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-1.5">
-                        <p className="text-sm font-medium text-[#1C1917] truncate">
+                        <p className="text-sm font-medium text-[#0A0A0A] truncate">
                           {member.name}
                           {member.id === user?.id && (
-                            <span className="text-[#78716C] font-normal"> (You)</span>
+                            <span className="text-[#525252] font-normal"> (You)</span>
                           )}
                         </p>
                       </div>
-                      <p className="text-xs text-[#78716C]">
+                      <p className="text-xs text-[#525252]">
                         {getLanguageFlag(member.preferredLanguage)} {member.preferredLanguage}
                       </p>
                     </div>
                     {isOwner && (
-                      <div className="w-5 h-5 bg-[#C45B28] rounded-full flex items-center justify-center">
+                      <div className="w-5 h-5 bg-[#84CC16] rounded-full flex items-center justify-center">
                         <Crown className="w-3 h-3 text-white" />
                       </div>
                     )}

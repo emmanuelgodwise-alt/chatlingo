@@ -221,6 +221,8 @@ interface CallLingoState {
   setShowCreateGroup: (show: boolean) => void
   showCreateChannel: boolean
   setShowCreateChannel: (show: boolean) => void
+  showCreateRoom: boolean
+  setShowCreateRoom: (show: boolean) => void
   showExplore: boolean
   setShowExplore: (show: boolean) => void
   showBroadcast: boolean
@@ -383,6 +385,8 @@ export const useChatLingoStore = create<CallLingoState>((set) => ({
   setShowCreateGroup: (show) => set({ showCreateGroup: show }),
   showCreateChannel: false,
   setShowCreateChannel: (show) => set({ showCreateChannel: show }),
+  showCreateRoom: false,
+  setShowCreateRoom: (show) => set({ showCreateRoom: show }),
   showExplore: false,
   setShowExplore: (show) => set({ showExplore: show }),
   showBroadcast: false,

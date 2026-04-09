@@ -167,16 +167,16 @@ function RingingScreen({ initials, isVideo }: { initials: string; isVideo: boole
   const { callPartner, callMyLanguage, callTheirLanguage } = useChatLingoStore()
 
   return (
-    <div className="fixed inset-0 z-[100] bg-gradient-to-b from-[#0F4C5C] to-[#064E46] flex flex-col items-center justify-center animate-fadeIn">
+    <div className="fixed inset-0 z-[100] bg-gradient-to-b from-[#0F4C5C] to-[#0D4D47] flex flex-col items-center justify-center animate-fadeIn">
       {/* Spinning avatar pulse */}
       <div className="relative mb-8">
         {/* Pulse rings */}
         <div className="absolute inset-0 rounded-full bg-white/10 animate-ping" style={{ animationDuration: '2s' }} />
         <div className="absolute -inset-3 rounded-full bg-white/5 animate-pulse" style={{ animationDuration: '3s' }} />
         {/* Avatar */}
-        <div className="relative w-32 h-32 rounded-full bg-[#1A6B7A] flex items-center justify-center">
+        <div className="relative w-32 h-32 rounded-full bg-[#134E5E] flex items-center justify-center">
           <Avatar className="w-28 h-28">
-            <AvatarFallback className="bg-[#1A6B7A] text-white text-3xl font-semibold">
+            <AvatarFallback className="bg-[#134E5E] text-white text-3xl font-semibold">
               {initials}
             </AvatarFallback>
           </Avatar>
@@ -271,14 +271,14 @@ function IncomingCallScreen({ initials, isVideo }: { initials: string; isVideo: 
   }
 
   return (
-    <div className="fixed inset-0 z-[100] bg-gradient-to-b from-[#0F4C5C] to-[#064E46] flex flex-col items-center justify-center animate-fadeIn">
+    <div className="fixed inset-0 z-[100] bg-gradient-to-b from-[#0F4C5C] to-[#0D4D47] flex flex-col items-center justify-center animate-fadeIn">
       {/* Pulsing ring animation */}
       <div className="relative mb-8">
         <div className="absolute -inset-4 rounded-full border-2 border-white/20 animate-ping" style={{ animationDuration: '1.5s' }} />
         <div className="absolute -inset-8 rounded-full border border-white/10 animate-ping" style={{ animationDuration: '2.5s' }} />
-        <div className="relative w-32 h-32 rounded-full bg-[#1A6B7A] flex items-center justify-center">
+        <div className="relative w-32 h-32 rounded-full bg-[#134E5E] flex items-center justify-center">
           <Avatar className="w-28 h-28">
-            <AvatarFallback className="bg-[#1A6B7A] text-white text-3xl font-semibold">
+            <AvatarFallback className="bg-[#134E5E] text-white text-3xl font-semibold">
               {initials}
             </AvatarFallback>
           </Avatar>
@@ -323,7 +323,7 @@ function IncomingCallScreen({ initials, isVideo }: { initials: string; isVideo: 
         <div className="flex flex-col items-center gap-2">
           <button
             onClick={handleAccept}
-            className="w-16 h-16 rounded-full bg-[#C45B28] hover:bg-[#1EBE57] flex items-center justify-center shadow-lg transition-colors"
+            className="w-16 h-16 rounded-full bg-[#84CC16] hover:bg-[#65A30D] flex items-center justify-center shadow-lg transition-colors"
           >
             <Phone className="w-7 h-7 text-white" />
           </button>
@@ -386,7 +386,7 @@ function ConnectedCallScreen({
   }
 
   return (
-    <div className="fixed inset-0 z-[100] bg-gradient-to-b from-[#0F4C5C] to-[#064E46] flex flex-col animate-fadeIn">
+    <div className="fixed inset-0 z-[100] bg-gradient-to-b from-[#0F4C5C] to-[#0D4D47] flex flex-col animate-fadeIn">
       {/* Video call - remote video background */}
       {isVideo && (
         <>
@@ -405,9 +405,9 @@ function ConnectedCallScreen({
       <div className="relative z-10 pt-16 pb-4 flex flex-col items-center">
         {/* Voice call - show avatar */}
         {!isVideo && (
-          <div className="w-28 h-28 rounded-full bg-[#1A6B7A] flex items-center justify-center mb-6">
+          <div className="w-28 h-28 rounded-full bg-[#134E5E] flex items-center justify-center mb-6">
             <Avatar className="w-24 h-24">
-              <AvatarFallback className="bg-[#1A6B7A] text-white text-3xl font-semibold">
+              <AvatarFallback className="bg-[#134E5E] text-white text-3xl font-semibold">
                 {initials}
               </AvatarFallback>
             </Avatar>
@@ -424,12 +424,12 @@ function ConnectedCallScreen({
         <div className="mt-3 flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-3 py-1.5">
           {callTranslationPending ? (
             <>
-              <Loader2 className="w-3.5 h-3.5 text-[#C45B28] animate-spin" />
+              <Loader2 className="w-3.5 h-3.5 text-[#84CC16] animate-spin" />
               <span className="text-white/60 text-xs">Translating...</span>
             </>
           ) : (
             <>
-              <Globe className="w-3.5 h-3.5 text-[#C45B28]" />
+              <Globe className="w-3.5 h-3.5 text-[#84CC16]" />
               <span className="text-white/60 text-xs">
                 {getLanguageLabel(callMyLanguage)} → {getLanguageLabel(callTheirLanguage)}
               </span>
@@ -451,7 +451,7 @@ function ConnectedCallScreen({
             </p>
             {/* Translated text */}
             <div className="flex items-center gap-2">
-              <Globe className="w-4 h-4 text-[#C45B28] shrink-0" />
+              <Globe className="w-4 h-4 text-[#84CC16] shrink-0" />
               <p className="text-white text-sm font-medium truncate">
                 {latestSubtitle.translated}
               </p>
@@ -542,9 +542,9 @@ function ConnectedCallScreen({
             className="w-full h-full object-cover"
           />
           {!callVideoEnabled && (
-            <div className="absolute inset-0 bg-[#1A6B7A] flex items-center justify-center">
+            <div className="absolute inset-0 bg-[#134E5E] flex items-center justify-center">
               <Avatar className="w-12 h-12">
-                <AvatarFallback className="bg-[#1A6B7A] text-white text-sm font-semibold">
+                <AvatarFallback className="bg-[#134E5E] text-white text-sm font-semibold">
                   {initials}
                 </AvatarFallback>
               </Avatar>
