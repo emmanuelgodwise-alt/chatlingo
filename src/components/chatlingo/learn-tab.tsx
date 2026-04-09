@@ -186,7 +186,7 @@ export function LearnTab() {
       <div className="flex-1 flex flex-col h-full bg-[#F1F5F9]">
         <div className="bg-[#0F4C5C] px-4 py-3 flex items-center gap-2 wa-shadow-header shrink-0">
           <BookOpen className="w-5 h-5 text-white" />
-          <h2 className="text-white font-semibold text-base">Onboarding</h2>
+          <h2 className="text-white font-semibold text-base">Learn</h2>
         </div>
         <div className="flex-1 flex items-center justify-center">
           <Loader2 className="w-8 h-8 text-[#A3E635] animate-spin" />
@@ -203,7 +203,7 @@ export function LearnTab() {
         <div className="bg-[#0F4C5C] px-4 py-3 flex items-center justify-between wa-shadow-header shrink-0">
           <div className="flex items-center gap-2">
             <BookOpen className="w-5 h-5 text-white" />
-            <h2 className="text-white font-semibold text-base">Onboarding</h2>
+            <h2 className="text-white font-semibold text-base">Learn</h2>
           </div>
           <button
             onClick={() => setShowLeaderboard(true)}
@@ -268,7 +268,7 @@ export function LearnTab() {
       <div className="bg-[#0F4C5C] px-4 py-3 flex items-center justify-between wa-shadow-header shrink-0">
         <div className="flex items-center gap-2">
           <GraduationCap className="w-5 h-5 text-white" />
-          <h2 className="text-white font-semibold text-base">Onboarding</h2>
+          <h2 className="text-white font-semibold text-base">Learn</h2>
         </div>
         <div className="flex items-center gap-1">
           <button

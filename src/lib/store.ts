@@ -203,8 +203,8 @@ interface CallLingoState {
   setSidebarOpen: (open: boolean) => void
 
   // Navigation Tabs
-  activeTab: 'chats' | 'status' | 'channels' | 'calls' | 'explore' | 'learn'
-  setActiveTab: (tab: 'chats' | 'status' | 'channels' | 'calls' | 'explore' | 'learn') => void
+  activeTab: 'chats' | 'status' | 'channels' | 'calls' | 'explore' | 'learn' | 'onboarding'
+  setActiveTab: (tab: 'chats' | 'status' | 'channels' | 'calls' | 'explore' | 'learn' | 'onboarding') => void
 
   // Status/Stories
   statuses: StatusItem[]

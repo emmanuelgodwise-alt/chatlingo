@@ -1097,3 +1097,28 @@ Fix navigation & connectivity issues across all ChatLingo views and rename "Lear
 - All dialog modals have close mechanisms (X, Cancel, click outside)
 - Bottom navigation tabs all switch content correctly
 - Internal Zustand state value remains `activeTab: 'learn'` (unchanged)
+---
+Task ID: 1
+Agent: Main Agent
+Task: Restructure Learn/Onboarding features - Create genuine Onboarding tab, move Learn to header bar, redesign teal header
+
+Work Log:
+- Read and analyzed all current files: chat-interface.tsx (918 lines), learn-tab.tsx, store.ts
+- Created new onboarding-tab.tsx with comprehensive tutorial content (hero section, 5 tutorial steps, tips & tricks, feature highlights, progress tracking, CTAs)
+- Renamed all "Onboarding" headers back to "Learn" in learn-tab.tsx (3 occurrences)
+- Added 'onboarding' to activeTab type union in store.ts
+- Redesigned desktop teal sidebar header: Status button (left), ChatLingo branding (center), Learn languages pill + More menu (right)
+- Redesigned mobile teal header: Status button (left), ChatLingo branding (center), Learn languages pill (right)
+- Relocated standalone "+" add-contact button into the FAB dropdown menu (already had "New Contact" option)
+- Updated bottom nav: First tab now uses Compass icon labeled "Onboarding" → navigates to genuine onboarding tutorial
+- Updated renderMainContent() to handle 'onboarding' tab rendering OnboardingTab
+- Updated FAB menu: Changed "Onboarding" item to "Learn"
+- Added onTabChange prop to MobileContactsView for tab switching from header buttons
+- Production build succeeded, server running on port 3000
+
+Stage Summary:
+- Created: /src/components/chatlingo/onboarding-tab.tsx (420 lines)
+- Modified: /src/lib/store.ts (added 'onboarding' to activeTab type)
+- Modified: /src/components/chatlingo/learn-tab.tsx (3 headers renamed Onboarding→Learn)
+- Modified: /src/components/chatlingo/chat-interface.tsx (header redesign, bottom nav update, imports, renderMainContent)
+- Build: Successful, server running on http://localhost:3000
