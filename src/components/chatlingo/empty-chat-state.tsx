@@ -7,7 +7,7 @@ import { Globe, Lock, MessageCircle, Phone, PhoneOff, Video, Plus } from 'lucide
 export function EmptyChatState({ showWelcome }: { showWelcome: boolean }) {
   if (showWelcome) {
     return (
-      <div className="flex-1 flex items-center justify-center p-8" style={{ backgroundColor: '#F8FAFC' }}>
+      <div className="flex-1 flex items-center justify-center p-8" style={{ backgroundColor: '#FAFAFA' }}>
         <div className="text-center max-w-md">
           {/* ChatLingo Logo */}
           <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-[#0F4C5C] mb-5 shadow-lg">
@@ -32,8 +32,8 @@ export function EmptyChatState({ showWelcome }: { showWelcome: boolean }) {
           {/* Steps */}
           <div className="flex flex-col gap-4 text-left max-w-xs mx-auto">
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-full bg-[#84CC16] flex items-center justify-center shrink-0">
-                <span className="text-white text-sm font-medium">1</span>
+              <div className="w-8 h-8 rounded-full bg-[#A3E635] flex items-center justify-center shrink-0">
+                <span className="text-[#0A0A0A] text-sm font-medium">1</span>
               </div>
               <div>
                 <p className="text-sm text-[#0A0A0A] font-medium">Select a Contact</p>
@@ -43,8 +43,8 @@ export function EmptyChatState({ showWelcome }: { showWelcome: boolean }) {
               </div>
             </div>
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-full bg-[#84CC16] flex items-center justify-center shrink-0">
-                <span className="text-white text-sm font-medium">2</span>
+              <div className="w-8 h-8 rounded-full bg-[#A3E635] flex items-center justify-center shrink-0">
+                <span className="text-[#0A0A0A] text-sm font-medium">2</span>
               </div>
               <div>
                 <p className="text-sm text-[#0A0A0A] font-medium">Start Chatting</p>
@@ -60,9 +60,9 @@ export function EmptyChatState({ showWelcome }: { showWelcome: boolean }) {
   }
 
   return (
-    <div className="flex-1 flex items-center justify-center p-8" style={{ backgroundColor: '#F8FAFC' }}>
+    <div className="flex-1 flex items-center justify-center p-8" style={{ backgroundColor: '#FAFAFA' }}>
       <div className="text-center">
-        <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-[#E2E8F0] mb-4">
+        <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-[#E5E5E5] mb-4">
           <MessageCircle className="w-8 h-8 text-[#525252]" />
         </div>
         <h3 className="text-xl font-light text-[#0A0A0A] mb-2">ChatLingo for Web</h3>
@@ -90,8 +90,8 @@ export function EmptyStatusTab() {
       {/* Header */}
       <div className="bg-[#0F4C5C] px-4 py-3 flex items-center justify-between wa-shadow-header shrink-0">
         <div className="flex items-center gap-2">
-          <div className="w-6 h-6 rounded-full bg-[#84CC16] flex items-center justify-center">
-            <span className="text-[10px] text-white font-bold">!</span>
+          <div className="w-6 h-6 rounded-full bg-[#A3E635] flex items-center justify-center">
+            <span className="text-[10px] text-[#0A0A0A] font-bold">!</span>
           </div>
           <h2 className="text-white font-semibold text-base">Status</h2>
         </div>
@@ -108,9 +108,9 @@ export function EmptyStatusTab() {
       <StatusBar />
 
       {/* Empty state area */}
-      <div className="flex-1 flex flex-col items-center justify-center p-8" style={{ backgroundColor: '#F8FAFC' }}>
+      <div className="flex-1 flex flex-col items-center justify-center p-8" style={{ backgroundColor: '#FAFAFA' }}>
         <div className="text-center max-w-sm">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-[#E2E8F0] mb-4">
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-[#E5E5E5] mb-4">
             <MessageCircle className="w-8 h-8 text-[#525252]" />
           </div>
           <h3 className="text-xl font-semibold text-[#0A0A0A] mb-2">No status updates</h3>
@@ -120,7 +120,7 @@ export function EmptyStatusTab() {
           </p>
           <button
             onClick={() => setShowCreateStatus(true)}
-            className="px-6 py-2.5 bg-[#84CC16] hover:bg-[#65A30D] text-white text-sm font-medium rounded-full transition-colors shadow-sm"
+            className="px-6 py-2.5 bg-[#A3E635] hover:bg-[#65A30D] text-[#0A0A0A] text-sm font-medium rounded-full transition-colors shadow-sm"
           >
             Create Status
           </button>
@@ -145,9 +145,9 @@ export function EmptyCallsTab() {
       </div>
 
       {/* Content */}
-      <div className="flex-1 flex flex-col items-center justify-center p-8" style={{ backgroundColor: '#F8FAFC' }}>
+      <div className="flex-1 flex flex-col items-center justify-center p-8" style={{ backgroundColor: '#FAFAFA' }}>
         <div className="text-center max-w-sm">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-[#E2E8F0] mb-4">
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-[#E5E5E5] mb-4">
             <PhoneOff className="w-8 h-8 text-[#525252]" />
           </div>
           <h3 className="text-xl font-semibold text-[#0A0A0A] mb-2">No recent calls</h3>
@@ -158,8 +158,8 @@ export function EmptyCallsTab() {
           </p>
           <div className="flex items-center gap-4 justify-center">
             <div className="flex flex-col items-center gap-1">
-              <div className="w-12 h-12 rounded-full bg-[#84CC16] flex items-center justify-center">
-                <Phone className="w-6 h-6 text-white" />
+              <div className="w-12 h-12 rounded-full bg-[#A3E635] flex items-center justify-center">
+                <Phone className="w-6 h-6 text-[#0A0A0A]" />
               </div>
               <span className="text-xs text-[#525252]">Voice</span>
             </div>

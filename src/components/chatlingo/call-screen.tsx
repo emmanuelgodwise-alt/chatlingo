@@ -323,9 +323,9 @@ function IncomingCallScreen({ initials, isVideo }: { initials: string; isVideo: 
         <div className="flex flex-col items-center gap-2">
           <button
             onClick={handleAccept}
-            className="w-16 h-16 rounded-full bg-[#84CC16] hover:bg-[#65A30D] flex items-center justify-center shadow-lg transition-colors"
+            className="w-16 h-16 rounded-full bg-[#A3E635] hover:bg-[#65A30D] flex items-center justify-center shadow-lg transition-colors"
           >
-            <Phone className="w-7 h-7 text-white" />
+            <Phone className="w-7 h-7 text-[#0A0A0A]" />
           </button>
           <span className="text-white/70 text-sm">Accept</span>
         </div>
@@ -424,12 +424,12 @@ function ConnectedCallScreen({
         <div className="mt-3 flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-3 py-1.5">
           {callTranslationPending ? (
             <>
-              <Loader2 className="w-3.5 h-3.5 text-[#84CC16] animate-spin" />
+              <Loader2 className="w-3.5 h-3.5 text-[#A3E635] animate-spin" />
               <span className="text-white/60 text-xs">Translating...</span>
             </>
           ) : (
             <>
-              <Globe className="w-3.5 h-3.5 text-[#84CC16]" />
+              <Globe className="w-3.5 h-3.5 text-[#A3E635]" />
               <span className="text-white/60 text-xs">
                 {getLanguageLabel(callMyLanguage)} → {getLanguageLabel(callTheirLanguage)}
               </span>
@@ -451,7 +451,7 @@ function ConnectedCallScreen({
             </p>
             {/* Translated text */}
             <div className="flex items-center gap-2">
-              <Globe className="w-4 h-4 text-[#84CC16] shrink-0" />
+              <Globe className="w-4 h-4 text-[#A3E635] shrink-0" />
               <p className="text-white text-sm font-medium truncate">
                 {latestSubtitle.translated}
               </p>

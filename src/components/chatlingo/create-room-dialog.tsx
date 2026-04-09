@@ -80,7 +80,7 @@ export function CreateRoomDialog() {
               onChange={(e) => setName(e.target.value)}
               placeholder="e.g., French Conversation Practice"
               maxLength={50}
-              className="w-full px-3 py-2.5 bg-[#F1F5F9] rounded-lg text-sm text-[#0A0A0A] placeholder:text-[#525252] focus:outline-none focus:ring-2 focus:ring-[#84CC16] border-none"
+              className="w-full px-3 py-2.5 bg-[#F1F5F9] rounded-lg text-sm text-[#0A0A0A] placeholder:text-[#525252] focus:outline-none focus:ring-2 focus:ring-[#A3E635] border-none"
             />
           </div>
 
@@ -93,7 +93,7 @@ export function CreateRoomDialog() {
               placeholder="What will people talk about?"
               maxLength={200}
               rows={2}
-              className="w-full px-3 py-2.5 bg-[#F1F5F9] rounded-lg text-sm text-[#0A0A0A] placeholder:text-[#525252] focus:outline-none focus:ring-2 focus:ring-[#84CC16] border-none resize-none"
+              className="w-full px-3 py-2.5 bg-[#F1F5F9] rounded-lg text-sm text-[#0A0A0A] placeholder:text-[#525252] focus:outline-none focus:ring-2 focus:ring-[#A3E635] border-none resize-none"
             />
           </div>
 
@@ -104,7 +104,7 @@ export function CreateRoomDialog() {
               <select
                 value={language}
                 onChange={(e) => setLanguage(e.target.value)}
-                className="w-full px-3 py-2.5 bg-[#F1F5F9] rounded-lg text-sm text-[#0A0A0A] focus:outline-none focus:ring-2 focus:ring-[#84CC16] border-none appearance-none cursor-pointer"
+                className="w-full px-3 py-2.5 bg-[#F1F5F9] rounded-lg text-sm text-[#0A0A0A] focus:outline-none focus:ring-2 focus:ring-[#A3E635] border-none appearance-none cursor-pointer"
               >
                 {LANGUAGES.map((lang) => (
                   <option key={lang.code} value={lang.code}>
@@ -124,7 +124,7 @@ export function CreateRoomDialog() {
           <button
             onClick={handleCreate}
             disabled={!name.trim() || creating}
-            className="px-6 py-2 bg-[#84CC16] hover:bg-[#65A30D] text-white text-sm font-medium rounded-full transition-colors disabled:opacity-50 shadow-sm flex items-center gap-2"
+            className="px-6 py-2 bg-[#A3E635] hover:bg-[#65A30D] text-[#0A0A0A] text-sm font-medium rounded-full transition-colors disabled:opacity-50 shadow-sm flex items-center gap-2"
           >
             {creating ? (
               <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin inline-block" />

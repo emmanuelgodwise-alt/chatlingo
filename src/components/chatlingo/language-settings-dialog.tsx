@@ -87,7 +87,7 @@ export function LanguageSettingsDialog() {
               Your messages appear in
             </Label>
             <Select value={myLanguage} onValueChange={setMyLanguage}>
-              <SelectTrigger className="h-11 rounded-lg border-[#E2E8F0] bg-[#F1F5F9] focus:border-[#84CC16] focus:ring-[#84CC16]/20">
+              <SelectTrigger className="h-11 rounded-lg border-[#E5E5E5] bg-[#F1F5F9] focus:border-[#A3E635] focus:ring-[#A3E635]/20">
                 <SelectValue placeholder="Select your language" />
               </SelectTrigger>
               <SelectContent>
@@ -129,7 +129,7 @@ export function LanguageSettingsDialog() {
               Their messages appear in
             </Label>
             <Select value={theirLanguage} onValueChange={setTheirLanguage}>
-              <SelectTrigger className="h-11 rounded-lg border-[#E2E8F0] bg-[#F1F5F9] focus:border-[#84CC16] focus:ring-[#84CC16]/20">
+              <SelectTrigger className="h-11 rounded-lg border-[#E5E5E5] bg-[#F1F5F9] focus:border-[#A3E635] focus:ring-[#A3E635]/20">
                 <SelectValue placeholder="Select their language" />
               </SelectTrigger>
               <SelectContent>
@@ -150,7 +150,7 @@ export function LanguageSettingsDialog() {
           </div>
 
           {/* How it works */}
-          <div className="bg-[#F1F5F9] rounded-lg p-4 border border-[#E2E8F0]">
+          <div className="bg-[#F1F5F9] rounded-lg p-4 border border-[#E5E5E5]">
             <p className="text-xs text-[#525252] leading-relaxed">
               <strong className="text-[#0A0A0A]">How it works:</strong> When you type in{' '}
               <strong>{myLanguage}</strong>, your messages are automatically translated to{' '}
@@ -161,18 +161,18 @@ export function LanguageSettingsDialog() {
           </div>
         </div>
 
-        <DialogFooter className="px-6 pb-5 pt-2 border-t border-[#E2E8F0] flex gap-2">
+        <DialogFooter className="px-6 pb-5 pt-2 border-t border-[#E5E5E5] flex gap-2">
           <Button
             variant="outline"
             onClick={() => setShowLanguageSettings(false)}
-            className="flex-1 text-[#525252] border-[#E2E8F0] hover:bg-[#F1F5F9]"
+            className="flex-1 text-[#525252] border-[#E5E5E5] hover:bg-[#F1F5F9]"
           >
             Cancel
           </Button>
           <Button
             onClick={handleSave}
             disabled={saving}
-            className="flex-1 bg-[#84CC16] hover:bg-[#65A30D] text-white border-none"
+            className="flex-1 bg-[#A3E635] hover:bg-[#65A30D] text-[#0A0A0A] border-none"
           >
             {saving ? 'Saving...' : 'Save'}
           </Button>

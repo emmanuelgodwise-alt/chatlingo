@@ -78,7 +78,7 @@ export function StatusBar() {
     : '??'
 
   return (
-    <div className="px-3 py-2 bg-white border-b border-[#E2E8F0]">
+    <div className="px-3 py-2 bg-white border-b border-[#E5E5E5]">
       <div className="flex gap-4 overflow-x-auto scrollbar-thin pb-1">
         {/* My Status */}
         <button
@@ -87,12 +87,12 @@ export function StatusBar() {
         >
           <div className="relative">
             <Avatar className="w-12 h-12">
-              <AvatarFallback className="bg-[#E2E8F0] text-[#0A0A0A] text-sm font-semibold">
+              <AvatarFallback className="bg-[#E5E5E5] text-[#0A0A0A] text-sm font-semibold">
                 {userInitials}
               </AvatarFallback>
             </Avatar>
-            <div className="absolute -bottom-0.5 -right-0.5 w-5 h-5 bg-[#84CC16] rounded-full flex items-center justify-center border-2 border-white">
-              <Plus className="w-3 h-3 text-white" />
+            <div className="absolute -bottom-0.5 -right-0.5 w-5 h-5 bg-[#A3E635] rounded-full flex items-center justify-center border-2 border-white">
+              <Plus className="w-3 h-3 text-[#0A0A0A]" />
             </div>
           </div>
           <span className="text-[11px] text-[#525252] w-[56px] text-center truncate">My Status</span>
@@ -109,10 +109,10 @@ export function StatusBar() {
               <div className={`w-[52px] h-[52px] rounded-full p-[3px] ${
                 owner.allViewed
                   ? 'bg-[#C5C5C5]'
-                  : 'bg-gradient-to-tr from-[#84CC16] via-[#134E5E] to-[#0F4C5C]'
+                  : 'bg-gradient-to-tr from-[#A3E635] via-[#134E5E] to-[#0F4C5C]'
               }`}>
                 <Avatar className="w-full h-full border-2 border-white">
-                  <AvatarFallback className="bg-[#E2E8F0] text-[#0A0A0A] text-sm font-semibold">
+                  <AvatarFallback className="bg-[#E5E5E5] text-[#0A0A0A] text-sm font-semibold">
                     {owner.name.split(' ').map((n) => n[0]).join('').toUpperCase().slice(0, 2)}
                   </AvatarFallback>
                 </Avatar>

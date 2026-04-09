@@ -109,7 +109,7 @@ export function CreateGroupDialog() {
             onChange={(e) => setGroupName(e.target.value)}
             placeholder="Group name"
             maxLength={50}
-            className="w-full px-3 py-2 bg-[#F1F5F9] rounded-lg text-sm text-[#0A0A0A] placeholder:text-[#525252] focus:outline-none focus:ring-2 focus:ring-[#84CC16] border-none"
+            className="w-full px-3 py-2 bg-[#F1F5F9] rounded-lg text-sm text-[#0A0A0A] placeholder:text-[#525252] focus:outline-none focus:ring-2 focus:ring-[#A3E635] border-none"
           />
 
           {/* Selected Contacts */}
@@ -143,7 +143,7 @@ export function CreateGroupDialog() {
               placeholder="Search contacts..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10 h-9 bg-[#F1F5F9] border-none rounded-lg text-sm placeholder:text-[#525252] focus-visible:ring-0 focus-visible:bg-white focus-visible:border-[#E2E8F0]"
+              className="pl-10 h-9 bg-[#F1F5F9] border-none rounded-lg text-sm placeholder:text-[#525252] focus-visible:ring-0 focus-visible:bg-white focus-visible:border-[#E5E5E5]"
             />
           </div>
 
@@ -164,7 +164,7 @@ export function CreateGroupDialog() {
                     }`}
                   >
                     <Avatar className="w-9 h-9 shrink-0">
-                      <AvatarFallback className="bg-[#E2E8F0] text-[#0A0A0A] text-xs font-semibold">
+                      <AvatarFallback className="bg-[#E5E5E5] text-[#0A0A0A] text-xs font-semibold">
                         {initials}
                       </AvatarFallback>
                     </Avatar>
@@ -175,8 +175,8 @@ export function CreateGroupDialog() {
                       </p>
                     </div>
                     {isSelected && (
-                      <div className="w-5 h-5 bg-[#84CC16] rounded-full flex items-center justify-center shrink-0">
-                        <Check className="w-3 h-3 text-white" />
+                      <div className="w-5 h-5 bg-[#A3E635] rounded-full flex items-center justify-center shrink-0">
+                        <Check className="w-3 h-3 text-[#0A0A0A]" />
                       </div>
                     )}
                   </button>
@@ -193,7 +193,7 @@ export function CreateGroupDialog() {
           <button
             onClick={handleCreate}
             disabled={!groupName.trim() || selectedIds.length === 0 || creating}
-            className="px-6 py-2 bg-[#84CC16] hover:bg-[#65A30D] text-white text-sm font-medium rounded-full transition-colors disabled:opacity-50 shadow-sm"
+            className="px-6 py-2 bg-[#A3E635] hover:bg-[#65A30D] text-[#0A0A0A] text-sm font-medium rounded-full transition-colors disabled:opacity-50 shadow-sm"
           >
             {creating ? (
               <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin inline-block" />

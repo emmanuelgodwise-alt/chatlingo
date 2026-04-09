@@ -937,3 +937,163 @@ For each demo user:
 - `/api/contacts` returns 15 contacts with correct online/language info
 - `/api/conversations` returns 15 conversations with lastMessage and unreadCount
 - `/api/auth/login` successfully authenticates test user
+
+---
+## Task ID: 4
+### Work Task
+Rework the entire color scheme from Teal & Warm Copper/Lime to **Teal + Bright Light Lemon Green + Black + White**.
+
+### Work Summary
+Comprehensive color palette migration across all 30+ component files and global CSS. The primary accent color changed from `#84CC16` (lime-500) to `#A3E635` (lemon-400), border colors from `#E2E8F0` to `#E5E5E5`, chat background from `#F8FAFC` to `#FAFAFA`, and all icon/text colors on lemon green backgrounds changed from white to `#0A0A0A` for proper contrast readability.
+
+**Color Replacements Made:**
+
+| Old Color | New Color | Purpose |
+|-----------|-----------|---------|
+| `#84CC16` | `#A3E635` | Primary accent (buttons, highlights, badges, active states) |
+| `#E2E8F0` | `#E5E5E5` | Borders, dividers, card separators |
+| `#F8FAFC` | `#FAFAFA` | Chat background, alternate sections |
+| `text-white` on `bg-[#A3E635]` | `text-[#0A0A0A]` | Button/icon text readability |
+| `rgba(132, 204, 22, ...)` | `rgba(163, 230, 53, ...)` | Shadows, animations, gradients |
+| `border-white/30 border-t-white` (spinners) | `border-[#0A0A0A]/20 border-t-[#0A0A0A]` | Loading spinner on light buttons |
+
+**Colors Kept Unchanged:**
+- `#0F4C5C` (Deep Teal) — main headers, nav, primary actions
+- `#134E5E` (Dark Teal) — hover states, secondary elements
+- `#0D4D47` (Teal dark) — gradients, call screen
+- `#0A0A0A` (Pure Black) — text, headings
+- `#525252` (Medium Gray) — secondary text
+- `#A3A3A3` (Light Gray) — placeholder text, muted
+- `#F1F5F9` (Warm Light) — input fields, search bg
+- `#ECFCCB` (Lime Glow) — very light accent bg, message bubbles
+- `#65A30D` (Darker Green) — hover/pressed states
+- `#22C55E` (Green) — online indicators
+- `#EF4444` (Red) — error indicators
+- `#D32F2F` — end call button
+
+**Files Modified (33 files):**
+
+**CSS:**
+1. `src/app/globals.css` — CSS variables (--color-wa-green, --color-wa-blue-tick, --color-wa-unread, --color-wa-border, --border, --input, --ring, --color-wa-chat-bg), chat wallpaper pattern, FAB styles, bottom nav active color, tick color, unread badge, speaking ring animation
+
+**Main Layout:**
+2. `src/components/chatlingo/chat-interface.tsx` — Header globe icon, unread badge, FAB menu icon circles (Group, Room, Broadcast), search focus ring, border colors
+3. `src/components/chatlingo/chat-area.tsx` — Online indicator, sender name color, "View original" link, check ticks, border in translation divider
+4. `src/components/chatlingo/contact-item.tsx` — No changes (uses multi-color gradients, already correct)
+5. `src/components/chatlingo/conversation-item.tsx` — Online indicator dot, unread time color, border colors
+
+**Auth:**
+6. `src/components/chatlingo/login-form.tsx` — Input borders, focus rings, button bg, spinner colors
+7. `src/components/chatlingo/sign-up-form.tsx` — Input borders, focus rings, button bg, spinner colors
+
+**Tabs:**
+8. `src/components/chatlingo/learn-tab.tsx` — Button colors, lesson progress bars
+9. `src/components/chatlingo/explore-tab.tsx` — Loading spinner, icon circle, buttons, partner score color
+10. `src/components/chatlingo/channels-tab.tsx` — Loading spinner, channel icon circles, buttons
+11. `src/components/chatlingo/rooms-tab.tsx` — Loading spinner, borders, join button
+12. `src/components/chatlingo/status-bar.tsx` — Add button icon color, status ring gradient
+
+**Dialogs:**
+13. `src/components/chatlingo/add-contact-dialog.tsx` — Input focus, spinner, add button
+14. `src/components/chatlingo/create-status-dialog.tsx` — Input focus, gradient option, submit button
+15. `src/components/chatlingo/create-group-dialog.tsx` — Checkmark icon on selected contact, submit button
+16. `src/components/chatlingo/create-channel-dialog.tsx` — Input focus, toggle active states, submit button
+17. `src/components/chatlingo/create-room-dialog.tsx` — Submit button
+18. `src/components/chatlingo/language-settings-dialog.tsx` — Select focus rings, save button
+19. `src/components/chatlingo/learn-setup-dialog.tsx` — All accent color references
+20. `src/components/chatlingo/learn-pair-dialog.tsx` — Loading spinner, selected states, pair button
+21. `src/components/chatlingo/leaderboard-dialog.tsx` — Loading spinner, current user highlight, score color
+
+**Other Components:**
+22. `src/components/chatlingo/empty-chat-state.tsx` — Step number circles, status icon, calls icons, get started button, background color
+23. `src/components/chatlingo/call-screen.tsx` — Accept call button icon
+24. `src/components/chatlingo/room-screen.tsx` — Globe icon, loading spinner, speaking ring, mic button icon, request to speak button
+25. `src/components/chatlingo/status-viewer.tsx` — Emerald gradient
+26. `src/components/chatlingo/lesson-screen.tsx` — Check button, progress bar, XP pill, continue/retry buttons, option buttons, volume button, mic button, matching exercise colors
+27. `src/components/chatlingo/sidebar.tsx` — FAB menu icon circles (Group, Room, Broadcast)
+28. `src/components/chatlingo/group-info-panel.tsx` — Group avatar, add participant icon, crown icon
+29. `src/components/chatlingo/spotlight-card.tsx` — Emerald gradient, loading skeleton
+30. `src/components/chatlingo/word-of-the-day.tsx` — Lightbulb icon, practice button, loading skeleton
+
+**Verification:**
+- `bun run lint` — zero errors, zero warnings
+- Dev server compiles and responds with HTTP 200
+- Zero remaining instances of old colors (#84CC16, #E2E8F0, #F8FAFC, #C45B28, #B8522A)
+- All colorful contact card gradients in contact-item.tsx preserved unchanged
+
+---
+## Task ID: 3+5
+### Work Task
+Fix navigation & connectivity issues across all ChatLingo views and rename "Learn" to "Onboarding" in all user-facing text.
+
+### Work Summary
+
+**PART 1: Navigation & Connectivity Fixes**
+
+**1. `src/components/chatlingo/sidebar.tsx` — User bar interactive dropdown + "Language Exchange" → "Onboarding":**
+- Line 210: FAB menu item renamed from "Language Exchange" to "Onboarding"
+- Lines 225-273: Bottom user bar changed from static div with only logout button to a clickable button that opens a dropdown menu
+- Added `showUserMenu` state variable
+- Dropdown menu includes: "Profile & Settings" button (opens LanguageSettingsDialog) and "Sign Out" button (calls logout)
+- Dropdown dismisses on click-outside overlay
+- Added `setShowLanguageSettings` and removed duplicate `logout` from store destructure
+
+**2. `src/components/chatlingo/chat-interface.tsx` — Sidebar user bar dropdown:**
+- Line 29: Added `LogOut` import to lucide-react
+- Line 74: Added `showUserMenu` state variable
+- Lines 647-691: Bottom user bar changed from simple button (opened language settings directly) to a button that opens a dropdown menu
+- Dropdown includes: "Profile & Settings" button (opens LanguageSettingsDialog) and "Sign Out" button (calls store.getState().logout())
+- Dropdown dismisses on click-outside overlay
+
+**3. `src/components/chatlingo/explore-tab.tsx` — Non-functional buttons now wired up:**
+- Line 27: Already had `setActiveTab` in store destructure
+- Lines 119-136: Added `handleJoinGroup(groupId)` function — calls `POST /api/groups/{id}/members` to join a group, then refreshes explore results
+- Lines 138-151: Added `handleFollowChannel(channelId)` function — calls `POST /api/channels/{id}` to follow a channel, then refreshes explore results
+- Lines 153-171: Added `handleJoinRoom(roomId)` function — calls `POST /api/rooms/{id}` with role 'listener', then switches to chats tab
+- Groups "Join" button (line 220-225): Added `onClick={() => handleJoinGroup(group.id as string)}`
+- Channels "Follow" button (line 240-245): Added `onClick={() => handleFollowChannel(channel.id)}`
+- Rooms "Join" button (line 298-303): Added `onClick={() => handleJoinRoom(room.id as string)}`
+
+**PART 2: "Learn" → "Onboarding" Renaming**
+
+- `src/components/chatlingo/sidebar.tsx` line 210: "Language Exchange" → "Onboarding" (FAB menu item)
+- All other locations were already updated in previous tasks:
+  - `chat-interface.tsx` bottom nav tab: already says "Onboarding" ✅
+  - `chat-interface.tsx` FAB menu: already says "Onboarding" ✅
+  - `learn-tab.tsx` headers: already say "Onboarding" ✅
+  - `learn-setup-dialog.tsx`: already says "Start Onboarding" / "Begin Onboarding" ✅
+  - `learn-pair-dialog.tsx`: already says "Add Onboarding Partner" ✅
+
+**Files Modified:**
+- `src/components/chatlingo/sidebar.tsx` — 3 changes (rename, user bar dropdown, store destructure fix)
+- `src/components/chatlingo/chat-interface.tsx` — 2 changes (LogOut import, user bar dropdown)
+- `src/components/chatlingo/explore-tab.tsx` — 4 changes (3 handler functions, 3 button onClick handlers)
+
+**Files Verified (no changes needed):**
+- `status-bar.tsx` — Status items clickable ✅, "My Status" opens create dialog ✅
+- `status-viewer.tsx` — X close button ✅, reply button ✅, tap navigation ✅
+- `call-screen.tsx` — End call buttons on all states ✅
+- `room-screen.tsx` — X close ✅, Leave button ✅, mic/hand controls ✅
+- `lesson-screen.tsx` — X quit with AlertDialog confirmation ✅, Continue/Try Again buttons ✅
+- `empty-chat-state.tsx` — Create Status button ✅, header with plus icon ✅
+- `add-contact-dialog.tsx` — Dialog with onOpenChange close + Close button ✅
+- `create-status-dialog.tsx` — X close + click outside dismiss ✅
+- `create-group-dialog.tsx` — X close + click outside dismiss ✅
+- `create-channel-dialog.tsx` — X close + click outside dismiss ✅
+- `create-room-dialog.tsx` — X close + click outside dismiss ✅
+- `learn-setup-dialog.tsx` — X close + click outside dismiss + "Begin Onboarding" button ✅
+- `learn-pair-dialog.tsx` — X close + click outside dismiss + Close button ✅
+- `leaderboard-dialog.tsx` — X close + click outside dismiss + Close button ✅
+- `language-settings-dialog.tsx` — Dialog with onOpenChange close + Cancel/Save buttons ✅
+- `channels-tab.tsx` — Follow button has onClick ✅, back button ✅
+- `rooms-tab.tsx` — Listen/Speak buttons have onClick ✅, Create Room button ✅
+- `group-info-panel.tsx` — X close button ✅, Add participant ✅
+- `chat-area.tsx` — Back button on mobile ✅, call buttons ✅, header menu ✅
+
+**Verification:**
+- `bun run lint` — zero errors, zero warnings
+- All navigation paths have at least one way back/close
+- All interactive elements have onClick handlers wired up
+- All dialog modals have close mechanisms (X, Cancel, click outside)
+- Bottom navigation tabs all switch content correctly
+- Internal Zustand state value remains `activeTab: 'learn'` (unchanged)

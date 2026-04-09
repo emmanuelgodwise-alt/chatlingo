@@ -24,7 +24,7 @@ import {
 type ExploreCategory = 'people' | 'groups' | 'channels' | 'rooms' | 'partners'
 
 export function ExploreTab() {
-  const { token, user, setActiveConversation, setConversations } = useChatLingoStore()
+  const { token, user, setActiveConversation, setConversations, setActiveTab } = useChatLingoStore()
 
   const [activeCategory, setActiveCategory] = useState<ExploreCategory>('people')
   const [searchQuery, setSearchQuery] = useState('')
@@ -116,6 +116,60 @@ export function ExploreTab() {
     }
   }
 
+  const handleJoinGroup = async (groupId: string) => {
+    if (!token) return
+    try {
+      const res = await fetch(`/api/groups/${groupId}/members`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({}),
+      })
+      if (res.ok) {
+        loadExplore(activeCategory)
+      }
+    } catch {
+      // ignore
+    }
+  }
+
+  const handleFollowChannel = async (channelId: string) => {
+    if (!token) return
+    try {
+      const res = await fetch(`/api/channels/${channelId}`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      if (res.ok) {
+        loadExplore(activeCategory)
+      }
+    } catch {
+      // ignore
+    }
+  }
+
+  const handleJoinRoom = async (roomId: string) => {
+    if (!token) return
+    try {
+      const res = await fetch(`/api/rooms/${roomId}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ role: 'listener' }),
+      })
+      if (res.ok) {
+        const store = useChatLingoStore.getState()
+        store.setActiveTab('chats')
+      }
+    } catch {
+      // ignore
+    }
+  }
+
   return (
     <div className="flex-1 flex flex-col h-full bg-[#F1F5F9]">
       {/* Header */}
@@ -125,7 +179,7 @@ export function ExploreTab() {
       </div>
 
       {/* Search */}
-      <div className="px-3 py-2 bg-white shrink-0 border-b border-[#E2E8F0]">
+      <div className="px-3 py-2 bg-white shrink-0 border-b border-[#E5E5E5]">
         <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#525252]" />
           <Input
@@ -152,7 +206,7 @@ export function ExploreTab() {
               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-colors shrink-0 ${
                 activeCategory === cat.id
                   ? 'bg-[#0F4C5C] text-white'
-                  : 'bg-white text-[#525252] hover:bg-[#E2E8F0]'
+                  : 'bg-white text-[#525252] hover:bg-[#E5E5E5]'
               }`}
             >
               {cat.icon}
@@ -164,11 +218,11 @@ export function ExploreTab() {
         {/* Results */}
         {loading ? (
           <div className="p-8 text-center">
-            <span className="w-6 h-6 border-2 border-[#84CC16]/30 border-t-[#84CC16] rounded-full animate-spin inline-block" />
+            <span className="w-6 h-6 border-2 border-[#A3E635]/30 border-t-[#A3E635] rounded-full animate-spin inline-block" />
           </div>
         ) : results[activeCategory].length === 0 ? (
           <div className="text-center py-8">
-            <Globe className="w-10 h-10 text-[#E2E8F0] mx-auto mb-2" />
+            <Globe className="w-10 h-10 text-[#E5E5E5] mx-auto mb-2" />
             <p className="text-sm text-[#525252]">No results found</p>
           </div>
         ) : activeCategory === 'people' ? (
@@ -176,9 +230,9 @@ export function ExploreTab() {
             {(results.people as Array<Record<string, string>>).map((person) => {
               const initials = (person.name || '').split(' ').map((n) => n[0]).join('').toUpperCase().slice(0, 2)
               return (
-                <div key={person.id} className="bg-white rounded-xl p-4 flex items-center gap-3 border border-[#E2E8F0]">
+                <div key={person.id} className="bg-white rounded-xl p-4 flex items-center gap-3 border border-[#E5E5E5]">
                   <Avatar className="w-12 h-12 shrink-0">
-                    <AvatarFallback className="bg-[#E2E8F0] text-[#0A0A0A] text-sm font-semibold">
+                    <AvatarFallback className="bg-[#E5E5E5] text-[#0A0A0A] text-sm font-semibold">
                       {initials}
                     </AvatarFallback>
                   </Avatar>
@@ -201,9 +255,9 @@ export function ExploreTab() {
         ) : activeCategory === 'groups' ? (
           <div className="space-y-2">
             {(results.groups as Array<Record<string, unknown>>).map((group) => (
-              <div key={group.id as string} className="bg-white rounded-xl p-4 flex items-center gap-3 border border-[#E2E8F0]">
-                <div className="w-12 h-12 rounded-full bg-[#84CC16] flex items-center justify-center shrink-0">
-                  <Users className="w-6 h-6 text-white" />
+              <div key={group.id as string} className="bg-white rounded-xl p-4 flex items-center gap-3 border border-[#E5E5E5]">
+                <div className="w-12 h-12 rounded-full bg-[#A3E635] flex items-center justify-center shrink-0">
+                  <Users className="w-6 h-6 text-[#0A0A0A]" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium text-[#0A0A0A] truncate">{group.name as string}</p>
@@ -217,7 +271,10 @@ export function ExploreTab() {
                     )}
                   </p>
                 </div>
-                <button className="text-[#0F4C5C] text-xs font-medium px-3 py-1.5 bg-[#ECFCCB] rounded-full hover:bg-[#ECFCCB] transition-colors shrink-0">
+                <button
+                  onClick={() => handleJoinGroup(group.id as string)}
+                  className="text-[#0F4C5C] text-xs font-medium px-3 py-1.5 bg-[#ECFCCB] rounded-full hover:bg-[#ECFCCB] transition-colors shrink-0"
+                >
                   Join
                 </button>
               </div>
@@ -226,7 +283,7 @@ export function ExploreTab() {
         ) : activeCategory === 'channels' ? (
           <div className="space-y-2">
             {(results.channels as Array<Record<string, string>>).map((channel) => (
-              <div key={channel.id} className="bg-white rounded-xl p-4 flex items-center gap-3 border border-[#E2E8F0]">
+              <div key={channel.id} className="bg-white rounded-xl p-4 flex items-center gap-3 border border-[#E5E5E5]">
                 <div className="w-12 h-12 rounded-full bg-[#0F4C5C] flex items-center justify-center shrink-0">
                   <Hash className="w-6 h-6 text-white" />
                 </div>
@@ -234,7 +291,10 @@ export function ExploreTab() {
                   <p className="text-sm font-medium text-[#0A0A0A] truncate">{channel.name}</p>
                   <p className="text-xs text-[#525252] truncate">{channel.description || ''}</p>
                 </div>
-                <button className="text-[#0F4C5C] text-xs font-medium px-3 py-1.5 bg-[#ECFCCB] rounded-full hover:bg-[#ECFCCB] transition-colors shrink-0">
+                <button
+                  onClick={() => handleFollowChannel(channel.id)}
+                  className="text-[#0F4C5C] text-xs font-medium px-3 py-1.5 bg-[#ECFCCB] rounded-full hover:bg-[#ECFCCB] transition-colors shrink-0"
+                >
                   Follow
                 </button>
               </div>
@@ -243,7 +303,7 @@ export function ExploreTab() {
         ) : activeCategory === 'partners' ? (
           <div className="space-y-2">
             {(results.partners as Array<Record<string, string | number>>).map((partner) => (
-              <div key={partner.id as string} className="bg-white rounded-xl p-4 border border-[#E2E8F0]">
+              <div key={partner.id as string} className="bg-white rounded-xl p-4 border border-[#E5E5E5]">
                 <div className="flex items-center gap-3 mb-2">
                   <Avatar className="w-12 h-12 shrink-0">
                     <AvatarFallback className="bg-[#ECFCCB] text-[#0F4C5C] text-sm font-semibold">
@@ -258,7 +318,7 @@ export function ExploreTab() {
                     </p>
                   </div>
                   <div className="text-right shrink-0">
-                    <p className="text-sm font-bold text-[#84CC16]">{partner.score || 0}%</p>
+                    <p className="text-sm font-bold text-[#A3E635]">{partner.score || 0}%</p>
                     <p className="text-[10px] text-[#A3A3A3]">match</p>
                   </div>
                 </div>
@@ -267,7 +327,7 @@ export function ExploreTab() {
                 </p>
                 <button
                   onClick={() => handleConnect(partner.id as string, (partner.preferredLanguage || 'English') as string)}
-                  className="w-full flex items-center justify-center gap-1.5 px-3 py-2 bg-[#84CC16] hover:bg-[#65A30D] text-white text-xs font-medium rounded-full transition-colors"
+                  className="w-full flex items-center justify-center gap-1.5 px-3 py-2 bg-[#A3E635] hover:bg-[#65A30D] text-[#0A0A0A] text-xs font-medium rounded-full transition-colors"
                 >
                   <MessageCircle className="w-3.5 h-3.5" />
                   Say Hello
@@ -278,7 +338,7 @@ export function ExploreTab() {
         ) : activeCategory === 'rooms' ? (
           <div className="space-y-2">
             {(results.rooms as Array<Record<string, string | number>>).map((room) => (
-              <div key={room.id as string} className="bg-white rounded-xl p-4 flex items-center gap-3 border border-[#E2E8F0]">
+              <div key={room.id as string} className="bg-white rounded-xl p-4 flex items-center gap-3 border border-[#E5E5E5]">
                 <div className="w-12 h-12 rounded-full bg-[#0F4C5C] flex items-center justify-center shrink-0 relative">
                   <Radio className="w-5 h-5 text-white" />
                   <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full wa-live-dot border border-white" />
@@ -289,7 +349,10 @@ export function ExploreTab() {
                     <Mic className="w-3 h-3 inline mr-0.5" />{(room.speakerCount || 0) as number} speakers · {(room.listenerCount || 0) as number} listening
                   </p>
                 </div>
-                <button className="text-[#0F4C5C] text-xs font-medium px-3 py-1.5 bg-[#ECFCCB] rounded-full hover:bg-[#ECFCCB] transition-colors shrink-0">
+                <button
+                  onClick={() => handleJoinRoom(room.id as string)}
+                  className="text-[#0F4C5C] text-xs font-medium px-3 py-1.5 bg-[#ECFCCB] rounded-full hover:bg-[#ECFCCB] transition-colors shrink-0"
+                >
                   Join
                 </button>
               </div>
@@ -323,7 +386,7 @@ function WordOfTheDayInline({ token }: { token: string | null }) {
   if (!wordData) return null
 
   return (
-    <div className="bg-white rounded-xl border border-[#E2E8F0] overflow-hidden shadow-sm">
+    <div className="bg-white rounded-xl border border-[#E5E5E5] overflow-hidden shadow-sm">
       <div className="bg-[#ECFCCB] px-4 py-2 flex items-center gap-2">
         <Sparkles className="w-3.5 h-3.5 text-[#0F4C5C]" />
         <span className="text-[#0F4C5C] text-xs font-semibold">Word of the Day</span>

@@ -160,7 +160,7 @@ export function ChannelsTab() {
       </div>
 
       {/* Tabs */}
-      <div className="flex border-b border-[#E2E8F0] shrink-0">
+      <div className="flex border-b border-[#E5E5E5] shrink-0">
         <button
           onClick={() => setActiveSection('joined')}
           className={`flex-1 py-3 text-sm font-medium transition-colors relative ${
@@ -208,11 +208,11 @@ export function ChannelsTab() {
       <div className="flex-1 overflow-y-auto scrollbar-thin">
         {loading ? (
           <div className="p-8 text-center">
-            <span className="w-6 h-6 border-2 border-[#84CC16]/30 border-t-[#84CC16] rounded-full animate-spin inline-block" />
+            <span className="w-6 h-6 border-2 border-[#A3E635]/30 border-t-[#A3E635] rounded-full animate-spin inline-block" />
           </div>
         ) : allChannels.length === 0 ? (
           <div className="p-8 text-center">
-            <Hash className="w-12 h-12 text-[#E2E8F0] mx-auto mb-3" />
+            <Hash className="w-12 h-12 text-[#E5E5E5] mx-auto mb-3" />
             <p className="text-sm text-[#525252]">
               {activeSection === 'joined' ? 'No channels yet' : 'No channels found'}
             </p>
@@ -226,7 +226,7 @@ export function ChannelsTab() {
           /* Channel Posts View */
           <div>
             {/* Channel header */}
-            <div className="px-4 py-3 bg-[#F1F5F9] border-b border-[#E2E8F0]">
+            <div className="px-4 py-3 bg-[#F1F5F9] border-b border-[#E5E5E5]">
               <button
                 onClick={() => setActiveChannelId(null)}
                 className="text-[#0F4C5C] text-sm font-medium mb-2"
@@ -234,8 +234,8 @@ export function ChannelsTab() {
                 ← Back to channels
               </button>
               <div className="flex items-center gap-2">
-                <div className="w-10 h-10 rounded-full bg-[#84CC16] flex items-center justify-center">
-                  <Hash className="w-5 h-5 text-white" />
+                <div className="w-10 h-10 rounded-full bg-[#A3E635] flex items-center justify-center">
+                  <Hash className="w-5 h-5 text-[#0A0A0A]" />
                 </div>
                 <div>
                   <h3 className="text-base font-medium text-[#0A0A0A]">
@@ -249,14 +249,14 @@ export function ChannelsTab() {
             </div>
 
             {/* Posts */}
-            <div className="divide-y divide-[#E2E8F0]">
+            <div className="divide-y divide-[#E5E5E5]">
               {(posts[activeChannelId] || []).map((post) => {
                 const initials = post.author.name.split(' ').map((n) => n[0]).join('').toUpperCase().slice(0, 2)
                 return (
                   <div key={post.id} className="p-4">
                     <div className="flex items-center gap-2 mb-2">
                       <Avatar className="w-8 h-8">
-                        <AvatarFallback className="bg-[#E2E8F0] text-[#0A0A0A] text-xs">
+                        <AvatarFallback className="bg-[#E5E5E5] text-[#0A0A0A] text-xs">
                           {initials}
                         </AvatarFallback>
                       </Avatar>
@@ -287,7 +287,7 @@ export function ChannelsTab() {
               })}
               {(!posts[activeChannelId] || posts[activeChannelId].length === 0) && (
                 <div className="p-8 text-center">
-                  <MessageCircle className="w-10 h-10 text-[#E2E8F0] mx-auto mb-2" />
+                  <MessageCircle className="w-10 h-10 text-[#E5E5E5] mx-auto mb-2" />
                   <p className="text-sm text-[#525252]">No posts yet</p>
                 </div>
               )}
@@ -301,10 +301,10 @@ export function ChannelsTab() {
               <button
                 key={channel.id}
                 onClick={() => handleSelectChannel(channel.id)}
-                className="w-full flex items-center gap-3 px-4 py-3 hover:bg-[#F1F5F9] transition-colors border-b border-[#E2E8F0]"
+                className="w-full flex items-center gap-3 px-4 py-3 hover:bg-[#F1F5F9] transition-colors border-b border-[#E5E5E5]"
               >
-                <div className="w-12 h-12 rounded-full bg-[#84CC16] flex items-center justify-center shrink-0">
-                  <Hash className="w-6 h-6 text-white" />
+                <div className="w-12 h-12 rounded-full bg-[#A3E635] flex items-center justify-center shrink-0">
+                  <Hash className="w-6 h-6 text-[#0A0A0A]" />
                 </div>
                 <div className="flex-1 min-w-0 text-left">
                   <p className="text-sm font-medium text-[#0A0A0A] truncate">{channel.name}</p>

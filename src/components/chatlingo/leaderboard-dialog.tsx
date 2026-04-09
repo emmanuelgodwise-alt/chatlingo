@@ -55,8 +55,8 @@ export function LeaderboardDialog() {
   }
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center">
-      <div className="bg-white rounded-xl shadow-xl max-w-md w-full mx-4 max-h-[80vh] overflow-y-auto">
+    <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center" onClick={() => setShowLeaderboard(false)}>
+      <div className="bg-white rounded-xl shadow-xl max-w-md w-full mx-4 max-h-[80vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
         {/* Green Header */}
         <div className="bg-[#0F4C5C] px-6 py-5 rounded-t-xl flex items-start justify-between">
           <div>
@@ -77,7 +77,7 @@ export function LeaderboardDialog() {
         </div>
 
         {/* Tab Filter */}
-        <div className="flex border-b border-[#E2E8F0]">
+        <div className="flex border-b border-[#E5E5E5]">
           <button
             onClick={() => setTab('global')}
             className={`flex-1 py-3 text-sm font-medium transition-colors border-b-2 ${
@@ -104,7 +104,7 @@ export function LeaderboardDialog() {
         <div className="p-4">
           {loading ? (
             <div className="flex items-center justify-center py-12">
-              <Loader2 className="w-6 h-6 text-[#84CC16] animate-spin" />
+              <Loader2 className="w-6 h-6 text-[#A3E635] animate-spin" />
             </div>
           ) : entries.length === 0 ? (
             <div className="py-12 text-center">
@@ -135,7 +135,7 @@ export function LeaderboardDialog() {
                     key={entry.userId}
                     className={`flex items-center gap-3 p-3 rounded-lg transition-colors ${
                       isCurrentUser
-                        ? 'bg-[#84CC16]/10 border border-[#84CC16]/20'
+                        ? 'bg-[#A3E635]/10 border border-[#A3E635]/20'
                         : entry.rank <= 3
                         ? 'bg-[#F1F5F9]'
                         : 'hover:bg-[#F1F5F9]'
@@ -161,7 +161,7 @@ export function LeaderboardDialog() {
                           ? 'bg-gray-100 text-gray-600 border-2 border-gray-300'
                           : entry.rank === 3
                           ? 'bg-orange-100 text-orange-700 border-2 border-orange-300'
-                          : 'bg-[#E2E8F0] text-[#0A0A0A]'
+                          : 'bg-[#E5E5E5] text-[#0A0A0A]'
                       }`}
                     >
                       {entry.avatar ? (
@@ -184,7 +184,7 @@ export function LeaderboardDialog() {
                       >
                         {entry.name}
                         {isCurrentUser && (
-                          <span className="ml-1.5 text-xs text-[#84CC16] font-normal">
+                          <span className="ml-1.5 text-xs text-[#A3E635] font-normal">
                             (You)
                           </span>
                         )}
@@ -222,7 +222,7 @@ export function LeaderboardDialog() {
         </div>
 
         {/* Footer */}
-        <div className="px-6 pb-5 pt-2 border-t border-[#E2E8F0] flex justify-end">
+        <div className="px-6 pb-5 pt-2 border-t border-[#E5E5E5] flex justify-end">
           <button
             onClick={() => setShowLeaderboard(false)}
             className="text-sm text-[#525252] hover:text-[#0A0A0A] transition-colors"

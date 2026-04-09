@@ -70,7 +70,7 @@ export function CreateChannelDialog() {
               onChange={(e) => setName(e.target.value)}
               placeholder="e.g., French Learners"
               maxLength={50}
-              className="w-full px-3 py-2.5 bg-[#F1F5F9] rounded-lg text-sm text-[#0A0A0A] placeholder:text-[#525252] focus:outline-none focus:ring-2 focus:ring-[#84CC16] border-none"
+              className="w-full px-3 py-2.5 bg-[#F1F5F9] rounded-lg text-sm text-[#0A0A0A] placeholder:text-[#525252] focus:outline-none focus:ring-2 focus:ring-[#A3E635] border-none"
             />
           </div>
 
@@ -83,7 +83,7 @@ export function CreateChannelDialog() {
               placeholder="What is this channel about?"
               maxLength={200}
               rows={3}
-              className="w-full px-3 py-2.5 bg-[#F1F5F9] rounded-lg text-sm text-[#0A0A0A] placeholder:text-[#525252] focus:outline-none focus:ring-2 focus:ring-[#84CC16] border-none resize-none"
+              className="w-full px-3 py-2.5 bg-[#F1F5F9] rounded-lg text-sm text-[#0A0A0A] placeholder:text-[#525252] focus:outline-none focus:ring-2 focus:ring-[#A3E635] border-none resize-none"
             />
           </div>
 
@@ -95,8 +95,8 @@ export function CreateChannelDialog() {
                 onClick={() => setIsPublic(true)}
                 className={`flex-1 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
                   isPublic
-                    ? 'bg-[#ECFCCB] text-[#0F4C5C] border-2 border-[#84CC16]'
-                    : 'bg-[#F1F5F9] text-[#525252] border-2 border-transparent hover:border-[#E2E8F0]'
+                    ? 'bg-[#ECFCCB] text-[#0F4C5C] border-2 border-[#A3E635]'
+                    : 'bg-[#F1F5F9] text-[#525252] border-2 border-transparent hover:border-[#E5E5E5]'
                 }`}
               >
                 🌍 Public
@@ -105,8 +105,8 @@ export function CreateChannelDialog() {
                 onClick={() => setIsPublic(false)}
                 className={`flex-1 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
                   !isPublic
-                    ? 'bg-[#ECFCCB] text-[#0F4C5C] border-2 border-[#84CC16]'
-                    : 'bg-[#F1F5F9] text-[#525252] border-2 border-transparent hover:border-[#E2E8F0]'
+                    ? 'bg-[#ECFCCB] text-[#0F4C5C] border-2 border-[#A3E635]'
+                    : 'bg-[#F1F5F9] text-[#525252] border-2 border-transparent hover:border-[#E5E5E5]'
                 }`}
               >
                 🔒 Private
@@ -122,7 +122,7 @@ export function CreateChannelDialog() {
           <button
             onClick={handleCreate}
             disabled={!name.trim() || creating}
-            className="px-6 py-2 bg-[#84CC16] hover:bg-[#65A30D] text-white text-sm font-medium rounded-full transition-colors disabled:opacity-50 shadow-sm"
+            className="px-6 py-2 bg-[#A3E635] hover:bg-[#65A30D] text-[#0A0A0A] text-sm font-medium rounded-full transition-colors disabled:opacity-50 shadow-sm"
           >
             {creating ? (
               <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin inline-block" />

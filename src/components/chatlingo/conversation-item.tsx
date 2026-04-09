@@ -58,18 +58,18 @@ export function ConversationItem({
       <div className="relative shrink-0">
         <Avatar className="w-[49px] h-[49px]">
           <AvatarFallback
-            className={`text-sm font-semibold bg-[#E2E8F0] text-[#0A0A0A]`}
+            className={`text-sm font-semibold bg-[#E5E5E5] text-[#0A0A0A]`}
           >
             {initials}
           </AvatarFallback>
         </Avatar>
         {otherUser.online && (
-          <span className="absolute bottom-0 right-0 w-3 h-3 bg-[#84CC16] border-2 border-white rounded-full" />
+          <span className="absolute bottom-0 right-0 w-3 h-3 bg-[#A3E635] border-2 border-white rounded-full" />
         )}
       </div>
 
       {/* Content */}
-      <div className="flex-1 min-w-0 border-b border-[#E2E8F0] pb-3">
+      <div className="flex-1 min-w-0 border-b border-[#E5E5E5] pb-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-1 min-w-0">
             <h3
@@ -83,7 +83,7 @@ export function ConversationItem({
             <span className="text-[11px] opacity-60 shrink-0">{getLanguageFlag(theirLanguage)}</span>
           </div>
           <span className={`text-xs shrink-0 ml-2 ${
-            unreadCount > 0 ? 'text-[#84CC16]' : 'text-[#525252]'
+            unreadCount > 0 ? 'text-[#A3E635]' : 'text-[#525252]'
           }`}>
             {timeStr}
           </span>

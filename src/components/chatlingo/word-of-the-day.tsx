@@ -43,10 +43,10 @@ export function WordOfTheDay() {
   if (loading) {
     return (
       <div className="rounded-xl overflow-hidden bg-[#F1F5F9] h-40 animate-pulse p-4 space-y-2">
-        <div className="h-3 bg-[#E2E8F0] rounded w-1/3" />
-        <div className="h-5 bg-[#E2E8F0] rounded w-2/3" />
-        <div className="h-3 bg-[#E2E8F0] rounded w-full" />
-        <div className="h-3 bg-[#E2E8F0] rounded w-4/5" />
+        <div className="h-3 bg-[#E5E5E5] rounded w-1/3" />
+        <div className="h-5 bg-[#E5E5E5] rounded w-2/3" />
+        <div className="h-3 bg-[#E5E5E5] rounded w-full" />
+        <div className="h-3 bg-[#E5E5E5] rounded w-4/5" />
       </div>
     )
   }
@@ -54,7 +54,7 @@ export function WordOfTheDay() {
   if (!wordData) return null
 
   return (
-    <div className="rounded-xl bg-white border border-[#E2E8F0] overflow-hidden shadow-sm">
+    <div className="rounded-xl bg-white border border-[#E5E5E5] overflow-hidden shadow-sm">
       {/* Header */}
       <div className="bg-[#ECFCCB] px-4 py-2.5 flex items-center gap-2">
         <BookOpen className="w-4 h-4 text-[#0F4C5C]" />
@@ -82,7 +82,7 @@ export function WordOfTheDay() {
         {/* Cultural Note */}
         {wordData.culturalNote && (
           <div className="flex items-start gap-2 bg-[#F1F5F9] rounded-lg p-3">
-            <Lightbulb className="w-4 h-4 text-[#84CC16] mt-0.5 shrink-0" />
+            <Lightbulb className="w-4 h-4 text-[#A3E635] mt-0.5 shrink-0" />
             <p className="text-xs text-[#525252] leading-relaxed">{wordData.culturalNote}</p>
           </div>
         )}
@@ -90,7 +90,7 @@ export function WordOfTheDay() {
         {/* Practice Button */}
         <button
           onClick={handlePractice}
-          className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-[#84CC16] hover:bg-[#65A30D] text-white text-sm font-medium rounded-full transition-colors"
+          className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-[#A3E635] hover:bg-[#65A30D] text-[#0A0A0A] text-sm font-medium rounded-full transition-colors"
         >
           <Volume2 className="w-4 h-4" />
           Practice in Chat

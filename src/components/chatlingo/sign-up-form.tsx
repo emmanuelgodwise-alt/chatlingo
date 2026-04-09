@@ -123,7 +123,7 @@ export function SignUpForm() {
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   required
-                  className="h-11 rounded-md border-[#E2E8F0] focus:border-[#84CC16] focus:ring-[#84CC16]/20"
+                  className="h-11 rounded-md border-[#E5E5E5] focus:border-[#A3E635] focus:ring-[#A3E635]/20"
                 />
               </div>
 
@@ -136,7 +136,7 @@ export function SignUpForm() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  className="h-11 rounded-md border-[#E2E8F0] focus:border-[#84CC16] focus:ring-[#84CC16]/20"
+                  className="h-11 rounded-md border-[#E5E5E5] focus:border-[#A3E635] focus:ring-[#A3E635]/20"
                 />
               </div>
 
@@ -148,7 +148,7 @@ export function SignUpForm() {
                   placeholder="+1 (555) 000-0000"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
-                  className="h-11 rounded-md border-[#E2E8F0] focus:border-[#84CC16] focus:ring-[#84CC16]/20"
+                  className="h-11 rounded-md border-[#E5E5E5] focus:border-[#A3E635] focus:ring-[#A3E635]/20"
                 />
               </div>
 
@@ -161,7 +161,7 @@ export function SignUpForm() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  className="h-11 rounded-md border-[#E2E8F0] focus:border-[#84CC16] focus:ring-[#84CC16]/20"
+                  className="h-11 rounded-md border-[#E5E5E5] focus:border-[#A3E635] focus:ring-[#A3E635]/20"
                 />
               </div>
 
@@ -174,7 +174,7 @@ export function SignUpForm() {
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   required
-                  className="h-11 rounded-md border-[#E2E8F0] focus:border-[#84CC16] focus:ring-[#84CC16]/20"
+                  className="h-11 rounded-md border-[#E5E5E5] focus:border-[#A3E635] focus:ring-[#A3E635]/20"
                 />
               </div>
 
@@ -186,7 +186,7 @@ export function SignUpForm() {
                   </span>
                 </Label>
                 <Select value={preferredLanguage} onValueChange={setPreferredLanguage}>
-                  <SelectTrigger className="h-11 rounded-md border-[#E2E8F0] focus:border-[#84CC16] focus:ring-[#84CC16]/20">
+                  <SelectTrigger className="h-11 rounded-md border-[#E5E5E5] focus:border-[#A3E635] focus:ring-[#A3E635]/20">
                     <SelectValue placeholder="Select your language" />
                   </SelectTrigger>
                   <SelectContent>
@@ -205,12 +205,12 @@ export function SignUpForm() {
             <CardFooter className="flex flex-col gap-4 pt-2 pb-6 px-6">
               <Button
                 type="submit"
-                className="w-full h-11 bg-[#84CC16] hover:bg-[#65A30D] text-white font-semibold rounded-md shadow-sm"
+                className="w-full h-11 bg-[#A3E635] hover:bg-[#65A30D] text-[#0A0A0A] font-semibold rounded-md shadow-sm"
                 disabled={loading}
               >
                 {loading ? (
                   <span className="flex items-center gap-2">
-                    <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    <span className="w-4 h-4 border-2 border-[#0A0A0A]/20 border-t-[#0A0A0A] rounded-full animate-spin" />
                     Creating account...
                   </span>
                 ) : (

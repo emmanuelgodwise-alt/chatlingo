@@ -358,7 +358,7 @@ export function LessonScreen() {
       <div className="flex flex-col items-center justify-center min-h-screen bg-[#F1F5F9] p-6 animate-fadeIn">
         {/* Confetti / Celebration */}
         <div className="text-6xl mb-4">{perfectScore ? '🏆' : passedScore ? '🎉' : '💪'}</div>
-        <PartyPopper className="w-10 h-10 text-[#84CC16] mb-2" />
+        <PartyPopper className="w-10 h-10 text-[#A3E635] mb-2" />
 
         <h1 className="text-2xl font-bold text-[#0A0A0A] mb-1">
           {perfectScore ? 'Perfect Score!' : passedScore ? 'Well Done!' : 'Keep Practicing!'}
@@ -368,10 +368,10 @@ export function LessonScreen() {
         </p>
 
         {/* Score Card */}
-        <div className="bg-white rounded-2xl p-6 w-full max-w-sm shadow-sm border border-[#E2E8F0] mb-4">
+        <div className="bg-white rounded-2xl p-6 w-full max-w-sm shadow-sm border border-[#E5E5E5] mb-4">
           {/* Score */}
           <div className="text-center mb-4">
-            <div className={`text-5xl font-bold mb-1 ${data.score >= 70 ? 'text-[#84CC16]' : 'text-[#FF6B6B]'}`}>
+            <div className={`text-5xl font-bold mb-1 ${data.score >= 70 ? 'text-[#A3E635]' : 'text-[#FF6B6B]'}`}>
               {data.score}%
             </div>
             <p className="text-[#525252] text-sm">
@@ -387,12 +387,12 @@ export function LessonScreen() {
               <div className="text-[10px] text-[#525252]">XP Earned</div>
             </div>
             <div className="text-center bg-[#F1F5F9] rounded-xl p-3">
-              <Flame className="w-5 h-5 text-[#84CC16] mx-auto mb-1" />
+              <Flame className="w-5 h-5 text-[#A3E635] mx-auto mb-1" />
               <div className="text-lg font-bold text-[#0A0A0A]">{data.streak}</div>
               <div className="text-[10px] text-[#525252]">Day Streak</div>
             </div>
             <div className="text-center bg-[#F1F5F9] rounded-xl p-3">
-              <Trophy className="w-5 h-5 text-[#84CC16] mx-auto mb-1" />
+              <Trophy className="w-5 h-5 text-[#A3E635] mx-auto mb-1" />
               <div className="text-lg font-bold text-[#0A0A0A]">{data.newTotalXp}</div>
               <div className="text-[10px] text-[#525252]">Total XP</div>
             </div>
@@ -401,7 +401,7 @@ export function LessonScreen() {
           {/* Completion Badge */}
           {passedScore && (
             <div className="mt-4 flex items-center justify-center gap-2 bg-[#ECFCCB] rounded-xl py-2.5 px-4">
-              <CheckCircle2 className="w-5 h-5 text-[#84CC16]" />
+              <CheckCircle2 className="w-5 h-5 text-[#A3E635]" />
               <span className="text-sm font-semibold text-[#0F4C5C]">Lesson Completed!</span>
             </div>
           )}
@@ -411,14 +411,14 @@ export function LessonScreen() {
         <div className="w-full max-w-sm space-y-2">
           <Button
             onClick={handleQuit}
-            className="w-full h-12 rounded-xl bg-[#84CC16] hover:bg-[#65A30D] text-white font-semibold text-base"
+            className="w-full h-12 rounded-xl bg-[#A3E635] hover:bg-[#65A30D] text-[#0A0A0A] font-semibold text-base"
           >
             Continue
           </Button>
           <Button
             onClick={handleTryAgain}
             variant="outline"
-            className="w-full h-12 rounded-xl border-[#E2E8F0] text-[#0F4C5C] font-semibold text-base hover:bg-[#F1F5F9]"
+            className="w-full h-12 rounded-xl border-[#E5E5E5] text-[#0F4C5C] font-semibold text-base hover:bg-[#F1F5F9]"
           >
             <RotateCcw className="w-4 h-4 mr-2" />
             Try Again
@@ -435,7 +435,7 @@ export function LessonScreen() {
   if (submitting) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen bg-[#F1F5F9]">
-        <Loader2 className="w-10 h-10 text-[#84CC16] animate-spin mb-4" />
+        <Loader2 className="w-10 h-10 text-[#A3E635] animate-spin mb-4" />
         <p className="text-[#525252] text-sm">Submitting your results...</p>
       </div>
     )
@@ -485,14 +485,14 @@ export function LessonScreen() {
               <span className="text-xs font-medium text-[#525252]">
                 {currentExerciseIndex + 1} / {totalExercises} exercises
               </span>
-              <span className="text-xs text-[#84CC16] font-semibold">
+              <span className="text-xs text-[#A3E635] font-semibold">
                 {lessonScore} correct
               </span>
             </div>
             {/* Progress Bar */}
-            <div className="w-full h-2 bg-[#E2E8F0] rounded-full overflow-hidden">
+            <div className="w-full h-2 bg-[#E5E5E5] rounded-full overflow-hidden">
               <div
-                className="h-full bg-[#84CC16] rounded-full transition-all duration-500 ease-out"
+                className="h-full bg-[#A3E635] rounded-full transition-all duration-500 ease-out"
                 style={{ width: `${progress}%` }}
               />
             </div>
@@ -512,7 +512,7 @@ export function LessonScreen() {
         {/* XP Animation */}
         {xpAnim && (
           <div className="fixed top-20 left-1/2 -translate-x-1/2 z-50 animate-slideUp pointer-events-none">
-            <div className="bg-[#84CC16] text-white px-4 py-2 rounded-full font-bold text-sm shadow-lg flex items-center gap-1">
+            <div className="bg-[#A3E635] text-[#0A0A0A] px-4 py-2 rounded-full font-bold text-sm shadow-lg flex items-center gap-1">
               <Star className="w-4 h-4 fill-current" />
               +{exercise.xpReward} XP
             </div>
@@ -609,7 +609,7 @@ export function LessonScreen() {
       </div>
 
       {/* ========== BOTTOM BAR ========== */}
-      <div className="bg-white border-t border-[#E2E8F0] px-4 py-3 shrink-0 safe-area-bottom">
+      <div className="bg-white border-t border-[#E5E5E5] px-4 py-3 shrink-0 safe-area-bottom">
         {/* Hint Button for non-matching, non-speaking exercises */}
         {exercise.type !== 'matching' && exercise.type !== 'speaking' && exercise.hint && !showHint && (
           <button
@@ -632,7 +632,7 @@ export function LessonScreen() {
           speechFeedback === 'idle' && !isRecording ? (
             <Button
               onClick={handleStartRecording}
-              className="w-full h-12 rounded-xl bg-[#84CC16] hover:bg-[#65A30D] text-white font-semibold text-base"
+              className="w-full h-12 rounded-xl bg-[#A3E635] hover:bg-[#65A30D] text-[#0A0A0A] font-semibold text-base"
             >
               <Mic className="w-5 h-5 mr-2" />
               Start Speaking
@@ -654,7 +654,7 @@ export function LessonScreen() {
           <Button
             onClick={handleCheck}
             disabled={!selectedOption || isOptionDisabled}
-            className="w-full h-12 rounded-xl font-semibold text-base transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed bg-[#84CC16] hover:bg-[#65A30D] text-white"
+            className="w-full h-12 rounded-xl font-semibold text-base transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed bg-[#A3E635] hover:bg-[#65A30D] text-[#0A0A0A]"
           >
             Check
           </Button>
@@ -695,7 +695,7 @@ function TranslationExercise({
       </p>
 
       {/* Word/Phrase Display */}
-      <div className="bg-white rounded-2xl p-8 text-center shadow-sm border border-[#E2E8F0]">
+      <div className="bg-white rounded-2xl p-8 text-center shadow-sm border border-[#E5E5E5]">
         <p className="text-2xl font-bold text-[#0A0A0A] mb-1">{exercise.question}</p>
         <p className="text-xs text-[#525252]">{targetLanguage}</p>
       </div>
@@ -723,21 +723,21 @@ function TranslationExercise({
               disabled={feedbackState !== 'idle'}
               className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-xl border-2 transition-all duration-200 text-left ${
                 showCorrect
-                  ? 'border-[#84CC16] bg-[#ECFCCB] text-[#0F4C5C]'
+                  ? 'border-[#A3E635] bg-[#ECFCCB] text-[#0F4C5C]'
                   : showWrong
                   ? 'border-[#FF6B6B] bg-[#FEE2E2] text-[#991B1B] animate-[shake_0.4s_ease-in-out]'
                   : isSelected
-                  ? 'border-[#84CC16] bg-[#ECFCCB] text-[#0A0A0A]'
-                  : 'border-[#E2E8F0] bg-white text-[#0A0A0A] hover:border-[#84CC16]/50 hover:bg-[#F1F5F9]'
+                  ? 'border-[#A3E635] bg-[#ECFCCB] text-[#0A0A0A]'
+                  : 'border-[#E5E5E5] bg-white text-[#0A0A0A] hover:border-[#A3E635]/50 hover:bg-[#F1F5F9]'
               }`}
             >
               <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 text-sm font-bold transition-colors ${
                 showCorrect
-                  ? 'bg-[#84CC16] text-white'
+                  ? 'bg-[#A3E635] text-[#0A0A0A]'
                   : showWrong
                   ? 'bg-[#FF6B6B] text-white'
                   : isSelected
-                  ? 'bg-[#84CC16]/20 text-[#84CC16]'
+                  ? 'bg-[#A3E635]/20 text-[#A3E635]'
                   : 'bg-[#F1F5F9] text-[#525252]'
               }`}>
                 {showCorrect ? <Check className="w-4 h-4" /> : showWrong ? <X className="w-4 h-4" /> : ''}
@@ -781,18 +781,18 @@ function FillBlankExercise({
       </p>
 
       {/* Sentence with Blank */}
-      <div className="bg-white rounded-2xl p-8 text-center shadow-sm border border-[#E2E8F0]">
+      <div className="bg-white rounded-2xl p-8 text-center shadow-sm border border-[#E5E5E5]">
         <p className="text-xl font-semibold text-[#0A0A0A] leading-relaxed">
           {displaySentence.split('\u00AD\u00AD\u00AD\u00AD\u00AD').map((part, idx, arr) => (
             <span key={idx}>
               {part}
               {idx < arr.length - 1 && (
                 <span className={`inline-block min-w-[80px] border-b-2 mx-1 transition-colors ${
-                  selectedOption ? 'border-[#84CC16]' : 'border-[#525252]'
+                  selectedOption ? 'border-[#A3E635]' : 'border-[#525252]'
                 }`}>
                   {feedbackState !== 'idle' && (
                     <span className={`text-sm font-bold ${
-                      feedbackState === 'correct' ? 'text-[#84CC16]' : 'text-[#FF6B6B]'
+                      feedbackState === 'correct' ? 'text-[#A3E635]' : 'text-[#FF6B6B]'
                     }`}>
                       {selectedOption}
                     </span>
@@ -827,21 +827,21 @@ function FillBlankExercise({
               disabled={feedbackState !== 'idle'}
               className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-xl border-2 transition-all duration-200 text-left ${
                 showCorrect
-                  ? 'border-[#84CC16] bg-[#ECFCCB] text-[#0F4C5C]'
+                  ? 'border-[#A3E635] bg-[#ECFCCB] text-[#0F4C5C]'
                   : showWrong
                   ? 'border-[#FF6B6B] bg-[#FEE2E2] text-[#991B1B] animate-[shake_0.4s_ease-in-out]'
                   : isSelected
-                  ? 'border-[#84CC16] bg-[#ECFCCB] text-[#0A0A0A]'
-                  : 'border-[#E2E8F0] bg-white text-[#0A0A0A] hover:border-[#84CC16]/50 hover:bg-[#F1F5F9]'
+                  ? 'border-[#A3E635] bg-[#ECFCCB] text-[#0A0A0A]'
+                  : 'border-[#E5E5E5] bg-white text-[#0A0A0A] hover:border-[#A3E635]/50 hover:bg-[#F1F5F9]'
               }`}
             >
               <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 text-sm font-bold transition-colors ${
                 showCorrect
-                  ? 'bg-[#84CC16] text-white'
+                  ? 'bg-[#A3E635] text-[#0A0A0A]'
                   : showWrong
                   ? 'bg-[#FF6B6B] text-white'
                   : isSelected
-                  ? 'bg-[#84CC16]/20 text-[#84CC16]'
+                  ? 'bg-[#A3E635]/20 text-[#A3E635]'
                   : 'bg-[#F1F5F9] text-[#525252]'
               }`}>
                 {showCorrect ? <Check className="w-4 h-4" /> : showWrong ? <X className="w-4 h-4" /> : ''}
@@ -891,11 +891,11 @@ function ListeningExercise({
           onClick={onPlay}
           className={`w-20 h-20 rounded-full flex items-center justify-center transition-all duration-200 shadow-lg ${
             hasPlayed
-              ? 'bg-[#84CC16] hover:bg-[#65A30D] hover:scale-105'
+              ? 'bg-[#A3E635] hover:bg-[#65A30D] hover:scale-105'
               : 'bg-[#0F4C5C] hover:bg-[#134E5E] hover:scale-105 animate-pulse'
           }`}
         >
-          <Volume2 className="w-9 h-9 text-white" />
+          <Volume2 className="w-9 h-9 text-[#0A0A0A]" />
         </button>
         <p className="text-xs text-[#525252]">
           {hasPlayed ? 'Tap to replay' : 'Tap to listen'} · {targetLanguage}
@@ -917,21 +917,21 @@ function ListeningExercise({
               disabled={feedbackState !== 'idle'}
               className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-xl border-2 transition-all duration-200 text-left ${
                 showCorrect
-                  ? 'border-[#84CC16] bg-[#ECFCCB] text-[#0F4C5C]'
+                  ? 'border-[#A3E635] bg-[#ECFCCB] text-[#0F4C5C]'
                   : showWrong
                   ? 'border-[#FF6B6B] bg-[#FEE2E2] text-[#991B1B] animate-[shake_0.4s_ease-in-out]'
                   : isSelected
-                  ? 'border-[#84CC16] bg-[#ECFCCB] text-[#0A0A0A]'
-                  : 'border-[#E2E8F0] bg-white text-[#0A0A0A] hover:border-[#84CC16]/50 hover:bg-[#F1F5F9]'
+                  ? 'border-[#A3E635] bg-[#ECFCCB] text-[#0A0A0A]'
+                  : 'border-[#E5E5E5] bg-white text-[#0A0A0A] hover:border-[#A3E635]/50 hover:bg-[#F1F5F9]'
               }`}
             >
               <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 text-sm font-bold transition-colors ${
                 showCorrect
-                  ? 'bg-[#84CC16] text-white'
+                  ? 'bg-[#A3E635] text-[#0A0A0A]'
                   : showWrong
                   ? 'bg-[#FF6B6B] text-white'
                   : isSelected
-                  ? 'bg-[#84CC16]/20 text-[#84CC16]'
+                  ? 'bg-[#A3E635]/20 text-[#A3E635]'
                   : 'bg-[#F1F5F9] text-[#525252]'
               }`}>
                 {showCorrect ? <Check className="w-4 h-4" /> : showWrong ? <X className="w-4 h-4" /> : ''}
@@ -1007,9 +1007,9 @@ function MatchingExercise({
       </div>
 
       {/* Matching Progress Bar */}
-      <div className="w-full h-1.5 bg-[#E2E8F0] rounded-full overflow-hidden">
+      <div className="w-full h-1.5 bg-[#E5E5E5] rounded-full overflow-hidden">
         <div
-          className="h-full bg-[#84CC16] rounded-full transition-all duration-300"
+          className="h-full bg-[#A3E635] rounded-full transition-all duration-300"
           style={{ width: `${(matchedPairs.size / pairs.size) * 100}%` }}
         />
       </div>
@@ -1031,13 +1031,13 @@ function MatchingExercise({
                 disabled={matched || feedbackState !== 'idle'}
                 className={`w-full px-4 py-3 rounded-xl border-2 text-center transition-all duration-200 text-sm font-medium ${
                   matched
-                    ? 'border-[#84CC16] bg-[#ECFCCB] text-[#0F4C5C] opacity-60'
+                    ? 'border-[#A3E635] bg-[#ECFCCB] text-[#0F4C5C] opacity-60'
                     : selected
-                    ? 'border-[#84CC16] bg-[#ECFCCB] text-[#0A0A0A] shadow-sm'
-                    : 'border-[#E2E8F0] bg-white text-[#0A0A0A] hover:border-[#84CC16]/50'
+                    ? 'border-[#A3E635] bg-[#ECFCCB] text-[#0A0A0A] shadow-sm'
+                    : 'border-[#E5E5E5] bg-white text-[#0A0A0A] hover:border-[#A3E635]/50'
                 }`}
               >
-                {matched && <Check className="w-3 h-3 inline mr-1 text-[#84CC16]" />}
+                {matched && <Check className="w-3 h-3 inline mr-1 text-[#A3E635]" />}
                 {word}
               </button>
             )
@@ -1046,7 +1046,7 @@ function MatchingExercise({
 
         {/* Arrow Divider */}
         <div className="col-span-2 flex justify-center -my-2">
-          <ArrowDownUp className="w-5 h-5 text-[#E2E8F0] -rotate-90" />
+          <ArrowDownUp className="w-5 h-5 text-[#E5E5E5] -rotate-90" />
         </div>
 
         {/* Right Column */}
@@ -1066,13 +1066,13 @@ function MatchingExercise({
                   isWrong
                     ? 'border-[#FF6B6B] bg-[#FEE2E2] text-[#991B1B] animate-[shake_0.4s_ease-in-out]'
                     : matched
-                    ? 'border-[#84CC16] bg-[#ECFCCB] text-[#0F4C5C] opacity-60'
+                    ? 'border-[#A3E635] bg-[#ECFCCB] text-[#0F4C5C] opacity-60'
                     : selectedLeft
-                    ? 'border-[#E2E8F0] bg-white text-[#0A0A0A] hover:border-[#84CC16]/50'
-                    : 'border-[#E2E8F0] bg-[#F1F5F9] text-[#A3A3A3] cursor-not-allowed'
+                    ? 'border-[#E5E5E5] bg-white text-[#0A0A0A] hover:border-[#A3E635]/50'
+                    : 'border-[#E5E5E5] bg-[#F1F5F9] text-[#A3A3A3] cursor-not-allowed'
                 }`}
               >
-                {matched && <Check className="w-3 h-3 inline mr-1 text-[#84CC16]" />}
+                {matched && <Check className="w-3 h-3 inline mr-1 text-[#A3E635]" />}
                 {word}
               </button>
             )
@@ -1114,11 +1114,11 @@ function SpeakingExercise({
       </p>
 
       {/* Word/Phrase to Pronounce */}
-      <div className="bg-white rounded-2xl p-8 text-center shadow-sm border border-[#E2E8F0]">
+      <div className="bg-white rounded-2xl p-8 text-center shadow-sm border border-[#E5E5E5]">
         <p className="text-2xl font-bold text-[#0A0A0A] mb-2">{exercise.question}</p>
         <button
           onClick={onPlayPronunciation}
-          className="inline-flex items-center gap-1.5 text-[#84CC16] hover:text-[#65A30D] transition-colors"
+          className="inline-flex items-center gap-1.5 text-[#A3E635] hover:text-[#65A30D] transition-colors"
         >
           <Volume2 className="w-4 h-4" />
           <span className="text-xs font-medium">Listen to pronunciation</span>
@@ -1134,7 +1134,7 @@ function SpeakingExercise({
             isRecording
               ? 'bg-red-500 hover:bg-red-600 scale-110 animate-pulse'
               : speechFeedback === 'correct'
-              ? 'bg-[#84CC16] scale-110'
+              ? 'bg-[#A3E635] scale-110'
               : speechFeedback === 'wrong'
               ? 'bg-[#FF6B6B] scale-110'
               : 'bg-[#0F4C5C] hover:bg-[#134E5E] hover:scale-105'
@@ -1146,7 +1146,7 @@ function SpeakingExercise({
               <span className="absolute -top-1 -right-1 w-3 h-3 bg-white rounded-full animate-ping" />
             </div>
           ) : speechFeedback === 'correct' ? (
-            <CheckCircle2 className="w-9 h-9 text-white" />
+            <CheckCircle2 className="w-9 h-9 text-[#0A0A0A]" />
           ) : speechFeedback === 'wrong' ? (
             <XCircle className="w-9 h-9 text-white" />
           ) : (
@@ -1166,7 +1166,7 @@ function SpeakingExercise({
         {(recognizedText || speechFeedback !== 'idle') && (
           <div className={`w-full rounded-xl p-4 text-center transition-all ${
             speechFeedback === 'correct'
-              ? 'bg-[#ECFCCB] border-2 border-[#84CC16]'
+              ? 'bg-[#ECFCCB] border-2 border-[#A3E635]'
               : speechFeedback === 'wrong'
               ? 'bg-[#FEE2E2] border-2 border-[#FF6B6B]'
               : 'bg-[#F1F5F9] border-2 border-transparent'
@@ -1174,7 +1174,7 @@ function SpeakingExercise({
             <p className="text-xs text-[#525252] mb-1">You said:</p>
             <p className="text-base font-medium text-[#0A0A0A]">{recognizedText || '—'}</p>
             {speechFeedback === 'correct' && (
-              <p className="text-xs font-semibold text-[#84CC16] mt-1 flex items-center justify-center gap-1">
+              <p className="text-xs font-semibold text-[#A3E635] mt-1 flex items-center justify-center gap-1">
                 <CheckCircle2 className="w-3.5 h-3.5" />
                 Correct!
               </p>

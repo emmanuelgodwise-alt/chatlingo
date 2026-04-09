@@ -26,7 +26,7 @@ import { ContactItem } from '@/components/chatlingo/contact-item'
 import { Input } from '@/components/ui/input'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { getLanguageFlag } from '@/lib/languages'
-import { Search, Plus, ArrowLeft, Globe, MessageCircle, MoreVertical, X, UserPlus, UsersRound, Hash, Radio, Megaphone, BookOpen } from 'lucide-react'
+import { Search, Plus, ArrowLeft, Globe, MessageCircle, MoreVertical, X, UserPlus, UsersRound, Hash, Radio, Megaphone, BookOpen, LogOut } from 'lucide-react'
 import type { Socket } from 'socket.io-client'
 
 export function ChatInterface() {
@@ -71,6 +71,7 @@ export function ChatInterface() {
 
   const [searchQuery, setSearchQuery] = useState('')
   const [showFABMenu, setShowFABMenu] = useState(false)
+  const [showUserMenu, setShowUserMenu] = useState(false)
 
   const socketRef = useRef<Socket | null>(null)
   const socketRefForChildren = socketRef
@@ -496,19 +497,19 @@ export function ChatInterface() {
     <div className="h-screen flex bg-white overflow-hidden">
       {/* ============ LEFT SIDEBAR — CONTACTS (Desktop) ============ */}
       <div className={`
-        ${activeTab === 'chats' ? 'flex' : 'hidden'}
-        hidden md:flex
-        w-[300px] lg:w-[320px] shrink-0 bg-white border-r border-[#E2E8F0] flex-col h-full
+        ${activeTab === 'chats' ? 'md:flex' : 'md:hidden'}
+        hidden
+        w-[300px] lg:w-[320px] shrink-0 bg-white border-r border-[#E5E5E5] flex-col h-full
       `}>
         {/* Sidebar Header */}
         <div className="bg-[#0F4C5C] px-3 py-2.5 flex items-center justify-between shrink-0">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-full bg-[#84CC16] flex items-center justify-center">
-              <Globe className="w-4 h-4 text-white" />
+            <div className="w-8 h-8 rounded-full bg-[#A3E635] flex items-center justify-center">
+              <Globe className="w-4 h-4 text-[#0A0A0A]" />
             </div>
             <h2 className="text-white font-semibold text-sm">Chats</h2>
             {totalUnread > 0 && (
-              <span className="w-5 h-5 rounded-full bg-[#84CC16] text-white text-[10px] font-bold flex items-center justify-center">
+              <span className="w-5 h-5 rounded-full bg-[#A3E635] text-[#0A0A0A] text-[10px] font-bold flex items-center justify-center">
                 {totalUnread}
               </span>
             )}
@@ -536,7 +537,7 @@ export function ChatInterface() {
           <div className="fixed inset-0 z-40" onClick={() => setShowFABMenu(false)} />
         )}
         {showFABMenu && (
-          <div className="absolute top-12 right-2 bg-white rounded-xl shadow-lg py-2 z-50 w-52 border border-[#E2E8F0] animate-fadeIn">
+          <div className="absolute top-12 right-2 bg-white rounded-xl shadow-lg py-2 z-50 w-52 border border-[#E5E5E5] animate-fadeIn">
             <button
               onClick={() => { setShowAddContact(true); setShowFABMenu(false) }}
               className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-[#0A0A0A] hover:bg-[#F1F5F9] transition-colors"
@@ -550,8 +551,8 @@ export function ChatInterface() {
               onClick={() => { useChatLingoStore.getState().setShowCreateGroup(true); setShowFABMenu(false) }}
               className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-[#0A0A0A] hover:bg-[#F1F5F9] transition-colors"
             >
-              <div className="w-8 h-8 rounded-full bg-[#84CC16] flex items-center justify-center">
-                <UsersRound className="w-4 h-4 text-white" />
+              <div className="w-8 h-8 rounded-full bg-[#A3E635] flex items-center justify-center">
+                <UsersRound className="w-4 h-4 text-[#0A0A0A]" />
               </div>
               New Group
             </button>
@@ -568,8 +569,8 @@ export function ChatInterface() {
               onClick={() => { useChatLingoStore.getState().setShowCreateRoom(true); setShowFABMenu(false) }}
               className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-[#0A0A0A] hover:bg-[#F1F5F9] transition-colors"
             >
-              <div className="w-8 h-8 rounded-full bg-[#84CC16] flex items-center justify-center">
-                <Radio className="w-4 h-4 text-white" />
+              <div className="w-8 h-8 rounded-full bg-[#A3E635] flex items-center justify-center">
+                <Radio className="w-4 h-4 text-[#0A0A0A]" />
               </div>
               Start Room
             </button>
@@ -577,8 +578,8 @@ export function ChatInterface() {
               onClick={() => { useChatLingoStore.getState().setShowBroadcast(true); setShowFABMenu(false) }}
               className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-[#0A0A0A] hover:bg-[#F1F5F9] transition-colors"
             >
-              <div className="w-8 h-8 rounded-full bg-[#84CC16] flex items-center justify-center">
-                <Megaphone className="w-4 h-4 text-white" />
+              <div className="w-8 h-8 rounded-full bg-[#A3E635] flex items-center justify-center">
+                <Megaphone className="w-4 h-4 text-[#0A0A0A]" />
               </div>
               Broadcast
             </button>
@@ -589,7 +590,7 @@ export function ChatInterface() {
               <div className="w-8 h-8 rounded-full bg-[#0F4C5C] flex items-center justify-center">
                 <BookOpen className="w-4 h-4 text-white" />
               </div>
-              Language Exchange
+              Onboarding
             </button>
           </div>
         )}
@@ -602,7 +603,7 @@ export function ChatInterface() {
               placeholder="Search chats..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-8 h-8 bg-[#F1F5F9] border-none rounded-lg text-xs placeholder:text-[#A3A3A3] focus-visible:ring-1 focus-visible:ring-[#84CC16]/20"
+              className="pl-8 h-8 bg-[#F1F5F9] border-none rounded-lg text-xs placeholder:text-[#A3A3A3] focus-visible:ring-1 focus-visible:ring-[#A3E635]/20"
             />
           </div>
         </div>
@@ -614,7 +615,7 @@ export function ChatInterface() {
         <div className="flex-1 overflow-y-auto scrollbar-thin px-2 pb-2">
           {filteredConversations.length === 0 ? (
             <div className="p-8 text-center">
-              <MessageCircle className="w-12 h-12 text-[#E2E8F0] mx-auto mb-3" />
+              <MessageCircle className="w-12 h-12 text-[#E5E5E5] mx-auto mb-3" />
               <p className="text-sm text-[#525252]">
                 {searchQuery ? 'No chats found' : 'No chats yet'}
               </p>
@@ -644,18 +645,49 @@ export function ChatInterface() {
         </div>
 
         {/* User bar at bottom */}
-        <div className="px-2.5 py-2 flex items-center gap-2 bg-white border-t border-[#E2E8F0] shrink-0">
-          <Avatar className="w-7 h-7">
-            <AvatarFallback className="bg-[#ECFCCB] text-[#0F4C5C] text-[10px] font-bold">
-              {userInitials}
-            </AvatarFallback>
-          </Avatar>
-          <div className="flex-1 min-w-0">
-            <p className="text-xs font-medium text-[#0A0A0A] truncate">{user?.name}</p>
-            <span className="text-[10px] text-[#A3A3A3]">
-              {getLanguageFlag(user?.preferredLanguage || 'English')} {user?.preferredLanguage}
-            </span>
-          </div>
+        <div className="relative">
+          <button
+            onClick={() => setShowUserMenu(!showUserMenu)}
+            className="w-full px-2.5 py-2 flex items-center gap-2 bg-white border-t border-[#E5E5E5] shrink-0 hover:bg-[#F1F5F9] transition-colors cursor-pointer text-left"
+          >
+            <Avatar className="w-7 h-7">
+              <AvatarFallback className="bg-[#ECFCCB] text-[#0F4C5C] text-[10px] font-bold">
+                {userInitials}
+              </AvatarFallback>
+            </Avatar>
+            <div className="flex-1 min-w-0">
+              <p className="text-xs font-medium text-[#0A0A0A] truncate">{user?.name}</p>
+              <span className="text-[10px] text-[#A3A3A3]">
+                {getLanguageFlag(user?.preferredLanguage || 'English')} {user?.preferredLanguage}
+              </span>
+            </div>
+          </button>
+          {/* User dropdown menu */}
+          {showUserMenu && (
+            <>
+              <div className="fixed inset-0 z-40" onClick={() => setShowUserMenu(false)} />
+              <div className="absolute bottom-full left-1 right-1 mb-1 bg-white rounded-xl shadow-lg py-1 z-50 border border-[#E5E5E5] animate-fadeIn">
+                <button
+                  onClick={() => { setShowLanguageSettings(true); setShowUserMenu(false) }}
+                  className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-[#0A0A0A] hover:bg-[#F1F5F9] transition-colors"
+                >
+                  <div className="w-7 h-7 rounded-full bg-[#0F4C5C] flex items-center justify-center">
+                    <BookOpen className="w-3.5 h-3.5 text-white" />
+                  </div>
+                  Profile & Settings
+                </button>
+                <button
+                  onClick={() => { useChatLingoStore.getState().logout(); setShowUserMenu(false) }}
+                  className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-red-500 hover:bg-red-50 transition-colors"
+                >
+                  <div className="w-7 h-7 rounded-full bg-red-100 flex items-center justify-center">
+                    <LogOut className="w-3.5 h-3.5 text-red-500" />
+                  </div>
+                  Sign Out
+                </button>
+              </div>
+            </>
+          )}
         </div>
       </div>
 
@@ -679,7 +711,7 @@ export function ChatInterface() {
         {/* Desktop: always show content; Mobile: show when chat active or non-chats tab */}
         <div className={`flex-1 flex flex-col min-w-0 ${
           activeTab === 'chats' && !activeConversation ? 'hidden md:flex' : ''
-        } ${activeTab !== 'chats' ? 'hidden md:flex' : ''}`}>
+        }`}>
           {activeTab === 'chats' && activeConversation ? (
             <ChatArea socket={socketRefForChildren.current} />
           ) : activeTab === 'chats' ? (
@@ -723,7 +755,7 @@ export function ChatInterface() {
             <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
             <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
           </svg>
-          <span className="text-[11px]">Learn</span>
+          <span className="text-[11px]">Onboarding</span>
         </button>
         <button
           onClick={() => setActiveTab('chats')}
@@ -816,7 +848,7 @@ function MobileContactsView({
             <div className="flex items-center gap-2">
               <h2 className="text-white font-semibold text-base">Chats</h2>
               {totalUnread > 0 && (
-                <span className="w-5 h-5 rounded-full bg-[#84CC16] text-white text-[10px] font-bold flex items-center justify-center">
+                <span className="w-5 h-5 rounded-full bg-[#A3E635] text-[#0A0A0A] text-[10px] font-bold flex items-center justify-center">
                   {totalUnread}
                 </span>
               )}
@@ -834,14 +866,14 @@ function MobileContactsView({
       </div>
 
       {/* Search */}
-      <div className="px-3 py-2 bg-white shrink-0 border-b border-[#E2E8F0]">
+      <div className="px-3 py-2 bg-white shrink-0 border-b border-[#E5E5E5]">
         <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#A3A3A3]" />
           <Input
             placeholder="Search chats..."
             value={searchQuery}
             onChange={(e) => onSearchChange(e.target.value)}
-            className="pl-10 h-10 bg-[#F1F5F9] border-none rounded-xl text-sm placeholder:text-[#A3A3A3] focus-visible:ring-1 focus-visible:ring-[#84CC16]/20"
+            className="pl-10 h-10 bg-[#F1F5F9] border-none rounded-xl text-sm placeholder:text-[#A3A3A3] focus-visible:ring-1 focus-visible:ring-[#A3E635]/20"
           />
         </div>
       </div>
@@ -853,7 +885,7 @@ function MobileContactsView({
       <div className="flex-1 overflow-y-auto scrollbar-thin px-2 pb-2">
         {conversations.length === 0 ? (
           <div className="p-8 text-center">
-            <MessageCircle className="w-12 h-12 text-[#E2E8F0] mx-auto mb-3" />
+            <MessageCircle className="w-12 h-12 text-[#E5E5E5] mx-auto mb-3" />
             <p className="text-sm text-[#525252]">
               {searchQuery ? 'No chats found' : 'No chats yet'}
             </p>

@@ -186,10 +186,10 @@ export function LearnTab() {
       <div className="flex-1 flex flex-col h-full bg-[#F1F5F9]">
         <div className="bg-[#0F4C5C] px-4 py-3 flex items-center gap-2 wa-shadow-header shrink-0">
           <BookOpen className="w-5 h-5 text-white" />
-          <h2 className="text-white font-semibold text-base">Language Exchange</h2>
+          <h2 className="text-white font-semibold text-base">Onboarding</h2>
         </div>
         <div className="flex-1 flex items-center justify-center">
-          <Loader2 className="w-8 h-8 text-[#84CC16] animate-spin" />
+          <Loader2 className="w-8 h-8 text-[#A3E635] animate-spin" />
         </div>
       </div>
     )
@@ -203,7 +203,7 @@ export function LearnTab() {
         <div className="bg-[#0F4C5C] px-4 py-3 flex items-center justify-between wa-shadow-header shrink-0">
           <div className="flex items-center gap-2">
             <BookOpen className="w-5 h-5 text-white" />
-            <h2 className="text-white font-semibold text-base">Language Exchange</h2>
+            <h2 className="text-white font-semibold text-base">Onboarding</h2>
           </div>
           <button
             onClick={() => setShowLeaderboard(true)}
@@ -218,7 +218,7 @@ export function LearnTab() {
           <div className="max-w-sm w-full text-center">
             {/* Illustration */}
             <div className="relative mx-auto mb-6 w-40 h-40">
-              <div className="absolute inset-0 rounded-full bg-gradient-to-br from-[#84CC16]/20 to-[#0F4C5C]/20 animate-pulse" />
+              <div className="absolute inset-0 rounded-full bg-gradient-to-br from-[#A3E635]/20 to-[#0F4C5C]/20 animate-pulse" />
               <div className="relative w-full h-full rounded-full bg-gradient-to-br from-[#ECFCCB] to-[#ECFCCB] flex items-center justify-center shadow-lg">
                 <div className="text-6xl">🌍</div>
               </div>
@@ -241,7 +241,7 @@ export function LearnTab() {
 
             <button
               onClick={() => setShowLearnSetup(true)}
-              className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-[#84CC16] hover:bg-[#65A30D] text-white font-semibold rounded-xl transition-all shadow-md hover:shadow-lg active:scale-[0.98]"
+              className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-[#A3E635] hover:bg-[#65A30D] text-[#0A0A0A] font-semibold rounded-xl transition-all shadow-md hover:shadow-lg active:scale-[0.98]"
             >
               <GraduationCap className="w-5 h-5" />
               Get Started
@@ -251,7 +251,7 @@ export function LearnTab() {
               onClick={() => setShowLearnPairDialog(true)}
               className="mt-4 text-sm text-[#0F4C5C] hover:text-[#134E5E] font-medium transition-colors"
             >
-              Already set up? <span className="underline">Learn with a friend</span>
+              Already set up? <span className="underline">Onboard with a friend</span>
             </button>
           </div>
         </div>
@@ -268,7 +268,7 @@ export function LearnTab() {
       <div className="bg-[#0F4C5C] px-4 py-3 flex items-center justify-between wa-shadow-header shrink-0">
         <div className="flex items-center gap-2">
           <GraduationCap className="w-5 h-5 text-white" />
-          <h2 className="text-white font-semibold text-base">Language Exchange</h2>
+          <h2 className="text-white font-semibold text-base">Onboarding</h2>
         </div>
         <div className="flex items-center gap-1">
           <button
@@ -289,9 +289,9 @@ export function LearnTab() {
       {/* Scrollable content */}
       <div className="flex-1 overflow-y-auto scrollbar-thin">
         {/* Profile Stats Card */}
-        <div className="mx-3 mt-3 bg-white rounded-xl border border-[#E2E8F0] overflow-hidden shadow-sm">
+        <div className="mx-3 mt-3 bg-white rounded-xl border border-[#E5E5E5] overflow-hidden shadow-sm">
           {/* Stats Row */}
-          <div className="grid grid-cols-4 divide-x divide-[#E2E8F0]">
+          <div className="grid grid-cols-4 divide-x divide-[#E5E5E5]">
             <div className="px-3 py-3 text-center">
               <div className="text-lg mb-0.5">🔥</div>
               <p className="text-base font-bold text-[#0A0A0A]">{learningProfile.currentStreak}</p>
@@ -315,7 +315,7 @@ export function LearnTab() {
           </div>
 
           {/* Level + Progress bar */}
-          <div className="px-4 py-3 bg-[#F8F9FA] border-t border-[#E2E8F0]">
+          <div className="px-4 py-3 bg-[#F8F9FA] border-t border-[#E5E5E5]">
             <div className="flex items-center justify-between mb-1.5">
               <div className="flex items-center gap-2">
                 <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wide bg-[#0F4C5C] text-white">
@@ -329,9 +329,9 @@ export function LearnTab() {
                 {learningProfile.totalXp} / {next} XP
               </span>
             </div>
-            <div className="w-full h-2 bg-[#E2E8F0] rounded-full overflow-hidden">
+            <div className="w-full h-2 bg-[#E5E5E5] rounded-full overflow-hidden">
               <div
-                className="h-full bg-gradient-to-r from-[#84CC16] to-[#0F4C5C] rounded-full transition-all duration-500 ease-out"
+                className="h-full bg-gradient-to-r from-[#A3E635] to-[#0F4C5C] rounded-full transition-all duration-500 ease-out"
                 style={{ width: `${progress}%` }}
               />
             </div>
@@ -365,10 +365,10 @@ export function LearnTab() {
                 return (
                   <div
                     key={pair.id}
-                    className="bg-white rounded-xl p-3 flex items-center gap-3 border border-[#E2E8F0] shadow-sm"
+                    className="bg-white rounded-xl p-3 flex items-center gap-3 border border-[#E5E5E5] shadow-sm"
                   >
                     <Avatar className="w-10 h-10 shrink-0">
-                      <AvatarFallback className="bg-[#E2E8F0] text-[#0A0A0A] text-xs font-semibold">
+                      <AvatarFallback className="bg-[#E5E5E5] text-[#0A0A0A] text-xs font-semibold">
                         {initials}
                       </AvatarFallback>
                     </Avatar>
@@ -378,7 +378,7 @@ export function LearnTab() {
                         <span className="flex items-center gap-0.5">
                           I learn: {getLanguageFlag(pair.iLearn)} {pair.iLearn}
                         </span>
-                        <span className="text-[#E2E8F0]">|</span>
+                        <span className="text-[#E5E5E5]">|</span>
                         <span className="flex items-center gap-0.5">
                           I teach: {getLanguageFlag(pair.iTeach)} {pair.iTeach}
                         </span>
@@ -398,7 +398,7 @@ export function LearnTab() {
         {/* Need a Partner? Prompt (no pairs) */}
         {learningPairs.length === 0 && (
           <div className="mx-3 mt-3">
-            <div className="bg-gradient-to-br from-[#ECFCCB] to-[#ECFCCB] rounded-xl p-4 border border-[#84CC16]/20 shadow-sm">
+            <div className="bg-gradient-to-br from-[#ECFCCB] to-[#ECFCCB] rounded-xl p-4 border border-[#A3E635]/20 shadow-sm">
               <div className="flex items-start gap-3">
                 <div className="w-10 h-10 rounded-full bg-white/80 flex items-center justify-center shrink-0 shadow-sm">
                   <Users className="w-5 h-5 text-[#0F4C5C]" />
@@ -410,7 +410,7 @@ export function LearnTab() {
                   </p>
                   <button
                     onClick={() => setShowLearnPairDialog(true)}
-                    className="inline-flex items-center gap-1.5 px-4 py-2 bg-[#84CC16] hover:bg-[#65A30D] text-white text-xs font-semibold rounded-full transition-all shadow-sm hover:shadow active:scale-[0.98]"
+                    className="inline-flex items-center gap-1.5 px-4 py-2 bg-[#A3E635] hover:bg-[#65A30D] text-[#0A0A0A] text-xs font-semibold rounded-full transition-all shadow-sm hover:shadow active:scale-[0.98]"
                   >
                     <UserPlus className="w-3.5 h-3.5" />
                     Find a Partner
@@ -424,7 +424,7 @@ export function LearnTab() {
         {/* Lesson Categories */}
         <div className="mx-3 mt-4 mb-3">
           <h3 className="text-sm font-bold text-[#0A0A0A] mb-2 flex items-center gap-1.5">
-            <Sparkles className="w-4 h-4 text-[#84CC16]" />
+            <Sparkles className="w-4 h-4 text-[#A3E635]" />
             Lessons
           </h3>
 
@@ -437,7 +437,7 @@ export function LearnTab() {
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-colors shrink-0 ${
                   activeCategory === cat
                     ? 'bg-[#0F4C5C] text-white'
-                    : 'bg-white text-[#525252] hover:bg-[#E2E8F0] border border-[#E2E8F0]'
+                    : 'bg-white text-[#525252] hover:bg-[#E5E5E5] border border-[#E5E5E5]'
                 }`}
               >
                 {cat !== 'all' && CATEGORY_META[cat]?.icon}
@@ -449,12 +449,12 @@ export function LearnTab() {
           {/* Lesson Grid */}
           {loadingLessons ? (
             <div className="p-8 text-center">
-              <Loader2 className="w-6 h-6 text-[#84CC16] animate-spin mx-auto" />
+              <Loader2 className="w-6 h-6 text-[#A3E635] animate-spin mx-auto" />
               <p className="text-xs text-[#A3A3A3] mt-2">Loading lessons...</p>
             </div>
           ) : filteredLessons.length === 0 ? (
             <div className="text-center py-8">
-              <BookOpen className="w-10 h-10 text-[#E2E8F0] mx-auto mb-2" />
+              <BookOpen className="w-10 h-10 text-[#E5E5E5] mx-auto mb-2" />
               <p className="text-sm text-[#525252]">No lessons available yet</p>
               <p className="text-xs text-[#A3A3A3] mt-1">Lessons for {learningProfile.targetLanguage} will appear here</p>
             </div>
@@ -467,7 +467,7 @@ export function LearnTab() {
                   <button
                     key={lesson.id}
                     onClick={() => handleStartLesson(lesson)}
-                    className="bg-white rounded-xl p-3.5 border border-[#E2E8F0] shadow-sm hover:shadow-md hover:border-[#84CC16]/30 transition-all text-left active:scale-[0.99] group"
+                    className="bg-white rounded-xl p-3.5 border border-[#E5E5E5] shadow-sm hover:shadow-md hover:border-[#A3E635]/30 transition-all text-left active:scale-[0.99] group"
                   >
                     <div className="flex items-start gap-3">
                       {/* Category icon */}
@@ -486,7 +486,7 @@ export function LearnTab() {
                             {lesson.title}
                           </h4>
                           {lesson.progress?.completed ? (
-                            <CheckCircle2 className="w-5 h-5 text-[#84CC16] shrink-0" />
+                            <CheckCircle2 className="w-5 h-5 text-[#A3E635] shrink-0" />
                           ) : (
                             <ChevronRight className="w-4 h-4 text-[#A3A3A3] shrink-0 mt-0.5 group-hover:text-[#0F4C5C] transition-colors" />
                           )}
@@ -506,7 +506,7 @@ export function LearnTab() {
                               <span
                                 key={dot}
                                 className={`w-1.5 h-1.5 rounded-full ${
-                                  dot <= lesson.level ? levelInfo.dot : 'bg-[#E2E8F0]'
+                                  dot <= lesson.level ? levelInfo.dot : 'bg-[#E5E5E5]'
                                 }`}
                               />
                             ))}
@@ -528,11 +528,11 @@ export function LearnTab() {
                               <span className="text-[10px] text-[#525252]">Best: {lesson.progress.bestScore}%</span>
                               <span className="text-[10px] text-[#525252]">{lesson.progress.attempts} attempt{lesson.progress.attempts !== 1 ? 's' : ''}</span>
                             </div>
-                            <div className="w-full h-1.5 bg-[#E2E8F0] rounded-full overflow-hidden">
+                            <div className="w-full h-1.5 bg-[#E5E5E5] rounded-full overflow-hidden">
                               <div
                                 className={`h-full rounded-full transition-all duration-300 ${
                                   lesson.progress.bestScore >= 80
-                                    ? 'bg-[#84CC16]'
+                                    ? 'bg-[#A3E635]'
                                     : lesson.progress.bestScore >= 50
                                     ? 'bg-yellow-500'
                                     : 'bg-red-400'
@@ -546,7 +546,7 @@ export function LearnTab() {
                         {/* Completed label */}
                         {lesson.progress?.completed && (
                           <div className="mt-1.5 flex items-center gap-1">
-                            <span className="text-[10px] font-semibold text-[#84CC16]">Completed</span>
+                            <span className="text-[10px] font-semibold text-[#A3E635]">Completed</span>
                             <span className="text-[10px] text-[#A3A3A3]">
                               Score: {lesson.progress.bestScore}%
                             </span>
