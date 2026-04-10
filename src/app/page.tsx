@@ -41,28 +41,14 @@ export default function Home() {
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const savedToken = localStorage.getItem('chatlingo_token')
-      const savedUser = localStorage.getItem('chatlingo_user')
-
       const params = new URLSearchParams(window.location.search)
       if (params.has('logout') || params.has('fresh')) {
         localStorage.removeItem('chatlingo_token')
         localStorage.removeItem('chatlingo_user')
         window.history.replaceState({}, '', window.location.pathname)
-        return
-      }
-
-      if (savedToken && savedUser) {
-        try {
-          const parsedUser = JSON.parse(savedUser)
-          setUser(parsedUser, savedToken)
-        } catch {
-          localStorage.removeItem('chatlingo_token')
-          localStorage.removeItem('chatlingo_user')
-        }
       }
     }
-  }, [setUser])
+  }, [])
 
   // Lazy load ChatInterface only when needed
   useEffect(() => {

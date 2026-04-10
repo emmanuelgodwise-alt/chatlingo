@@ -1,10 +1,11 @@
 'use client'
 
 import { useChatLingoStore } from '@/lib/store'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
 export function LandingPage() {
-  const { setView } = useChatLingoStore()
+  const { setView, setUser } = useChatLingoStore()
+  const [savedName, setSavedName] = useState<string | null>(null)
 
   // Allow body scroll for landing page
   useEffect(() => {
@@ -13,6 +14,35 @@ export function LandingPage() {
       document.body.style.overflow = 'hidden'
     }
   }, [])
+
+  // Check for returning user (without auto-redirecting)
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const savedUser = localStorage.getItem('chatlingo_user')
+        if (savedUser) {
+          const parsed = JSON.parse(savedUser)
+          if (parsed?.name) setSavedName(parsed.name)
+        }
+      } catch { /* ignore */ }
+    }
+  }, [])
+
+  // "Sign In" handler: if saved session exists, restore it and go to chat; otherwise show login form
+  const handleSignIn = () => {
+    if (typeof window !== 'undefined') {
+      const savedToken = localStorage.getItem('chatlingo_token')
+      const savedUser = localStorage.getItem('chatlingo_user')
+      if (savedToken && savedUser) {
+        try {
+          const parsed = JSON.parse(savedUser)
+          setUser(parsed, savedToken)
+          return
+        } catch { /* fall through to login form */ }
+      }
+    }
+    setView('login')
+  }
 
   return (
     <div className="min-h-screen bg-white overflow-y-auto overflow-x-hidden">
@@ -110,22 +140,40 @@ export function LandingPage() {
           </p>
 
           {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-fade-in-up" style={{ animationDelay: '1s' }}>
-            <button
-              onClick={() => setView('signup')}
-              className="group w-full sm:w-auto px-8 py-4 bg-[#A3E635] hover:bg-[#bef264] text-[#0A0A0A] font-bold text-lg rounded-xl transition-all duration-300 shadow-[0_0_40px_rgba(163,230,53,0.25)] hover:shadow-[0_0_60px_rgba(163,230,53,0.4)] hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2"
-            >
-              <span>Get Started</span>
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="transition-transform group-hover:translate-x-1">
-                <path d="M5 12h14M12 5l7 7-7 7" />
-              </svg>
-            </button>
-            <button
-              onClick={() => setView('login')}
-              className="w-full sm:w-auto px-8 py-4 border-2 border-white/25 hover:border-white/50 text-white font-semibold text-lg rounded-xl transition-all duration-300 hover:bg-white/5 active:scale-[0.98] flex items-center justify-center gap-2"
-            >
-              Sign In
-            </button>
+          <div className="flex flex-col items-center justify-center gap-3 animate-fade-in-up" style={{ animationDelay: '1s' }}>
+            {/* Returning user: show "Continue as..." */}
+            {savedName && (
+              <button
+                onClick={handleSignIn}
+                className="group w-full sm:w-auto px-8 py-4 bg-white/10 hover:bg-white/15 border border-white/20 text-white font-semibold text-base rounded-xl transition-all duration-300 active:scale-[0.98] flex items-center justify-center gap-3 backdrop-blur-sm"
+              >
+                <div className="w-8 h-8 rounded-full bg-[#A3E635] flex items-center justify-center text-[#0A0A0A] text-xs font-bold shrink-0">
+                  {savedName.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)}
+                </div>
+                <span>Continue as {savedName.split(' ')[0]}</span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="opacity-60 transition-transform group-hover:translate-x-0.5">
+                  <path d="M5 12h14M12 5l7 7-7 7" />
+                </svg>
+              </button>
+            )}
+
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+              <button
+                onClick={() => setView('signup')}
+                className="group w-full sm:w-auto px-8 py-4 bg-[#A3E635] hover:bg-[#bef264] text-[#0A0A0A] font-bold text-lg rounded-xl transition-all duration-300 shadow-[0_0_40px_rgba(163,230,53,0.25)] hover:shadow-[0_0_60px_rgba(163,230,53,0.4)] hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2"
+              >
+                <span>Get Started</span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="transition-transform group-hover:translate-x-1">
+                  <path d="M5 12h14M12 5l7 7-7 7" />
+                </svg>
+              </button>
+              <button
+                onClick={handleSignIn}
+                className="w-full sm:w-auto px-8 py-4 border-2 border-white/25 hover:border-white/50 text-white font-semibold text-lg rounded-xl transition-all duration-300 hover:bg-white/5 active:scale-[0.98] flex items-center justify-center gap-2"
+              >
+                Sign In
+              </button>
+            </div>
           </div>
 
           {/* Trust line */}
