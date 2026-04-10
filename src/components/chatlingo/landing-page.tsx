@@ -106,7 +106,7 @@ export function LandingPage() {
 
           {/* Final statement */}
           <p className="text-base sm:text-lg text-white/75 leading-relaxed max-w-2xl mx-auto mb-12 animate-fade-in-up" style={{ animationDelay: '0.8s' }}>
-            ChatLingo is the first Chatting App that helps you break that global language barrier to socialize with people of different cultures all over the world.
+            ChatLingo is the first social media that help you break that global language barrier to connect with people of different cultures around the globe.
           </p>
 
           {/* CTA Buttons */}
