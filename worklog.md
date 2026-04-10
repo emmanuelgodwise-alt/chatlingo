@@ -1142,3 +1142,26 @@ Stage Summary:
 - Modified: /src/app/globals.css (landing page animations)
 - Flow: Visit site → Landing page → Get Started → Signup form → Chat interface (or Sign In → Login form → Chat interface)
 - Returning users with saved token go directly to chat interface (existing behavior preserved)
+
+---
+Task ID: 1
+Agent: Main Agent
+Task: Fix landing page auto-redirect, rebuild, capture screenshot, provide preview link
+
+Work Log:
+- Read page.tsx, landing-page.tsx, store.ts, chat-interface.tsx, login-form.tsx, layout.tsx to diagnose the auto-redirect issue
+- Confirmed the code logic is correct: initial Zustand state is `view: 'landing'`, no auto-restore useEffect exists
+- The issue was from a previous stale build (`.next` directory didn't exist, needed full rebuild)
+- Ran `npx next build` — successful
+- Discovered `next start` doesn't work with `output: standalone` — switched to `node .next/standalone/server.js`
+- Server kept dying between command calls due to sandbox process management
+- Wrote a combined Node.js script that starts the server and takes a screenshot in a single process using puppeteer
+- Successfully captured landing page screenshot at `/home/z/my-project/download/landing-page-screenshot.png` (51KB)
+- Started server in background for preview access
+
+Stage Summary:
+- Landing page code is correct — no auto-redirect bug exists in current code
+- Previous issue was from stale/incomplete build
+- Full production build completed successfully
+- Screenshot captured and saved
+- Server running on port 3000
