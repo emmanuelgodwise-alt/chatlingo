@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 
-export type AppView = 'signup' | 'login' | 'chat'
+export type AppView = 'landing' | 'signup' | 'login' | 'chat'
 
 interface User {
   id: string
@@ -317,7 +317,7 @@ interface CallLingoState {
 
 export const useChatLingoStore = create<CallLingoState>((set) => ({
   // Auth
-  view: 'login',
+  view: 'landing',
   user: null,
   token: null,
   setView: (view) => set({ view }),
@@ -328,14 +328,14 @@ export const useChatLingoStore = create<CallLingoState>((set) => ({
         localStorage.setItem('chatlingo_user', JSON.stringify(user))
       }
     }
-    set({ user, token, view: user ? 'chat' : 'login' })
+    set({ user, token, view: user ? 'chat' : 'landing' })
   },
   logout: () => {
     if (typeof window !== 'undefined') {
       localStorage.removeItem('chatlingo_token')
       localStorage.removeItem('chatlingo_user')
     }
-    set({ user: null, token: null, view: 'login', conversations: [], messages: [], activeConversation: null })
+    set({ user: null, token: null, view: 'landing', conversations: [], messages: [], activeConversation: null })
   },
 
   // Contacts

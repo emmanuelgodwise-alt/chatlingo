@@ -1122,3 +1122,23 @@ Stage Summary:
 - Modified: /src/components/chatlingo/learn-tab.tsx (3 headers renamed Onboarding→Learn)
 - Modified: /src/components/chatlingo/chat-interface.tsx (header redesign, bottom nav update, imports, renderMainContent)
 - Build: Successful, server running on http://localhost:3000
+---
+Task ID: 2
+Agent: Main Agent
+Task: Create beautiful landing page as the default page, with user's exact sales copy + CTA buttons
+
+Work Log:
+- Created /src/components/chatlingo/landing-page.tsx — full-screen hero landing page
+- Updated store.ts: Added 'landing' to AppView type, changed default view to 'landing'
+- Updated page.tsx: Added LandingPage import and routing, landing page shows first when no auth
+- Added CSS animations to globals.css: float-slow/medium/fast, fade-in-up
+- Landing page features: teal gradient background, floating language bubbles (EN/JP/ES/FR/ZH/DE), animated gradient orbs, connection lines SVG, ChatLingo logo mark, staggered fade-in-up animations, the user's exact sales copy with typography hierarchy, "Get Started" (→ signup) and "Sign In" (→ login) CTA buttons, trust line, minimal footer
+- Production build succeeded, server running on port 3000
+
+Stage Summary:
+- Created: /src/components/chatlingo/landing-page.tsx (with exact user sales copy)
+- Modified: /src/lib/store.ts (AppView: added 'landing', default view → 'landing')
+- Modified: /src/app/page.tsx (landing page routing added)
+- Modified: /src/app/globals.css (landing page animations)
+- Flow: Visit site → Landing page → Get Started → Signup form → Chat interface (or Sign In → Login form → Chat interface)
+- Returning users with saved token go directly to chat interface (existing behavior preserved)

@@ -3,6 +3,7 @@
 import { useChatLingoStore } from '@/lib/store'
 import { SignUpForm } from '@/components/chatlingo/sign-up-form'
 import { LoginForm } from '@/components/chatlingo/login-form'
+import { LandingPage } from '@/components/chatlingo/landing-page'
 import { useEffect, useState, useCallback } from 'react'
 
 function ErrorFallback({ error, reset }: { error: Error; reset: () => void }) {
@@ -77,6 +78,10 @@ export default function Home() {
 
   if (error) {
     return <ErrorFallback error={error} reset={reset} />
+  }
+
+  if (view === 'landing') {
+    return <LandingPage />
   }
 
   if (view === 'signup') {
