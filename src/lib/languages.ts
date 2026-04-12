@@ -25,7 +25,6 @@ export const LANGUAGES = [
   { code: 'Polish', label: 'Polski (Polish)', flag: '🇵🇱' },
   { code: 'Greek', label: 'Ελληνικά (Greek)', flag: '🇬🇷' },
   { code: 'Twi', label: 'Twi (Twi)', flag: '🇬🇭' },
-  { code: 'Mandarin', label: '中文 (Mandarin)', flag: '🇨🇳' },
 ] as const
 
 export type LanguageCode = (typeof LANGUAGES)[number]['code']
