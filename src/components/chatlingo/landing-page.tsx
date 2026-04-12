@@ -1,11 +1,10 @@
 'use client'
 
 import { useChatLingoStore } from '@/lib/store'
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 
 export function LandingPage() {
   const { setView, setUser } = useChatLingoStore()
-  const [savedName, setSavedName] = useState<string | null>(null)
 
   // Allow body scroll for landing page
   useEffect(() => {
@@ -15,18 +14,10 @@ export function LandingPage() {
     }
   }, [])
 
-  // Check for returning user (without auto-redirecting)
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      try {
-        const savedUser = localStorage.getItem('chatlingo_user')
-        if (savedUser) {
-          const parsed = JSON.parse(savedUser)
-          if (parsed?.name) setSavedName(parsed.name)
-        }
-      } catch { /* ignore */ }
-    }
-  }, [])
+  // Check for returning user on mount
+  const savedName = typeof window !== 'undefined'
+    ? (() => { try { const u = localStorage.getItem('chatlingo_user'); return u ? JSON.parse(u)?.name || null : null } catch { return null } })()
+    : null
 
   // "Sign In" handler: if saved session exists, restore it and go to chat; otherwise show login form
   const handleSignIn = () => {
