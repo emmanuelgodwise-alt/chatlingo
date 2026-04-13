@@ -62,9 +62,7 @@ export function EmptyChatState({ showWelcome }: { showWelcome: boolean }) {
   return (
     <div className="flex-1 flex items-center justify-center p-8" style={{ backgroundColor: '#FAFAFA' }}>
       <div className="text-center">
-        <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-[#E5E5E5] mb-4">
-          <MessageCircle className="w-8 h-8 text-[#525252]" />
-        </div>
+        <img src="/chatlingo-icon.png" alt="ChatLingo" className="w-16 h-16 rounded-full mb-4" />
         <h3 className="text-xl font-light text-[#0A0A0A] mb-2">ChatLingo for Web</h3>
         <p className="text-sm text-[#525252] max-w-xs mx-auto">
           Send and receive messages without worrying about language barriers.

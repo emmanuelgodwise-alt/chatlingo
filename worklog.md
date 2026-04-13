@@ -1165,3 +1165,27 @@ Stage Summary:
 - Full production build completed successfully
 - Screenshot captured and saved
 - Server running on port 3000
+---
+Task ID: 2
+Agent: Main Agent
+Task: Replace old logo with new ChatLingo logo across entire project
+
+Work Log:
+- Analyzed uploaded logo (1024x1024 PNG) - teal + lime green palette matching ChatLingo brand colors
+- Created logo assets: cropped version (chatlingo-logo.png), square icon (chatlingo-icon.png), favicon (favicon.ico)
+- Replaced logo on 7 pages/components:
+  1. Landing page hero (chatlingo-logo.png - large centered logo)
+  2. Desktop chat sidebar header (chatlingo-icon.png - small rounded)
+  3. Mobile contacts header (chatlingo-icon.png - small rounded)
+  4. Login page brand area (chatlingo-logo.png)
+  5. Signup page brand area (chatlingo-logo.png)
+  6. Onboarding tab header (chatlingo-icon.png - rounded square)
+  7. Empty chat state placeholder (chatlingo-icon.png - rounded)
+  8. Layout metadata favicon (favicon.ico)
+- Left functional MessageCircle icons untouched (FAB buttons, "Chat" buttons, empty states for channels/explore)
+- Lint passes clean
+
+Stage Summary:
+- 8 locations updated across 7 files
+- 3 logo assets created in /public/
+- All brand-identity uses of the old SVG chat bubble icon replaced with new logo image

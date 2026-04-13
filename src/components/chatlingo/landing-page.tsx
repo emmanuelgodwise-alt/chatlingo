@@ -88,15 +88,7 @@ export function LandingPage() {
         <div className="relative z-10 max-w-4xl mx-auto px-6 text-center">
           {/* Logo mark */}
           <div className="mb-8 animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
-            <div className="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-[#A3E635] shadow-[0_0_60px_rgba(163,230,53,0.3)] mb-6">
-              <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-                <circle cx="9" cy="10" r="1" fill="#0A0A0A" />
-                <circle cx="12" cy="10" r="1" fill="#0A0A0A" />
-                <circle cx="15" cy="10" r="1" fill="#0A0A0A" />
-                <path d="M8 2v4M12 2v4M16 2v4" strokeDasharray="2 2" />
-              </svg>
-            </div>
+            <img src="/chatlingo-logo.png" alt="ChatLingo" className="w-36 h-auto mx-auto mb-6 drop-shadow-[0_0_40px_rgba(163,230,53,0.3)]" />
           </div>
 
           {/* Brand name */}

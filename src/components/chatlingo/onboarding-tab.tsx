@@ -153,9 +153,7 @@ export function OnboardingTab() {
 
           <div className="relative z-10">
             <div className="flex items-center gap-3 mb-3">
-              <div className="w-14 h-14 rounded-2xl bg-[#A3E635] flex items-center justify-center shadow-md">
-                <MessageCircle className="w-7 h-7 text-[#0A0A0A]" />
-              </div>
+              <img src="/chatlingo-icon.png" alt="ChatLingo" className="w-14 h-14 rounded-2xl object-cover shadow-md" />
               <div>
                 <h1 className="text-xl font-bold leading-tight">ChatLingo</h1>
                 <p className="text-white/70 text-xs">Connect. Translate. Learn.</p>

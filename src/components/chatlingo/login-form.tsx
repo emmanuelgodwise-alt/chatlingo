@@ -60,9 +60,7 @@ export function LoginForm() {
       <div className="w-full max-w-md">
         {/* Brand */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-white/20 backdrop-blur-sm mb-4 shadow-lg">
-            <Globe className="w-8 h-8 text-white" />
-          </div>
+          <img src="/chatlingo-logo.png" alt="ChatLingo" className="w-24 h-auto mx-auto mb-4 drop-shadow-lg" />
           <h1 className="text-3xl font-bold text-white tracking-tight">ChatLingo</h1>
           <p className="text-white/70 mt-2 text-sm">
             Break the language barrier. Connect with the world.

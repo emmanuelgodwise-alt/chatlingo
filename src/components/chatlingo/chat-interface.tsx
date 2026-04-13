@@ -526,9 +526,7 @@ export function ChatInterface() {
 
           {/* CENTER: ChatLingo branding */}
           <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-full bg-[#A3E635] flex items-center justify-center">
-              <MessageCircle className="w-3.5 h-3.5 text-[#0A0A0A]" />
-            </div>
+            <img src="/chatlingo-icon.png" alt="ChatLingo" className="w-7 h-7 rounded-full object-cover" />
             <h2 className="text-white font-semibold text-sm tracking-tight">ChatLingo</h2>
             {totalUnread > 0 && (
               <span className="w-5 h-5 rounded-full bg-[#A3E635] text-[#0A0A0A] text-[10px] font-bold flex items-center justify-center">
@@ -884,9 +882,7 @@ function MobileContactsView({
 
         {/* CENTER: ChatLingo branding */}
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-full bg-[#A3E635] flex items-center justify-center">
-            <MessageCircle className="w-4 h-4 text-[#0A0A0A]" />
-          </div>
+          <img src="/chatlingo-icon.png" alt="ChatLingo" className="w-8 h-8 rounded-full object-cover" />
           <div>
             <div className="flex items-center gap-2">
               <h2 className="text-white font-semibold text-base tracking-tight">ChatLingo</h2>
