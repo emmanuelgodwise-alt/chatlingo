@@ -203,8 +203,8 @@ interface CallLingoState {
   setSidebarOpen: (open: boolean) => void
 
   // Navigation Tabs
-  activeTab: 'chats' | 'status' | 'channels' | 'calls' | 'explore' | 'learn' | 'onboarding'
-  setActiveTab: (tab: 'chats' | 'status' | 'channels' | 'calls' | 'explore' | 'learn' | 'onboarding') => void
+  activeTab: 'chats' | 'status' | 'channels' | 'calls' | 'rooms' | 'explore' | 'learn' | 'onboarding'
+  setActiveTab: (tab: 'chats' | 'status' | 'channels' | 'calls' | 'rooms' | 'explore' | 'learn' | 'onboarding') => void
 
   // Status/Stories
   statuses: StatusItem[]
@@ -227,6 +227,8 @@ interface CallLingoState {
   setShowExplore: (show: boolean) => void
   showBroadcast: boolean
   setShowBroadcast: (show: boolean) => void
+  showGroupInfo: boolean
+  setShowGroupInfo: (show: boolean) => void
 
   // Room state
   activeRoom: RoomItem | null
@@ -331,9 +333,17 @@ export const useChatLingoStore = create<CallLingoState>((set) => ({
     set({ user, token, view: user ? 'chat' : 'landing' })
   },
   logout: () => {
+    const currentToken = typeof window !== 'undefined' ? localStorage.getItem('chatlingo_token') : null
     if (typeof window !== 'undefined') {
       localStorage.removeItem('chatlingo_token')
       localStorage.removeItem('chatlingo_user')
+      // Best-effort: update online status in DB
+      if (currentToken) {
+        fetch('/api/users/me/offline', {
+          method: 'POST',
+          headers: { Authorization: `Bearer ${currentToken}` },
+        }).catch(() => {})
+      }
     }
     set({ user: null, token: null, view: 'landing', conversations: [], messages: [], activeConversation: null })
   },
@@ -391,6 +401,8 @@ export const useChatLingoStore = create<CallLingoState>((set) => ({
   setShowExplore: (show) => set({ showExplore: show }),
   showBroadcast: false,
   setShowBroadcast: (show) => set({ showBroadcast: show }),
+  showGroupInfo: false,
+  setShowGroupInfo: (show) => set({ showGroupInfo: show }),
 
   // Room state
   activeRoom: null,

@@ -34,6 +34,7 @@ model User {
   ownedChannels     Channel[]           @relation("ChannelOwner")
   channelPosts      ChannelPost[]
   broadcastLists    BroadcastList[]     @relation("BroadcastOwner")
+  broadcastMemberships BroadcastMember[] @relation("BroadcastMemberUser")
   roomParticipants  RoomParticipant[] @relation("RoomUser")
   ownedRooms        Room[]              @relation("RoomOwner")
   learningProfiles  LearningProfile[]
@@ -216,8 +217,11 @@ model BroadcastMember {
   broadcastListId String
   userId          String
   language        String   @default("English")
+  createdAt       DateTime @default(now())
 
   broadcastList BroadcastList @relation(fields: [broadcastListId], references: [id], onDelete: Cascade)
+  user           User         @relation("BroadcastMemberUser", fields: [userId], references: [id], onDelete: Cascade)
+
   @@unique([broadcastListId, userId])
 }
 

@@ -230,7 +230,7 @@ export async function POST(request: NextRequest) {
       xpEarned,
       newTotalXp: (profile?.totalXp || 0) + xpEarned,
       lessonCompleted,
-      streak: profile ? profile.currentStreak + 1 : 1,
+      streak: newCurrentStreak || 1,
     })
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : 'Internal server error'

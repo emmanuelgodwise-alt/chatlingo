@@ -6,7 +6,7 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { getLanguageFlag, getLanguageLabel } from '@/lib/languages'
 import { X, Users, Crown, Shield, UserPlus, Globe, LogOut } from 'lucide-react'
 
-export function GroupInfoPanel() {
+export function GroupInfoPanel({ conversationId, onClose }: { conversationId: string; onClose: () => void }) {
   const {
     token,
     user,
@@ -29,18 +29,18 @@ export function GroupInfoPanel() {
   } | null>(null)
 
   useEffect(() => {
-    if (!token || !activeConversation) return
+    if (!token || !conversationId) return
     setLoading(true)
 
     const loadGroup = async () => {
       try {
         // Get group info from conversation
-        const res = await fetch(`/api/groups/${activeConversation.id}`, {
+        const res = await fetch(`/api/groups/${conversationId}`, {
           headers: { Authorization: `Bearer ${token}` },
         })
         if (res.ok) {
           const data = await res.json()
-          setGroup(data.group || { name: activeConversation.otherUser.name, ownerId: '' })
+          setGroup(data.group || { name: activeConversation?.otherUser.name || 'Group', ownerId: '' })
           setMembers(data.members || [])
         }
       } catch {
@@ -51,7 +51,7 @@ export function GroupInfoPanel() {
     }
 
     loadGroup()
-  }, [token, activeConversation])
+  }, [token, conversationId])
 
   const handleAddParticipant = () => {
     // Could open a dialog to add participants
@@ -59,7 +59,7 @@ export function GroupInfoPanel() {
     store.setShowCreateGroup(true)
   }
 
-  if (!activeConversation) return null
+  if (!conversationId) return null
 
   const isAdmin = group?.ownerId === user?.id
 
@@ -68,7 +68,7 @@ export function GroupInfoPanel() {
       {/* Header */}
       <div className="bg-[#0F4C5C] px-4 py-3 flex items-center justify-between shrink-0">
         <button
-          onClick={() => setActiveConversation(null)}
+          onClick={onClose}
           className="p-1 text-white/80 hover:text-white rounded-full hover:bg-white/10 transition-colors"
         >
           <X className="w-5 h-5" />
@@ -90,7 +90,7 @@ export function GroupInfoPanel() {
                 <Users className="w-10 h-10 text-[#0A0A0A]" />
               </div>
               <h2 className="text-lg font-semibold text-[#0A0A0A]">
-                {group?.name || activeConversation.otherUser.name}
+                {group?.name || activeConversation?.otherUser.name || 'Group'}
               </h2>
               {group?.description && (
                 <p className="text-sm text-[#525252] text-center mt-1">{group.description}</p>
@@ -101,16 +101,16 @@ export function GroupInfoPanel() {
             {/* Language Pair */}
             <div className="mx-4 p-3 bg-[#F1F5F9] rounded-lg mb-4">
               <div className="flex items-center justify-center gap-2">
-                <span className="text-lg">{getLanguageFlag(activeConversation.myLanguage)}</span>
+                <span className="text-lg">{getLanguageFlag(activeConversation?.myLanguage || 'English')}</span>
                 <Globe className="w-4 h-4 text-[#A3E635]" />
                 <span className="text-sm text-[#525252]">
-                  {getLanguageLabel(activeConversation.myLanguage)}
+                  {getLanguageLabel(activeConversation?.myLanguage || 'English')}
                 </span>
                 <span className="text-[#A3A3A3]">↔</span>
                 <span className="text-sm text-[#525252]">
-                  {getLanguageLabel(activeConversation.theirLanguage)}
+                  {getLanguageLabel(activeConversation?.theirLanguage || 'English')}
                 </span>
-                <span className="text-lg">{getLanguageFlag(activeConversation.theirLanguage)}</span>
+                <span className="text-lg">{getLanguageFlag(activeConversation?.theirLanguage || 'English')}</span>
               </div>
             </div>
 

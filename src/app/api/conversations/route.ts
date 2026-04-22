@@ -61,7 +61,7 @@ export async function GET(request: NextRequest) {
         theirLanguage,
         lastMessage: conv.lastMessage,
         lastMessageAt: conv.lastMessageAt,
-        unreadCount: conv.messages[0] && !conv.messages[0].read && conv.messages[0].senderId !== payload.userId ? 1 : 0,
+        unreadCount: conv.messages.filter((m: { senderId: string; read: boolean }) => !m.read && m.senderId !== payload.userId).length,
       }
     })
 

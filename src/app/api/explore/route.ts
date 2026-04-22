@@ -40,14 +40,17 @@ export async function GET(request: NextRequest) {
           ...(contactIds.length > 0 && { id: { notIn: [...contactIds, payload.userId] } }),
         }
 
-        if (q) {
+        if (q && lang) {
+          peopleWhere.AND = [
+            { OR: [{ name: { contains: q } }, { bio: { contains: q } }] },
+            { OR: [{ preferredLanguage: lang }, { learningLanguages: { contains: lang } }] },
+          ]
+        } else if (q) {
           peopleWhere.OR = [
             { name: { contains: q } },
             { bio: { contains: q } },
           ]
-        }
-
-        if (lang) {
+        } else if (lang) {
           peopleWhere.OR = [
             { preferredLanguage: lang },
             { learningLanguages: { contains: lang } },

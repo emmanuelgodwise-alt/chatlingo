@@ -144,16 +144,27 @@ export async function POST(request: NextRequest) {
 
     // Create a group conversation (use owner + first member as participants for the Conversation model)
     const firstMemberId = validIds[0]
-    await db.conversation.create({
-      data: {
-        participant1Id: payload.userId,
-        participant2Id: firstMemberId,
-        participant1Lang: owner?.preferredLanguage || 'English',
-        participant2Lang: validMembers[0].preferredLanguage || 'English',
-        isGroup: true,
-        groupId: group.id,
+    // Check if a conversation already exists between these two participants
+    const existingConv = await db.conversation.findFirst({
+      where: {
+        OR: [
+          { participant1Id: payload.userId, participant2Id: firstMemberId },
+          { participant1Id: firstMemberId, participant2Id: payload.userId },
+        ],
       },
     })
+    if (!existingConv) {
+      await db.conversation.create({
+        data: {
+          participant1Id: payload.userId,
+          participant2Id: firstMemberId,
+          participant1Lang: owner?.preferredLanguage || 'English',
+          participant2Lang: validMembers[0].preferredLanguage || 'English',
+          isGroup: true,
+          groupId: group.id,
+        },
+      })
+    }
 
     return NextResponse.json({ group }, { status: 201 })
   } catch (error: unknown) {

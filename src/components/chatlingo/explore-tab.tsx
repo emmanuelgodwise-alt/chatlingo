@@ -197,6 +197,15 @@ export function ExploreTab() {
         {/* Word of the Day */}
         <WordOfTheDayInline token={token} />
 
+        {/* Cultural Spotlight */}
+        <div className="mt-6">
+          <h3 className="text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2">
+            <Sparkles className="w-4 h-4 text-[#A3E635]" />
+            Cultural Spotlight
+          </h3>
+          <CulturalSpotlightInline />
+        </div>
+
         {/* Category Tabs */}
         <div className="flex gap-2 overflow-x-auto scrollbar-thin pb-1">
           {categories.map((cat) => (
@@ -404,6 +413,27 @@ function WordOfTheDayInline({ token }: { token: string | null }) {
           ))}
         </div>
       </div>
+    </div>
+  )
+}
+
+function CulturalSpotlightInline() {
+  const [spotlight, setSpotlight] = useState<Record<string, string> | null>(null)
+
+  useEffect(() => {
+    fetch('/api/spotlight')
+      .then(r => r.ok ? r.json() : null)
+      .then(data => data ? setSpotlight(data) : null)
+      .catch(() => {})
+  }, [])
+
+  if (!spotlight) return null
+
+  return (
+    <div className="bg-gradient-to-br from-[#0F4C5C] to-[#0F766E] rounded-2xl p-5 text-white">
+      <p className="text-xs text-white/60 uppercase tracking-wider mb-1">{spotlight.culture}</p>
+      <h4 className="text-base font-bold mb-2">{spotlight.title}</h4>
+      <p className="text-sm text-white/80 leading-relaxed">{spotlight.content}</p>
     </div>
   )
 }

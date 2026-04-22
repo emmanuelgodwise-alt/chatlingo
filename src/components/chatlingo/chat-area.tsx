@@ -23,6 +23,7 @@ import {
   Play,
   Pause,
   Trash2,
+  UsersRound,
 } from 'lucide-react'
 
 interface SocketType {
@@ -382,7 +383,12 @@ export function ChatArea({ socket }: { socket: SocketType | null }) {
         </div>
 
         <div className="flex-1 min-w-0">
-          <h3 className="text-white text-base font-medium truncate">{otherUser.name}</h3>
+          <div className="flex items-center gap-1">
+            <h3 className="text-white text-base font-medium truncate">{otherUser.name}</h3>
+            <button onClick={() => useChatLingoStore.getState().setShowGroupInfo(true)} className="p-1 hover:bg-white/10 rounded-full transition-colors" title="Group Info">
+              <UsersRound className="w-4 h-4 text-white/70" />
+            </button>
+          </div>
           <div className="flex items-center gap-1.5">
             {isTyping ? (
               <span className="text-xs text-white/80">typing...</span>

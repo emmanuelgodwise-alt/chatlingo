@@ -12,6 +12,8 @@ import { CreateStatusDialog } from '@/components/chatlingo/create-status-dialog'
 import { CreateGroupDialog } from '@/components/chatlingo/create-group-dialog'
 import { CreateChannelDialog } from '@/components/chatlingo/create-channel-dialog'
 import { CreateRoomDialog } from '@/components/chatlingo/create-room-dialog'
+import { CreateBroadcastDialog } from '@/components/chatlingo/create-broadcast-dialog'
+import { GroupInfoPanel } from '@/components/chatlingo/group-info-panel'
 import { ChannelsTab } from '@/components/chatlingo/channels-tab'
 import { ExploreTab } from '@/components/chatlingo/explore-tab'
 import { RoomsTab } from '@/components/chatlingo/rooms-tab'
@@ -170,6 +172,20 @@ export function ChatInterface() {
       socketInstance.on('connect', () => {
         console.log('Connected to ChatLingo WebSocket')
         socketInstance.emit('authenticate', { userId: user.id })
+      })
+
+      socketInstance.on('connect_error', (err: Error) => {
+        console.warn('WebSocket connection error:', err.message)
+      })
+
+      socketInstance.on('disconnect', (reason: string) => {
+        console.log('WebSocket disconnected:', reason)
+        if (reason === 'io server disconnect') {
+          // Server forced disconnect, attempt reconnect after delay
+          setTimeout(() => {
+            if (mounted && !cancelled) socketInstance.connect()
+          }, 3000)
+        }
       })
 
       socketInstance.on('new-message', (message: unknown) => {
@@ -476,6 +492,9 @@ export function ChatInterface() {
     if (activeTab === 'calls') {
       return <EmptyCallsTab />
     }
+    if (activeTab === 'rooms') {
+      return <RoomsTab />
+    }
     if (activeTab === 'channels') {
       return <ChannelsTab />
     }
@@ -756,6 +775,13 @@ export function ChatInterface() {
       {showCreateGroup && <CreateGroupDialog />}
       {showCreateChannel && <CreateChannelDialog />}
       {showCreateRoom && <CreateRoomDialog />}
+      {showBroadcast && <CreateBroadcastDialog />}
+      {showGroupInfo && activeConversation && (
+        <GroupInfoPanel
+          conversationId={activeConversation.id}
+          onClose={() => useChatLingoStore.getState().setShowGroupInfo(false)}
+        />
+      )}
       {showLearnSetup && <LearnSetupDialog />}
       {showLearnPairDialog && <LearnPairDialog />}
       {showLeaderboard && <LeaderboardDialog />}
@@ -814,6 +840,13 @@ export function ChatInterface() {
           <span className="text-[11px]">Calls</span>
         </button>
         <button
+          onClick={() => setActiveTab('rooms')}
+          className={`wa-bottom-nav-item ${activeTab === 'rooms' ? 'active' : 'inactive'}`}
+        >
+          <Radio className="w-5 h-5" />
+          <span className="text-[11px]">Rooms</span>
+        </button>
+        <button
           onClick={() => setActiveTab('explore')}
           className={`wa-bottom-nav-item ${activeTab === 'explore' ? 'active' : 'inactive'}`}
         >
@@ -858,7 +891,7 @@ function MobileContactsView({
   user: { id: string; name: string; preferredLanguage: string; avatar?: string | null } | null
   userInitials: string
   totalUnread: number
-  onTabChange: (tab: 'chats' | 'status' | 'channels' | 'calls' | 'explore' | 'learn' | 'onboarding') => void
+  onTabChange: (tab: 'chats' | 'status' | 'channels' | 'calls' | 'rooms' | 'explore' | 'learn' | 'onboarding') => void
 }) {
   return (
     <div className="flex flex-col h-full bg-white md:hidden">
