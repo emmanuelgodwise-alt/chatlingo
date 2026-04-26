@@ -1,7 +1,7 @@
 'use client'
 
 import { useChatLingoStore } from '@/lib/store'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
 export function LandingPage() {
   const { setView, setUser } = useChatLingoStore()
@@ -14,10 +14,18 @@ export function LandingPage() {
     }
   }, [])
 
-  // Check for returning user on mount
-  const savedName = typeof window !== 'undefined'
-    ? (() => { try { const u = localStorage.getItem('chatlingo_user'); return u ? JSON.parse(u)?.name || null : null } catch { return null } })()
-    : null
+  // Check for returning user on mount (client-only to avoid hydration mismatch)
+  const [savedName, setSavedName] = useState<string | null>(null)
+
+  useEffect(() => {
+    try {
+      const u = localStorage.getItem('chatlingo_user')
+      const name = u ? JSON.parse(u)?.name || null : null
+      setSavedName(name)
+    } catch {
+      setSavedName(null)
+    }
+  }, [])
 
   // "Sign In" handler: if saved session exists, restore it and go to chat; otherwise show login form
   const handleSignIn = () => {
