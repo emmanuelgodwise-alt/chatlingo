@@ -82,10 +82,14 @@ export function createPeerConnection(callbacks: WebRTCCallbacks): RTCPeerConnect
 
   // Handle incoming remote tracks
   peerConnection.ontrack = (event) => {
+    if (!remoteStream) {
+      remoteStream = new MediaStream()
+    }
+    const stream = remoteStream
     event.streams[0].getTracks().forEach((track) => {
-      remoteStream!.addTrack(track)
+      stream.addTrack(track)
     })
-    callbacks.onRemoteStream(remoteStream)
+    callbacks.onRemoteStream(stream)
     callbacks.onTrack(event)
   }
 

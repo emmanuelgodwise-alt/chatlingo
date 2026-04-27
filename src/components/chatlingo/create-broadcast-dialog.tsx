@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useChatLingoStore } from '@/lib/store'
 import { X, Send } from 'lucide-react'
 
@@ -27,7 +27,7 @@ export function CreateBroadcastDialog() {
     }
   }
 
-  useState(() => { if (showBroadcast) loadLists() }, [showBroadcast])
+  useEffect(() => { if (showBroadcast) loadLists() }, [showBroadcast])
 
   const handleSend = async () => {
     if (!token || !selectedList || !message.trim()) return

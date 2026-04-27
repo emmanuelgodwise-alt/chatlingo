@@ -176,12 +176,14 @@ export async function POST(request: NextRequest) {
       where: { userId: payload.userId },
     })
 
+    let newCurrentStreak = profile?.currentStreak || 1
+
     if (profile) {
       const now = new Date()
       const lastPractice = profile.lastPracticeAt ? new Date(profile.lastPracticeAt) : null
 
       // Calculate streak
-      let newCurrentStreak = profile.currentStreak
+      newCurrentStreak = profile.currentStreak
       let newLongestStreak = profile.longestStreak
 
       if (lastPractice) {
@@ -230,7 +232,7 @@ export async function POST(request: NextRequest) {
       xpEarned,
       newTotalXp: (profile?.totalXp || 0) + xpEarned,
       lessonCompleted,
-      streak: newCurrentStreak || 1,
+      streak: typeof newCurrentStreak !== 'undefined' ? newCurrentStreak : (profile?.currentStreak || 1),
     })
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : 'Internal server error'

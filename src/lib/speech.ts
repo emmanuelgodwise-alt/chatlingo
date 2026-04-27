@@ -45,7 +45,8 @@ export function getBCP47Code(language: string): string {
 // Speech Recognition
 // ============================================
 
-type SpeechRecognitionType = Record<string, unknown>
+/* eslint-disable @typescript-eslint/no-explicit-any */
+type SpeechRecognitionType = any
 
 let recognitionInstance: SpeechRecognitionType | null = null
 
@@ -54,10 +55,8 @@ let recognitionInstance: SpeechRecognitionType | null = null
  */
 export function isSpeechRecognitionSupported(): boolean {
   if (typeof window === 'undefined') return false
-  return !!(
-    window.SpeechRecognition ||
-    (window as unknown as Record<string, unknown>).webkitSpeechRecognition
-  )
+  const w = window as unknown as Record<string, unknown>
+  return !!(w.SpeechRecognition || w.webkitSpeechRecognition)
 }
 
 /**
@@ -84,7 +83,7 @@ export function startRecognition(
 
   let lastFinalText = ''
 
-  recognitionInstance.onresult = (event: { results: { transcript: string; isFinal: boolean }[][] }) => {
+  recognitionInstance.onresult = (event: any) => {
     for (let i = event.results.length - 1; i >= 0; i--) {
       const result = event.results[i]
       const text = result[0].transcript.trim()
@@ -101,7 +100,7 @@ export function startRecognition(
     }
   }
 
-  recognitionInstance.onerror = (event: { error: string }) => {
+  recognitionInstance.onerror = (event: any) => {
     console.error('Speech recognition error:', event.error)
     // Restart on non-fatal errors
     if (event.error !== 'no-speech' && event.error !== 'aborted') {

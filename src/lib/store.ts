@@ -36,6 +36,7 @@ interface Message {
   senderLanguage: string
   receiverLanguage: string
   createdAt: string
+  read?: boolean
   sender?: {
     id: string
     name: string
