@@ -59,16 +59,16 @@ export function LoginForm() {
   return (
     <div className="h-screen flex items-center justify-center wa-auth-gradient p-3 overflow-y-auto">
       <div className="w-full max-w-md my-2">
-        {/* Brand — compact */}
-        <div className="text-center mb-4">
-          <img src="/chatlingo-logo.png" alt="ChatLingo" className="w-16 h-auto mx-auto mb-2 drop-shadow-lg" />
-          <h1 className="text-2xl font-bold text-white tracking-tight">ChatLingo</h1>
-          <p className="text-white/70 mt-1 text-xs">
-            Break the language barrier. Connect with the world.
-          </p>
-        </div>
+        <Card className="shadow-2xl border-0 rounded-xl overflow-hidden">
+          {/* Brand — inside card for distinct top boundary */}
+          <div className="bg-[#0F4C5C] text-center pb-5 pt-6 px-5">
+            <img src="/chatlingo-logo.png" alt="ChatLingo" className="w-16 h-auto mx-auto mb-2 drop-shadow-lg" />
+            <h1 className="text-2xl font-bold text-white tracking-tight">ChatLingo</h1>
+            <p className="text-white/70 mt-1 text-xs">
+              Break the language barrier. Connect with the world.
+            </p>
+          </div>
 
-        <Card className="shadow-xl border-0 rounded-lg overflow-hidden">
           <CardHeader className="text-center pb-1 pt-4 px-5">
             <CardTitle className="text-lg text-[#0A0A0A] flex items-center justify-center gap-2">
               <LogIn className="w-4 h-4 text-[#0F4C5C]" />
