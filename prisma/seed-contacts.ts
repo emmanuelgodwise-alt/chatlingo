@@ -233,13 +233,24 @@ const senderIdMap: Record<string, string> = {
 async function main() {
   console.log('🌱 Starting ChatLingo seed...')
 
-  // Verify test user exists
-  const testUser = await prisma.user.findUnique({ where: { id: TEST_USER_ID } })
+  // Create or find test user
+  let testUser = await prisma.user.findUnique({ where: { id: TEST_USER_ID } })
   if (!testUser) {
-    console.error('❌ Test user not found!')
-    process.exit(1)
+    console.log('📝 Test user not found, creating...')
+    testUser = await prisma.user.create({
+      data: {
+        id: TEST_USER_ID,
+        name: 'Test User',
+        email: 'test@test.com',
+        password: PASSWORD_HASH,
+        preferredLanguage: 'English',
+        learningLanguages: '["Spanish","French"]',
+        bio: 'ChatLingo test account',
+        online: true,
+      },
+    })
   }
-  console.log(`✅ Found test user: ${testUser.name}`)
+  console.log(`✅ Test user: ${testUser.name} (${testUser.email})`)
 
   // Clean up existing demo data (contacts, conversations, messages for demo users)
   const existingDemoEmails = demoUsers.map(u => u.email)
