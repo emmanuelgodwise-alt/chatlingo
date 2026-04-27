@@ -86,10 +86,10 @@ export function SignUpForm() {
   }
 
   return (
-    <div className="h-screen flex items-center justify-center wa-auth-gradient p-3 overflow-y-auto">
-      <div className="w-full max-w-md my-2">
-        <Card className="shadow-2xl border-0 rounded-xl overflow-hidden">
-          {/* Brand — inside card for distinct top boundary */}
+    <div className="h-screen flex items-center justify-center wa-auth-gradient p-6 sm:p-8 overflow-y-auto">
+      <div className="w-full max-w-md">
+        <Card className="shadow-2xl border border-white/10 rounded-xl overflow-hidden bg-white">
+          {/* Brand header — teal section inside card */}
           <div className="bg-[#0F4C5C] text-center pb-5 pt-6 px-5">
             <img src="/chatlingo-logo.png" alt="ChatLingo" className="w-16 h-auto mx-auto mb-2 drop-shadow-lg" />
             <h1 className="text-2xl font-bold text-white tracking-tight">ChatLingo</h1>
@@ -248,12 +248,11 @@ export function SignUpForm() {
                 </button>
               </p>
             </CardFooter>
+            <p className="text-center text-[10px] text-[#A3A3A3] pb-4 px-5">
+              By creating an account, you agree to ChatLingo&apos;s Terms of Service and Privacy Policy.
+            </p>
           </form>
         </Card>
-
-        <p className="text-center text-[10px] text-white/50 mt-3">
-          By creating an account, you agree to ChatLingo&apos;s Terms of Service and Privacy Policy.
-        </p>
       </div>
     </div>
   )
