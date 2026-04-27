@@ -167,10 +167,10 @@ export function SignUpForm() {
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-[#A3A3A3] hover:text-[#0A0A0A] transition-colors"
+                    className="absolute right-1 top-1/2 -translate-y-1/2 p-2.5 text-[#A3A3A3] hover:text-[#0A0A0A] active:text-[#0F4C5C] transition-colors"
                     tabIndex={-1}
                   >
-                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                   </button>
                 </div>
               </div>
@@ -190,10 +190,10 @@ export function SignUpForm() {
                   <button
                     type="button"
                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-[#A3A3A3] hover:text-[#0A0A0A] transition-colors"
+                    className="absolute right-1 top-1/2 -translate-y-1/2 p-2.5 text-[#A3A3A3] hover:text-[#0A0A0A] active:text-[#0F4C5C] transition-colors"
                     tabIndex={-1}
                   >
-                    {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                   </button>
                 </div>
               </div>
