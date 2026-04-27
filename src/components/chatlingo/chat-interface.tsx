@@ -40,7 +40,10 @@ export function ChatInterface() {
     activeTab,
     setActiveTab,
     showAddContact,
+    setShowAddContact,
     showLanguageSettings,
+    setShowLanguageSettings,
+    showGroupInfo,
     conversations,
     setConversations,
     setActiveConversation,
@@ -290,7 +293,7 @@ export function ChatInterface() {
           toLanguage: string
           senderId: string
         }
-        addCallSubtitle(translatedData.original, translatedData)
+        addCallSubtitle(translatedData.original, translatedData.translated)
 
         try {
           const { speak, isSpeechSynthesisSupported } = await import('@/lib/speech')
