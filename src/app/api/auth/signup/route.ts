@@ -42,6 +42,11 @@ export async function POST(request: NextRequest) {
       },
     })
 
+    await db.user.update({
+      where: { id: user.id },
+      data: { online: true },
+    })
+
     const token = signToken({
       userId: user.id,
       email: user.email,
@@ -56,6 +61,7 @@ export async function POST(request: NextRequest) {
         email: user.email,
         phone: user.phone,
         preferredLanguage: user.preferredLanguage,
+        avatar: user.avatar,
       },
       token,
     })
