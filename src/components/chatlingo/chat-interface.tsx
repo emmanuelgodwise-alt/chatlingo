@@ -30,6 +30,7 @@ import { Input } from '@/components/ui/input'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { getLanguageFlag } from '@/lib/languages'
 import { Search, MessageCircle, MoreVertical, X, UserPlus, UsersRound, Hash, Radio, Megaphone, BookOpen, LogOut, GraduationCap, Compass } from 'lucide-react'
+import { DownloadPopup } from '@/components/chatlingo/download-popup'
 import type { Socket } from 'socket.io-client'
 
 export function ChatInterface() {
@@ -800,6 +801,9 @@ export function ChatInterface() {
 
       {/* Lesson Screen Overlay */}
       {lessonInProgress && <LessonScreen />}
+
+      {/* Download App Popup */}
+      <DownloadPopup />
 
       {/* Mobile Bottom Navigation */}
       <div className="wa-bottom-nav md:hidden">
