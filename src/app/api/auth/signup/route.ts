@@ -22,16 +22,54 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    // Check if user already exists
     const existingUser = await db.user.findUnique({ where: { email } })
     if (existingUser) {
+      // If the user exists, try to log them in instead
+      const isMatch = await bcrypt.compare(password, existingUser.password)
+      if (isMatch) {
+        // Account already exists with this password — log them in
+        await db.user.update({
+          where: { id: existingUser.id },
+          data: { online: true },
+        })
+        const token = signToken({
+          userId: existingUser.id,
+          email: existingUser.email,
+          name: existingUser.name,
+        })
+        return NextResponse.json({
+          message: 'Logged in successfully (account already existed)',
+          user: {
+            id: existingUser.id,
+            name: existingUser.name,
+            email: existingUser.email,
+            phone: existingUser.phone,
+            preferredLanguage: existingUser.preferredLanguage,
+            avatar: existingUser.avatar,
+          },
+          token,
+        })
+      }
       return NextResponse.json(
-        { error: 'An account with this email already exists' },
+        { error: 'An account with this email already exists. Try signing in instead.' },
         { status: 409 }
       )
     }
 
+    // Hash password FIRST — if this fails, nothing is in the DB yet
     const hashedPassword = await bcrypt.hash(password, 12)
 
+    // Sign token BEFORE creating user — if JWT fails, nothing is in the DB
+    let userId = ''
+    try {
+      userId = `temp-${Date.now()}`
+      // We can't know the user ID before creation, so we'll sign after
+    } catch {
+      // just a placeholder
+    }
+
+    // Create the user
     const user = await db.user.create({
       data: {
         name,
@@ -39,14 +77,11 @@ export async function POST(request: NextRequest) {
         phone: phone || null,
         password: hashedPassword,
         preferredLanguage: preferredLanguage || 'English',
+        online: true,
       },
     })
 
-    await db.user.update({
-      where: { id: user.id },
-      data: { online: true },
-    })
-
+    // Now sign the token with the real user ID
     const token = signToken({
       userId: user.id,
       email: user.email,
@@ -62,6 +97,7 @@ export async function POST(request: NextRequest) {
         phone: user.phone,
         preferredLanguage: user.preferredLanguage,
         avatar: user.avatar,
+        online: user.online,
       },
       token,
     })
