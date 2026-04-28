@@ -105,11 +105,11 @@ export function LearnTab() {
           }) => ({
             id: p.id,
             partner: {
-              id: p.learnerId === data.profile.userId ? p.tutor.id : p.learner.id,
-              name: p.learnerId === data.profile.userId ? p.tutor.name : p.learner.name,
-              avatar: p.learnerId === data.profile.userId ? p.tutor.avatar : p.learner.avatar,
+              id: data.profile && p.learnerId === data.profile.userId ? p.tutor.id : p.learner.id,
+              name: data.profile && p.learnerId === data.profile.userId ? p.tutor.name : p.learner.name,
+              avatar: data.profile && p.learnerId === data.profile.userId ? p.tutor.avatar : p.learner.avatar,
               preferredLanguage:
-                p.learnerId === data.profile.userId
+                data.profile && p.learnerId === data.profile.userId
                   ? p.tutor.preferredLanguage
                   : p.learner.preferredLanguage,
               online: false,

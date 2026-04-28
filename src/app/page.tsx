@@ -4,29 +4,63 @@ import { useChatLingoStore } from '@/lib/store'
 import { SignUpForm } from '@/components/chatlingo/sign-up-form'
 import { LoginForm } from '@/components/chatlingo/login-form'
 import { LandingPage } from '@/components/chatlingo/landing-page'
-import { useEffect, useState, useCallback } from 'react'
+import { useEffect, useState, useCallback, Component, type ReactNode, type ErrorInfo } from 'react'
 
-function ErrorFallback({ error, reset }: { error: Error; reset: () => void }) {
-  return (
-    <div className="h-screen flex items-center justify-center bg-white p-4">
-      <div className="max-w-md text-center">
-        <div className="w-16 h-16 rounded-full bg-red-50 flex items-center justify-center mx-auto mb-4">
-          <span className="text-2xl">⚠️</span>
+class ChatErrorBoundary extends Component<
+  { children: ReactNode; onReset: () => void },
+  { hasError: boolean; error: Error | null }
+> {
+  constructor(props: { children: ReactNode; onReset: () => void }) {
+    super(props)
+    this.state = { hasError: false, error: null }
+  }
+
+  static getDerivedStateFromError(error: Error) {
+    return { hasError: true, error }
+  }
+
+  componentDidCatch(error: Error, errorInfo: ErrorInfo) {
+    console.error('ChatLingo client error:', error, errorInfo)
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="h-screen flex items-center justify-center bg-white p-4">
+          <div className="max-w-md text-center">
+            <div className="w-16 h-16 rounded-full bg-red-50 flex items-center justify-center mx-auto mb-4">
+              <span className="text-2xl">!</span>
+            </div>
+            <h2 className="text-lg font-semibold text-gray-900 mb-2">Something went wrong</h2>
+            <p className="text-sm text-gray-500 mb-2">{this.state.error?.message || 'An unexpected error occurred'}</p>
+            <pre className="text-xs text-red-500 bg-red-50 p-3 rounded-lg mb-4 overflow-auto max-h-40 text-left">
+              {this.state.error?.stack?.substring(0, 800)}
+            </pre>
+            <button
+              onClick={() => {
+                this.setState({ hasError: false, error: null })
+                this.props.onReset()
+              }}
+              className="px-4 py-2 bg-[#0F4C5C] text-white rounded-lg text-sm font-medium hover:bg-[#134E5E]"
+            >
+              Try again
+            </button>
+            <button
+              onClick={() => {
+                localStorage.removeItem('chatlingo_token')
+                localStorage.removeItem('chatlingo_user')
+                window.location.reload()
+              }}
+              className="block mx-auto mt-3 px-4 py-2 text-[#0F4C5C] text-sm font-medium hover:underline"
+            >
+              Sign out and reload
+            </button>
+          </div>
         </div>
-        <h2 className="text-lg font-semibold text-gray-900 mb-2">Something went wrong</h2>
-        <p className="text-sm text-gray-500 mb-2">{error.message}</p>
-        <pre className="text-xs text-red-500 bg-red-50 p-3 rounded-lg mb-4 overflow-auto max-h-40 text-left">
-          {error.stack?.substring(0, 500)}
-        </pre>
-        <button
-          onClick={reset}
-          className="px-4 py-2 bg-[#0F4C5C] text-white rounded-lg text-sm font-medium hover:bg-[#134E5E]"
-        >
-          Try again
-        </button>
-      </div>
-    </div>
-  )
+      )
+    }
+    return this.props.children
+  }
 }
 
 export default function Home() {
@@ -63,7 +97,26 @@ export default function Home() {
   }, [view, token, user, ChatInterface, error])
 
   if (error) {
-    return <ErrorFallback error={error} reset={reset} />
+    return (
+      <div className="h-screen flex items-center justify-center bg-white p-4">
+        <div className="max-w-md text-center">
+          <div className="w-16 h-16 rounded-full bg-red-50 flex items-center justify-center mx-auto mb-4">
+            <span className="text-2xl">!</span>
+          </div>
+          <h2 className="text-lg font-semibold text-gray-900 mb-2">Something went wrong</h2>
+          <p className="text-sm text-gray-500 mb-2">{error.message}</p>
+          <pre className="text-xs text-red-500 bg-red-50 p-3 rounded-lg mb-4 overflow-auto max-h-40 text-left">
+            {error.stack?.substring(0, 500)}
+          </pre>
+          <button
+            onClick={reset}
+            className="px-4 py-2 bg-[#0F4C5C] text-white rounded-lg text-sm font-medium hover:bg-[#134E5E]"
+          >
+            Try again
+          </button>
+        </div>
+      </div>
+    )
   }
 
   if (view === 'landing') {
@@ -76,7 +129,11 @@ export default function Home() {
 
   if (view === 'chat' && token && user) {
     if (ChatInterface) {
-      return <ChatInterface />
+      return (
+        <ChatErrorBoundary onReset={reset}>
+          <ChatInterface />
+        </ChatErrorBoundary>
+      )
     }
     return (
       <div className="h-screen flex items-center justify-center bg-white">

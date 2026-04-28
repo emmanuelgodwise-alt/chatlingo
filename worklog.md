@@ -26,3 +26,30 @@ Stage Summary:
 - 5 hidden features wired into UI
 - 2 orphaned files removed
 - Build and lint both pass cleanly
+
+---
+Task ID: 1
+Agent: Main Agent
+Task: Deploy ChatLingo to Supabase + Vercel ($0/month)
+
+Work Log:
+- Assessed project: Prisma SQLite → PostgreSQL migration needed, 41 commits, no git remote
+- Converted Prisma schema: provider sqlite → postgresql with directUrl for pgbouncer compatibility
+- Updated .env with Supabase Pooler URL + Direct URL + JWT_SECRET
+- Updated package.json: build script includes prisma generate, added postinstall hook
+- Pushed schema to Supabase PostgreSQL via `prisma db push --accept-data-loss`
+- Seeded database: 1 test user + 15 demo users + 15 conversations + 51 messages
+- Updated seed script to auto-create test user on fresh databases
+- Fixed .gitignore: allow .env.example, ignore db files
+- Created GitHub repo: emmanuelgodwise-alt/chatlingo
+- Pushed all 42 commits to GitHub
+- Set 3 environment variables on Vercel (DATABASE_URL, DIRECT_URL, JWT_SECRET)
+- Deployed to Vercel production
+- Verified: site returns HTTP 200, login API works with Supabase data
+
+Stage Summary:
+- ChatLingo is LIVE at: https://my-project-sigma-umber.vercel.app
+- GitHub repo: https://github.com/emmanuelgodwise-alt/chatlingo
+- Database: Supabase PostgreSQL with seeded demo data
+- Test account: test@test.com / password123
+- Vercel dashboard: https://vercel.com/emmanuelgodwise-6419s-projects/my-project
